@@ -11,13 +11,29 @@ class Api {
     });
   }
 
-  static Future<Map> stareList() async {
+  static Future<Map> shareList() async {
     return await Util.post("entry.cgi", data: {
       "api": '"SYNO.FileStation.List"',
       "method": '"list_share"',
       "version": 2,
       "_sid": Util.sid,
       "offset": 0,
+      "limit": 1000,
+      "sort_by": '"name"',
+      "sort_direction": '"asc"',
+      "additional": '["perm", "time", "size"]',
+    });
+  }
+
+  static Future<Map> fileList(String path) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.List"',
+      "method": '"list"',
+      "version": 2,
+      "_sid": Util.sid,
+      "offset": 0,
+      "folder_path": path,
+      "filetype": '"all"',
       "limit": 1000,
       "sort_by": '"name"',
       "sort_direction": '"asc"',

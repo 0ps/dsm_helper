@@ -1,3 +1,5 @@
+import 'package:file_station/pages/download/download.dart';
+import 'package:file_station/pages/favorite/favorite.dart';
 import 'package:file_station/pages/file/file.dart';
 import 'package:file_station/pages/setting/setting.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +18,8 @@ class _HomeState extends State<Home> {
       body: IndexedStack(
         children: [
           Files(),
-          Files(),
-          Files(),
+          Favorite(),
+          Download(),
           Setting(),
         ],
         index: _currentIndex,

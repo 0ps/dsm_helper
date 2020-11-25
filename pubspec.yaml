@@ -38,6 +38,7 @@ dependencies:
   permission_handler: ^5.0.1+1
   extended_image: ^1.2.0
   cool_ui: ^0.6.3
+  gallery_saver: ^2.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

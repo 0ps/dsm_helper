@@ -8,7 +8,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:package_info/package_info.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,6 +19,22 @@ export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:file_station/util/api.dart';
 export 'package:file_station/extensions/datetime.dart';
 export 'package:file_station/extensions/string.dart';
+
+enum FileType {
+  folder,
+  image,
+  movie,
+  music,
+  ps,
+  html,
+  word,
+  ppt,
+  excel,
+  text,
+  zip,
+  code,
+  other,
+}
 
 class Util {
   static String sid = "";
@@ -27,6 +45,48 @@ class Util {
       msg: text,
       gravity: ToastGravity.CENTER,
     );
+  }
+
+  static FileType fileType(String name) {
+    List<String> image = ["png", "jpg", "gif", "bmp"];
+    List<String> movie = ["mov", "rmvb", "ts", "mp4"];
+    List<String> music = ["mp3"];
+    List<String> ps = ["psd"];
+    List<String> html = ["html", "htm", "shtml", "url"];
+    List<String> word = ["doc", "docx"];
+    List<String> ppt = ["ppt", "pptx"];
+    List<String> excel = ["xls", "xlsx"];
+    List<String> text = ["txt"];
+    List<String> zip = ["zip", "gz", "tar", "rar", "7z"];
+    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css"];
+    String ext = name.split(".").last.toLowerCase();
+    if (image.contains(ext)) {
+      return FileType.image;
+    } else if (movie.contains(ext)) {
+      return FileType.movie;
+    } else if (music.contains(ext)) {
+      return FileType.music;
+    } else if (ps.contains(ext)) {
+      return FileType.ps;
+    } else if (html.contains(ext)) {
+      return FileType.ps;
+    } else if (ps.contains(html)) {
+      return FileType.ps;
+    } else if (word.contains(ext)) {
+      return FileType.word;
+    } else if (ppt.contains(ext)) {
+      return FileType.ppt;
+    } else if (excel.contains(ext)) {
+      return FileType.excel;
+    } else if (text.contains(ext)) {
+      return FileType.text;
+    } else if (zip.contains(ext)) {
+      return FileType.zip;
+    } else if (code.contains(ext)) {
+      return FileType.code;
+    } else {
+      return FileType.other;
+    }
   }
 
   static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host}) async {
@@ -46,7 +106,7 @@ class Util {
     } catch (error) {
       print(error);
       print("请求出错:$url");
-      return {"code": 0, "msg": "网络错误", "data": null};
+      return {"success": false, "msg": "加载失败", "data": null};
     }
   }
 
@@ -70,7 +130,7 @@ class Util {
       print(error.request.uri);
       print(error.error);
       print("请求出错:$url 请求内容:$data");
-      return {"code": 0, "msg": "网络错误", "data": null};
+      return {"success": false, "msg": "加载失败", "data": null};
     }
   }
 
@@ -206,51 +266,51 @@ class Util {
 //
 //    return permissionRequestResult[permission] == PermissionStatus.granted;
 //  }
-//   static Future<Map> saveImage(String url, {BuildContext context, bool showLoading: true}) async {
-//     var hide;
-//     try {
-//       bool permission = false;
-//       if (Platform.isAndroid) {
-//         permission = await Permission.storage.request().isGranted;
-//       } else {
-//         permission = await Permission.photos.request().isGranted;
-//       }
-//       if (!permission) {
-//         return {
-//           "code": 2,
-//           "msg": "permission",
-//         };
-//       }
-//       if (showLoading) {
-//         hide = showWeuiLoadingToast(context: context, message: Text("保存中"));
-//       }
-//       File image = await getCachedImageFile(url);
-//       File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
-//       bool result = await GallerySaver.saveImage(save.path, albumName: "知了回收商家版");
-//       if (showLoading) {
-//         hide();
-//       }
-//       if (result) {
-//         return {
-//           "code": 1,
-//           "msg": "success",
-//         };
-//       } else {
-//         return {
-//           "code": 0,
-//           "msg": "error",
-//         };
-//       }
-//     } catch (e) {
-//       if (hide != null) {
-//         hide();
-//       }
-//       return {
-//         "code": 0,
-//         "msg": "error",
-//       };
-//     }
-//   }
+  static Future<Map> saveImage(String url, {BuildContext context, bool showLoading: true}) async {
+    var hide;
+    try {
+      bool permission = false;
+      if (Platform.isAndroid) {
+        permission = await Permission.storage.request().isGranted;
+      } else {
+        permission = await Permission.photos.request().isGranted;
+      }
+      if (!permission) {
+        return {
+          "code": 2,
+          "msg": "permission",
+        };
+      }
+      if (showLoading) {
+        hide = showWeuiLoadingToast(context: context, message: Text("保存中"));
+      }
+      File image = await getCachedImageFile(url);
+      File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
+      bool result = await GallerySaver.saveImage(save.path, albumName: "File Station");
+      if (showLoading) {
+        hide();
+      }
+      if (result) {
+        return {
+          "code": 1,
+          "msg": "success",
+        };
+      } else {
+        return {
+          "code": 0,
+          "msg": "error",
+        };
+      }
+    } catch (e) {
+      if (hide != null) {
+        hide();
+      }
+      return {
+        "code": 0,
+        "msg": "error",
+      };
+    }
+  }
 
   static String rand() {
     var r = Random().nextInt(2147483646);

@@ -34,6 +34,7 @@ enum FileType {
   zip,
   code,
   other,
+  pdf,
 }
 
 class Util {
@@ -48,8 +49,8 @@ class Util {
   }
 
   static FileType fileType(String name) {
-    List<String> image = ["png", "jpg", "gif", "bmp"];
-    List<String> movie = ["mov", "rmvb", "ts", "mp4"];
+    List<String> image = ["png", "jpg", "gif", "bmp", "ico"];
+    List<String> movie = ["mov", "rmvb", "ts", "mp4", "mkv"];
     List<String> music = ["mp3"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
@@ -59,6 +60,7 @@ class Util {
     List<String> text = ["txt"];
     List<String> zip = ["zip", "gz", "tar", "rar", "7z"];
     List<String> code = ["py", "php", "c", "java", "jsp", "js", "css"];
+    List<String> pdf = ["pdf"];
     String ext = name.split(".").last.toLowerCase();
     if (image.contains(ext)) {
       return FileType.image;
@@ -84,6 +86,8 @@ class Util {
       return FileType.zip;
     } else if (code.contains(ext)) {
       return FileType.code;
+    } else if (pdf.contains(ext)) {
+      return FileType.pdf;
     } else {
       return FileType.other;
     }

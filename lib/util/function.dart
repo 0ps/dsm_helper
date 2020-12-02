@@ -16,6 +16,7 @@ export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:file_station/util/api.dart';
 export 'package:file_station/extensions/datetime.dart';
 export 'package:file_station/extensions/string.dart';
+export 'package:file_station/extensions/int.dart';
 
 enum FileType {
   folder,
@@ -275,6 +276,7 @@ class Util {
       bool permission = false;
       if (Platform.isAndroid) {
         permission = await Permission.storage.request().isGranted;
+        print(permission);
       } else {
         permission = await Permission.photos.request().isGranted;
       }

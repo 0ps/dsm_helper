@@ -21,10 +21,7 @@ void main() async {
     // 以下两行 设置android状态栏为透明的沉浸。写在组件渲染之后，是为了在渲染后进行set赋值，覆盖状态栏，写在渲染之前MaterialApp组件会覆盖掉这个值。
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Color(0xFFf4f4f4),
+      systemNavigationBarColor: Color(0xFFF4F4F4),
     ));
   }
 }
@@ -34,11 +31,21 @@ class MyApp extends StatelessWidget {
   MyApp(this.needLogin);
   @override
   Widget build(BuildContext context) {
-    return NeuApp(
+    return MaterialApp(
       title: 'File Station',
       debugShowCheckedModeBanner: false,
-      theme: NeuThemeData.light().copyWith(),
-      darkTheme: NeuThemeData.dark(),
+      theme: ThemeData.light().copyWith(
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
+          color: Color(0xFFF4F4F4),
+          iconTheme: IconThemeData(color: Colors.black),
+          actionsIconTheme: IconThemeData(color: Colors.black),
+          textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
+          brightness: Brightness.light,
+        ),
+        scaffoldBackgroundColor: Color(0xFFF4F4F4),
+      ),
       home: needLogin ? Login() : Home(),
       routes: {
         "/login": (BuildContext context) => Login(),

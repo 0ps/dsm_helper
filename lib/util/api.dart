@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'function.dart';
 
 class Api {
@@ -50,5 +52,29 @@ class Api {
       "_sid": Util.sid,
       "path": path,
     });
+  }
+
+  static Future<Map> dirSizeTask(String path) async {
+    Timer timer;
+    var task = await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.DirSize"',
+      "method": '"start"',
+      "version": 1,
+      "_sid": Util.sid,
+      "path": path,
+    });
+    print(task);
+    return task;
+  }
+
+  static Future<Map> dirSizeResult(String taskId) async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.DirSize"',
+      "method": '"status"',
+      "version": 1,
+      "_sid": Util.sid,
+      "taskid": taskId,
+    });
+    return result;
   }
 }

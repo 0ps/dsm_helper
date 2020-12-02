@@ -25,6 +25,7 @@ class _LoginState extends State<Login> {
   }
 
   _login() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     if (login == true) {
       return;
     }

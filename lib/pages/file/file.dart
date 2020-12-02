@@ -1,6 +1,7 @@
 import 'package:android_intent/android_intent.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:file_station/pages/common/preview.dart';
+import 'package:file_station/pages/file/detail.dart';
 import 'package:file_station/util/function.dart';
 import 'package:file_station/widgets/file_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,8 @@ class _FilesState extends State<Files> {
   bool loading = true;
   bool success = true;
   String msg = "";
+  bool multiSelect = false;
+  List<String> selectedFiles = [];
   ScrollController _scrollController = ScrollController();
   @override
   void initState() {
@@ -97,6 +100,12 @@ class _FilesState extends State<Files> {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
       child: NeuButton(
+        onLongPress: () {
+          setState(() {
+            multiSelect = true;
+            selectedFiles.add(file['path']);
+          });
+        },
         onPressed: () async {
           if (file['isdir']) {
             goPath(file['path']);
@@ -172,7 +181,7 @@ class _FilesState extends State<Files> {
               width: 20,
             ),
             Hero(
-              tag: Util.baseUrl + "/webapi/entry.cgi?path=$path&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+              tag: Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
               child: FileIcon(
                 file['isdir'] ? FileType.folder : fileType,
                 thumb: file['path'],
@@ -204,96 +213,146 @@ class _FilesState extends State<Files> {
             SizedBox(
               width: 10,
             ),
-            NeuButton(
-              onPressed: () {
-                showCupertinoModalPopup(
-                  context: context,
-                  builder: (context) {
-                    return Material(
-                      color: Colors.transparent,
-                      child: NeuCard(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(22),
-                        bevel: 5,
-                        curveType: CurveType.emboss,
-                        decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              "操作提醒",
-                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            Text(
-                              "暂未做二次确认，请谨慎操作？",
-                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
-                            ),
-                            SizedBox(
-                              height: 22,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                NeuButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    var res = await Api.delete(file['path']);
-                                    print(res);
-                                    if (res['success']) {
-                                      Util.toast("文件删除成功");
-                                    }
-                                  },
-                                  decoration: NeumorphicDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  bevel: 5,
-                                  padding: EdgeInsets.symmetric(horizontal: 45, vertical: 7),
-                                  child: Text(
-                                    "删除",
-                                    style: TextStyle(fontSize: 16, color: Colors.redAccent),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 28,
-                                ),
-                                NeuButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                  },
-                                  decoration: NeumorphicDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  bevel: 5,
-                                  padding: EdgeInsets.symmetric(horizontal: 45, vertical: 7),
-                                  child: Text(
-                                    "取消",
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                          ],
-                        ),
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 1000),
+              child: multiSelect
+                  ? NeuButton(
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    );
-                  },
-                );
-              },
-              padding: EdgeInsets.only(left: 5, right: 3, top: 4, bottom: 4),
-              decoration: NeumorphicDecoration(
-                color: Color(0xfff0f0f0),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 2,
-              child: Icon(CupertinoIcons.right_chevron),
+                      padding: EdgeInsets.all(5),
+                      bevel: 5,
+                      onPressed: () {
+                        setState(() {
+                          if (selectedFiles.contains(file['path'])) {
+                            selectedFiles.remove(file['path']);
+                          } else {
+                            selectedFiles.add(file['path']);
+                          }
+                        });
+                      },
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: selectedFiles.contains(file['path'])
+                            ? Icon(
+                                CupertinoIcons.checkmark_alt,
+                              )
+                            : null,
+                      ),
+                    )
+                  : NeuButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return Material(
+                              color: Colors.transparent,
+                              child: NeuCard(
+                                width: double.infinity,
+                                padding: EdgeInsets.all(22),
+                                bevel: 5,
+                                curveType: CurveType.emboss,
+                                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Text(
+                                      "选择操作",
+                                      style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                    ),
+                                    SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      "暂未做二次确认，请谨慎操作！",
+                                      style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
+                                    ),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        return;
+                                        var res = await Api.delete(file['path']);
+                                        print(res);
+                                        if (res['success']) {
+                                          Util.toast("文件删除成功");
+                                        }
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      bevel: 5,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        "删除",
+                                        style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                          return FileDetail(file);
+                                        }));
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      bevel: 5,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        "详情",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      bevel: 5,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        "取消",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      padding: EdgeInsets.only(left: 5, right: 3, top: 4, bottom: 4),
+                      decoration: NeumorphicDecoration(
+                        color: Color(0xfff0f0f0),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      bevel: 2,
+                      child: Icon(
+                        CupertinoIcons.right_chevron,
+                        size: 18,
+                      ),
+                    ),
             ),
             SizedBox(
               width: 20,
@@ -340,17 +399,26 @@ class _FilesState extends State<Files> {
   }
 
   Future<bool> onWillPop() {
-    if (paths.length > 1) {
-      paths.removeLast();
-      String path = "";
+    if (multiSelect) {
+      setState(() {
+        multiSelect = false;
+        selectedFiles = [];
+      });
+    } else {
+      if (paths.length > 1) {
+        paths.removeLast();
+        String path = "";
 
-      if (paths.length == 1) {
-        path = "/";
-      } else {
-        path = paths.join("/").substring(1);
+        if (paths.length == 1) {
+          path = "/";
+        } else {
+          path = paths.join("/").substring(1);
+        }
+        print(path);
+        goPath(path);
       }
-      goPath(path);
     }
+
     return new Future.value(false);
   }
 
@@ -368,6 +436,27 @@ class _FilesState extends State<Files> {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           elevation: 0,
           centerTitle: true,
+          actions: [
+            if (multiSelect)
+              NeuButton(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(5),
+                bevel: 5,
+                onPressed: () {
+                  setState(() {});
+                },
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Icon(
+                    CupertinoIcons.checkmark_alt,
+                  ),
+                ),
+              ),
+          ],
         ),
         body: Column(
           children: [

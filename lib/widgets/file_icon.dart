@@ -24,7 +24,7 @@ class FileIcon extends StatelessWidget {
       );
     } else if (fileType == FileType.image) {
       return CupertinoExtendedImage(
-        Util.baseUrl + "/webapi/entry.cgi?path=$thumb&size=small&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+        Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(thumb)}&size=small&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
         width: 40,
         height: 40,
         fit: BoxFit.contain,

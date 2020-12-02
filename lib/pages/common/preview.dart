@@ -10,6 +10,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_station/util/function.dart';
+import 'package:neumorphic/neumorphic.dart';
 
 class PreviewPage extends StatefulWidget {
   final List<String> images;
@@ -217,13 +218,16 @@ class MySwiperPlugin extends StatelessWidget {
           style: TextStyle(color: Colors.blue),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    minSize: 0,
+                  NeuButton(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     onPressed: () {
                       Util.saveImage(pics[index], context: context).then((res) {
                         if (res['code'] == 1) {
@@ -233,36 +237,29 @@ class MySwiperPlugin extends StatelessWidget {
                         }
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black45,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.file_download,
-                            color: Colors.white,
-                            size: 13,
-                          ),
-                          Text(
-                            " 保存图片",
-                            style: TextStyle(color: Colors.white, fontSize: 13),
-                          ),
-                        ],
-                      ),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.file_download,
+                          size: 13,
+                          color: Colors.black,
+                        ),
+                        Text(
+                          " 保存图片",
+                          style: TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                      ],
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black45,
-                      borderRadius: BorderRadius.circular(15),
+                  NeuCard(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
                       "${data.data + 1} / ${pics.length}",
-                      style: TextStyle(color: Colors.white, fontSize: 13),
+                      style: TextStyle(color: Colors.black, fontSize: 12),
                     ),
                   ),
                 ],

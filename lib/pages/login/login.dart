@@ -1,4 +1,3 @@
-import 'package:cool_ui/cool_ui.dart';
 import 'package:file_station/util/api.dart';
 import 'package:file_station/util/function.dart';
 import 'package:flutter/cupertino.dart';

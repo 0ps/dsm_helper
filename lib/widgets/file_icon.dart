@@ -71,6 +71,18 @@ class FileIcon extends StatelessWidget {
         width: 40,
         height: 40,
       );
+    } else if (fileType == FileType.code) {
+      return Image.asset(
+        "assets/icons/code.png",
+        width: 40,
+        height: 40,
+      );
+    } else if (fileType == FileType.apk) {
+      return Image.asset(
+        "assets/icons/apk.png",
+        width: 40,
+        height: 40,
+      );
     } else {
       return Image.asset(
         "assets/icons/other.png",

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cool_ui/cool_ui.dart';
 import 'package:file_station/pages/home.dart';
 import 'package:file_station/pages/login/login.dart';
 import 'package:file_station/util/function.dart';
@@ -31,7 +30,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  bool needLogin;
+  final bool needLogin;
   MyApp(this.needLogin);
   @override
   Widget build(BuildContext context) {

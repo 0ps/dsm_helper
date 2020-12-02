@@ -9,12 +9,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:file_station/util/api.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:file_station/util/api.dart';
 export 'package:file_station/extensions/datetime.dart';
@@ -35,6 +32,7 @@ enum FileType {
   code,
   other,
   pdf,
+  apk,
 }
 
 class Util {
@@ -49,7 +47,7 @@ class Util {
   }
 
   static FileType fileType(String name) {
-    List<String> image = ["png", "jpg", "gif", "bmp", "ico"];
+    List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
     List<String> movie = ["mov", "rmvb", "ts", "mp4", "mkv"];
     List<String> music = ["mp3"];
     List<String> ps = ["psd"];
@@ -59,8 +57,9 @@ class Util {
     List<String> excel = ["xls", "xlsx"];
     List<String> text = ["txt"];
     List<String> zip = ["zip", "gz", "tar", "rar", "7z"];
-    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css"];
+    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css", "sql"];
     List<String> pdf = ["pdf"];
+    List<String> apk = ["apk"];
     String ext = name.split(".").last.toLowerCase();
     if (image.contains(ext)) {
       return FileType.image;
@@ -71,9 +70,7 @@ class Util {
     } else if (ps.contains(ext)) {
       return FileType.ps;
     } else if (html.contains(ext)) {
-      return FileType.ps;
-    } else if (ps.contains(html)) {
-      return FileType.ps;
+      return FileType.code;
     } else if (word.contains(ext)) {
       return FileType.word;
     } else if (ppt.contains(ext)) {
@@ -88,6 +85,8 @@ class Util {
       return FileType.code;
     } else if (pdf.contains(ext)) {
       return FileType.pdf;
+    } else if (apk.contains(ext)) {
+      return FileType.apk;
     } else {
       return FileType.other;
     }

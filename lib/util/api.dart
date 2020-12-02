@@ -40,4 +40,15 @@ class Api {
       "additional": '["perm", "time", "size"]',
     });
   }
+
+  ///webapi/FileStation/file_delete.cgi?api=SYNO.FileStation.Delete&version=1&method=start&path=%2Fvideo%2Fdel_folder
+  static Future<Map> delete(String path) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Delete"',
+      "method": '"start"',
+      "version": 2,
+      "_sid": Util.sid,
+      "path": path,
+    });
+  }
 }

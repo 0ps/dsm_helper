@@ -107,64 +107,74 @@ class _FilesState extends State<Files> {
           });
         },
         onPressed: () async {
-          if (file['isdir']) {
-            goPath(file['path']);
+          if (multiSelect) {
+            setState(() {
+              if (selectedFiles.contains(file['path'])) {
+                selectedFiles.remove(file['path']);
+              } else {
+                selectedFiles.add(file['path']);
+              }
+            });
           } else {
-            switch (fileType) {
-              case FileType.image:
-                //获取当前目录全部图片文件
-                List<String> images = [];
-                int index = 0;
-                for (int i = 0; i < files.length; i++) {
-                  if (Util.fileType(files[i]['name']) == FileType.image) {
-                    images.add(Util.baseUrl + "/webapi/entry.cgi?path=${files[i]['path']}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
-                    if (files[i]['name'] == file['name']) {
-                      index = images.length - 1;
+            if (file['isdir']) {
+              goPath(file['path']);
+            } else {
+              switch (fileType) {
+                case FileType.image:
+                  //获取当前目录全部图片文件
+                  List<String> images = [];
+                  int index = 0;
+                  for (int i = 0; i < files.length; i++) {
+                    if (Util.fileType(files[i]['name']) == FileType.image) {
+                      images.add(Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
+                      if (files[i]['name'] == file['name']) {
+                        index = images.length - 1;
+                      }
                     }
                   }
-                }
-                Navigator.of(context).push(TransparentMaterialPageRoute(builder: (context) {
-                  return PreviewPage(images, index);
-                }));
-                break;
-              case FileType.movie:
-                AndroidIntent intent = AndroidIntent(
-                  action: 'action_view',
-                  data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${file['path']}&mode=open&_sid=${Util.sid}",
-                  arguments: {},
-                  type: "video/*",
-                );
-                await intent.launch();
-                break;
-              case FileType.music:
-                AndroidIntent intent = AndroidIntent(
-                  action: 'action_view',
-                  data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${file['path']}&mode=open&_sid=${Util.sid}",
-                  arguments: {},
-                  type: "audio/*",
-                );
-                await intent.launch();
-                break;
-              case FileType.word:
-                AndroidIntent intent = AndroidIntent(
-                  action: 'action_view',
-                  data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${file['path']}&mode=open&_sid=${Util.sid}",
-                  arguments: {},
-                  type: "application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                );
-                await intent.launch();
-                break;
-              case FileType.excel:
-                AndroidIntent intent = AndroidIntent(
-                  action: 'action_view',
-                  data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${file['path']}&mode=open&_sid=${Util.sid}",
-                  arguments: {},
-                  type: "application/vnd.ms-excel|application/x-excel|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                );
-                await intent.launch();
-                break;
-              default:
-                Util.toast("暂不支持打开此类型文件");
+                  Navigator.of(context).push(TransparentMaterialPageRoute(builder: (context) {
+                    return PreviewPage(images, index);
+                  }));
+                  break;
+                case FileType.movie:
+                  AndroidIntent intent = AndroidIntent(
+                    action: 'action_view',
+                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    arguments: {},
+                    type: "video/*",
+                  );
+                  await intent.launch();
+                  break;
+                case FileType.music:
+                  AndroidIntent intent = AndroidIntent(
+                    action: 'action_view',
+                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    arguments: {},
+                    type: "audio/*",
+                  );
+                  await intent.launch();
+                  break;
+                case FileType.word:
+                  AndroidIntent intent = AndroidIntent(
+                    action: 'action_view',
+                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    arguments: {},
+                    type: "application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                  );
+                  await intent.launch();
+                  break;
+                case FileType.excel:
+                  AndroidIntent intent = AndroidIntent(
+                    action: 'action_view',
+                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    arguments: {},
+                    type: "application/vnd.ms-excel|application/x-excel|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  );
+                  await intent.launch();
+                  break;
+                default:
+                  Util.toast("暂不支持打开此类型文件");
+              }
             }
           }
         },
@@ -214,30 +224,22 @@ class _FilesState extends State<Files> {
               width: 10,
             ),
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 1000),
+              duration: Duration(milliseconds: 200),
               child: multiSelect
-                  ? NeuButton(
+                  ? NeuCard(
                       decoration: NeumorphicDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       padding: EdgeInsets.all(5),
                       bevel: 5,
-                      onPressed: () {
-                        setState(() {
-                          if (selectedFiles.contains(file['path'])) {
-                            selectedFiles.remove(file['path']);
-                          } else {
-                            selectedFiles.add(file['path']);
-                          }
-                        });
-                      },
                       child: SizedBox(
                         width: 20,
                         height: 20,
                         child: selectedFiles.contains(file['path'])
                             ? Icon(
                                 CupertinoIcons.checkmark_alt,
+                                color: Color(0xffff9813),
                               )
                             : null,
                       ),
@@ -275,9 +277,7 @@ class _FilesState extends State<Files> {
                                     NeuButton(
                                       onPressed: () async {
                                         Navigator.of(context).pop();
-                                        return;
                                         var res = await Api.delete(file['path']);
-                                        print(res);
                                         if (res['success']) {
                                           Util.toast("文件删除成功");
                                         }
@@ -311,6 +311,28 @@ class _FilesState extends State<Files> {
                                       padding: EdgeInsets.symmetric(vertical: 10),
                                       child: Text(
                                         "详情",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
+                                        await Util.download(file['name'], url);
+                                        Util.toast("已添加下载任务，请至下载页面查看");
+                                        Util.downloadKey.currentState.getData();
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      bevel: 5,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        "下载",
                                         style: TextStyle(fontSize: 18),
                                       ),
                                     ),
@@ -443,17 +465,24 @@ class _FilesState extends State<Files> {
                   color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(10),
                 bevel: 5,
                 onPressed: () {
+                  if (selectedFiles.length == files.length) {
+                    selectedFiles = [];
+                  } else {
+                    selectedFiles = [];
+                    files.forEach((file) {
+                      selectedFiles.add(file['path']);
+                    });
+                  }
+
                   setState(() {});
                 },
-                child: SizedBox(
+                child: Image.asset(
+                  "assets/icons/select_all.png",
                   width: 20,
                   height: 20,
-                  child: Icon(
-                    CupertinoIcons.checkmark_alt,
-                  ),
                 ),
               ),
           ],

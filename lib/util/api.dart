@@ -63,7 +63,6 @@ class Api {
       "_sid": Util.sid,
       "path": path,
     });
-    print(task);
     return task;
   }
 
@@ -74,6 +73,18 @@ class Api {
       "version": 1,
       "_sid": Util.sid,
       "taskid": taskId,
+    });
+    return result;
+  }
+
+  static Future<Map> systemInfo() async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"parallel"',
+      "compound": '[{"api":"SYNO.Core.System.Utilization","method":"get","version":1,"type":"current","resource":["cpu","memory","network","disk"]},{"api":"SYNO.Core.System","method":"info","version":1,"type":"storage"},{"api":"SYNO.Core.CurrentConnection","method":"list","sort_direction":"DESC","sort_by":"time","version":1}]',
+      "version": 1,
+      "_sid": Util.sid,
     });
     return result;
   }

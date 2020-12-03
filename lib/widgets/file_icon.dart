@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_station/util/function.dart';
 import 'package:file_station/widgets/cupertino_image.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,8 @@ import 'package:flutter/material.dart';
 class FileIcon extends StatelessWidget {
   final FileType fileType;
   final String thumb;
-  FileIcon(this.fileType, {this.thumb});
+  final bool network;
+  FileIcon(this.fileType, {this.thumb, this.network = true});
   @override
   Widget build(BuildContext context) {
     if (fileType == FileType.folder) {
@@ -23,12 +26,25 @@ class FileIcon extends StatelessWidget {
         height: 40,
       );
     } else if (fileType == FileType.image) {
-      return CupertinoExtendedImage(
-        Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(thumb)}&size=small&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
-        width: 40,
-        height: 40,
-        fit: BoxFit.contain,
-      );
+      return thumb == null
+          ? Image.asset(
+              "assets/icons/image.png",
+              width: 40,
+              height: 40,
+            )
+          : network
+              ? CupertinoExtendedImage(
+                  Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(thumb)}&size=small&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.contain,
+                )
+              : Image.file(
+                  File(thumb),
+                  fit: BoxFit.contain,
+                  width: 40,
+                  height: 40,
+                );
     } else if (fileType == FileType.word) {
       return Image.asset(
         "assets/icons/word.png",

@@ -5,8 +5,10 @@ import 'dart:math';
 import 'package:cool_ui/cool_ui.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:file_station/pages/download/download.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,7 +41,7 @@ enum FileType {
 class Util {
   static String sid = "";
   static String baseUrl = "";
-
+  static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
     Fluttertoast.showToast(
       msg: text,
@@ -148,25 +150,28 @@ class Util {
     }
   }
 
-  static Future<dynamic> download(String saveName, String url, onReceiveProgress, CancelToken cancelToken) async {
-    Dio dio = new Dio();
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-    Response response;
+  static Future<String> getLocalPath() async {
+    final directory = Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
 
-    try {
-      response = await dio.download(url, tempPath + "/" + saveName, deleteOnError: true, onReceiveProgress: onReceiveProgress, cancelToken: cancelToken);
-      print(response);
-      return {"code": 1, "msg": "下载完成", "data": tempPath + "/" + saveName};
-    } on DioError catch (error) {
-      print(error);
-      print("请求出错:$url");
-      if (error.type == DioErrorType.CANCEL) {
-        return {"code": 0, "msg": "下载已取消", "data": null};
-      } else {
-        return {"code": 0, "msg": "网络错误", "data": null};
-      }
+  static Future<String> download(String saveName, String url) async {
+    //检查权限
+    bool permission = false;
+    permission = await Permission.storage.request().isGranted;
+    if (!permission) {
+      Util.toast("请先授权APP访问存储");
+      return "";
     }
+    String savePath = await getLocalPath() + "/Download";
+    if (!Directory(savePath).existsSync()) {
+      Directory(savePath).create();
+    }
+    String taskId = await FlutterDownloader.enqueue(url: url, fileName: saveName, savedDir: savePath, showNotification: true, openFileFromNotification: true);
+    FlutterDownloader.registerCallback((String id, DownloadTaskStatus status, int progress) {
+      print(progress);
+    });
+    return taskId;
   }
 
   static String formatSize(int size) {
@@ -291,7 +296,7 @@ class Util {
       }
       File image = await getCachedImageFile(url);
       File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
-      bool result = await GallerySaver.saveImage(save.path, albumName: "File Station");
+      bool result = await GallerySaver.saveImage(save.path, albumName: "FileStation");
       if (showLoading) {
         hide();
       }

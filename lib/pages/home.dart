@@ -1,7 +1,9 @@
+import 'package:file_station/pages/dashborad/dashboard.dart';
 import 'package:file_station/pages/download/download.dart';
 import 'package:file_station/pages/favorite/favorite.dart';
 import 'package:file_station/pages/file/file.dart';
 import 'package:file_station/pages/setting/setting.dart';
+import 'package:file_station/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
@@ -13,13 +15,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         children: [
+          Dashboard(),
           Files(),
-          Favorite(),
-          Download(),
+          Download(key: Util.downloadKey),
           Setting(),
         ],
         index: _currentIndex,
@@ -40,12 +47,12 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/tabbar/folder.png",
+                  "assets/tabbar/meter.png",
                   width: 30,
                   height: 30,
                 ),
                 Text(
-                  "文件",
+                  "控制台",
                   style: TextStyle(fontSize: 12),
                 ),
               ],
@@ -56,12 +63,12 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/tabbar/star.png",
+                  "assets/tabbar/folder.png",
                   width: 30,
                   height: 30,
                 ),
                 Text(
-                  "收藏",
+                  "文件",
                   style: TextStyle(fontSize: 12),
                 ),
               ],

@@ -4,6 +4,7 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:extended_image/extended_image.dart';
@@ -14,9 +15,10 @@ import 'package:neumorphic/neumorphic.dart';
 
 class PreviewPage extends StatefulWidget {
   final List<String> images;
-  final index;
+  final int index;
+  final bool network;
   final PageController pageController;
-  PreviewPage(this.images, this.index) : this.pageController = PageController(initialPage: index);
+  PreviewPage(this.images, this.index, {this.network = true}) : this.pageController = PageController(initialPage: index);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
@@ -88,57 +90,113 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
           ExtendedImageGesturePageView.builder(
             itemBuilder: (BuildContext context, int index) {
               var item = widget.images[index];
-              Widget image = ExtendedImage.network(
-                item,
-                fit: BoxFit.contain,
-                enableSlideOutPage: true,
-                mode: ExtendedImageMode.gesture,
-                heroBuilderForSlidingPage: (Widget result) {
-                  return Hero(
-                    tag: item,
-                    child: result,
-                    flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
-                      final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
-                      return hero.child;
-                    },
-                  );
-                },
-                initGestureConfigHandler: (state) {
-                  double initialScale = 1.0;
-                  if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
-                    initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
-                  }
-                  return GestureConfig(
-                      inPageView: true,
-                      initialScale: initialScale,
-                      maxScale: max(initialScale, 5.0),
-                      animationMaxScale: max(initialScale, 5.0),
-                      //you can cache gesture state even though page view page change.
-                      //remember call clearGestureDetailsCache() method at the right time.(for example,this page dispose)
-                      cacheGesture: false);
-                },
-                onDoubleTap: (ExtendedImageGestureState state) {
-                  ///you can use define pointerDownPosition as you can,
-                  ///default value is double tap pointer down postion.
-                  var pointerDownPosition = state.pointerDownPosition;
-                  double begin = state.gestureDetails.totalScale;
-                  double end;
-                  _animation?.removeListener(animationListener);
-                  _animationController.stop();
-                  _animationController.reset();
-                  if (begin == doubleTapScales[0]) {
-                    end = doubleTapScales[1];
-                  } else {
-                    end = doubleTapScales[0];
-                  }
-                  animationListener = () {
-                    state.handleDoubleTap(scale: _animation.value, doubleTapPosition: pointerDownPosition);
-                  };
-                  _animation = _animationController.drive(Tween<double>(begin: begin, end: end));
-                  _animation.addListener(animationListener);
-                  _animationController.forward();
-                },
-              );
+              Widget image;
+              if (widget.network) {
+                image = ExtendedImage.network(
+                  item,
+                  fit: BoxFit.contain,
+                  enableSlideOutPage: true,
+                  mode: ExtendedImageMode.gesture,
+                  heroBuilderForSlidingPage: (Widget result) {
+                    return Hero(
+                      tag: item,
+                      child: result,
+                      flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+                        final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
+                        return hero.child;
+                      },
+                    );
+                  },
+                  initGestureConfigHandler: (state) {
+                    double initialScale = 1.0;
+                    if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
+                      initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
+                    }
+                    return GestureConfig(
+                        inPageView: true,
+                        initialScale: initialScale,
+                        maxScale: max(initialScale, 5.0),
+                        animationMaxScale: max(initialScale, 5.0),
+                        //you can cache gesture state even though page view page change.
+                        //remember call clearGestureDetailsCache() method at the right time.(for example,this page dispose)
+                        cacheGesture: false);
+                  },
+                  onDoubleTap: (ExtendedImageGestureState state) {
+                    ///you can use define pointerDownPosition as you can,
+                    ///default value is double tap pointer down postion.
+                    var pointerDownPosition = state.pointerDownPosition;
+                    double begin = state.gestureDetails.totalScale;
+                    double end;
+                    _animation?.removeListener(animationListener);
+                    _animationController.stop();
+                    _animationController.reset();
+                    if (begin == doubleTapScales[0]) {
+                      end = doubleTapScales[1];
+                    } else {
+                      end = doubleTapScales[0];
+                    }
+                    animationListener = () {
+                      state.handleDoubleTap(scale: _animation.value, doubleTapPosition: pointerDownPosition);
+                    };
+                    _animation = _animationController.drive(Tween<double>(begin: begin, end: end));
+                    _animation.addListener(animationListener);
+                    _animationController.forward();
+                  },
+                );
+              } else {
+                image = ExtendedImage.file(
+                  File(widget.images[index]),
+                  fit: BoxFit.contain,
+                  enableSlideOutPage: true,
+                  mode: ExtendedImageMode.gesture,
+                  heroBuilderForSlidingPage: (Widget result) {
+                    return Hero(
+                      tag: item,
+                      child: result,
+                      flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+                        final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
+                        return hero.child;
+                      },
+                    );
+                  },
+                  initGestureConfigHandler: (state) {
+                    double initialScale = 1.0;
+                    if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
+                      initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
+                    }
+                    return GestureConfig(
+                        inPageView: true,
+                        initialScale: initialScale,
+                        maxScale: max(initialScale, 5.0),
+                        animationMaxScale: max(initialScale, 5.0),
+                        //you can cache gesture state even though page view page change.
+                        //remember call clearGestureDetailsCache() method at the right time.(for example,this page dispose)
+                        cacheGesture: false);
+                  },
+                  onDoubleTap: (ExtendedImageGestureState state) {
+                    ///you can use define pointerDownPosition as you can,
+                    ///default value is double tap pointer down postion.
+                    var pointerDownPosition = state.pointerDownPosition;
+                    double begin = state.gestureDetails.totalScale;
+                    double end;
+                    _animation?.removeListener(animationListener);
+                    _animationController.stop();
+                    _animationController.reset();
+                    if (begin == doubleTapScales[0]) {
+                      end = doubleTapScales[1];
+                    } else {
+                      end = doubleTapScales[0];
+                    }
+                    animationListener = () {
+                      state.handleDoubleTap(scale: _animation.value, doubleTapPosition: pointerDownPosition);
+                    };
+                    _animation = _animationController.drive(Tween<double>(begin: begin, end: end));
+                    _animation.addListener(animationListener);
+                    _animationController.forward();
+                  },
+                );
+              }
+
               image = GestureDetector(
                 child: image,
                 onTap: () {
@@ -229,6 +287,7 @@ class MySwiperPlugin extends StatelessWidget {
                     ),
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     onPressed: () {
+                      print(index);
                       Util.saveImage(pics[index], context: context).then((res) {
                         if (res['code'] == 1) {
                           Util.toast("已保存到相册");

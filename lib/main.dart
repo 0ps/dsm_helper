@@ -4,11 +4,14 @@ import 'package:file_station/pages/login/login.dart';
 import 'package:file_station/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool needLogin = true;
+  await FlutterDownloader.initialize(debug: true // optional: set false to disable printing logs to console
+      );
   String sid = await Util.getStorage("sid");
   String host = await Util.getStorage("host");
   if (sid.isNotBlank && host.isNotBlank) {

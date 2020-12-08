@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'package:file_station/pages/home.dart';
-import 'package:file_station/pages/login/login.dart';
-import 'package:file_station/util/function.dart';
+import 'package:dsm_helper/pages/home.dart';
+import 'package:dsm_helper/pages/login/login.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -13,10 +13,15 @@ void main() async {
   await FlutterDownloader.initialize(debug: true // optional: set false to disable printing logs to console
       );
   String sid = await Util.getStorage("sid");
+  String https = await Util.getStorage("https");
   String host = await Util.getStorage("host");
-  if (sid.isNotBlank && host.isNotBlank) {
-    Util.baseUrl = host;
+  String port = await Util.getStorage("port");
+  String smid = await Util.getStorage("smid");
+
+  if (https.isNotBlank && sid.isNotBlank && host.isNotBlank) {
+    Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
     Util.sid = sid;
+    Util.smid = smid;
     needLogin = false;
   }
   runApp(MyApp(needLogin));
@@ -35,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'File Station',
+      title: '群辉助手',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
         appBarTheme: AppBarTheme(

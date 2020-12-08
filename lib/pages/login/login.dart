@@ -1,5 +1,5 @@
-import 'package:file_station/util/api.dart';
-import 'package:file_station/util/function.dart';
+import 'package:dsm_helper/util/api.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -17,11 +17,44 @@ class _LoginState extends State<Login> {
   bool https = false;
   bool remember = true;
   bool login = false;
+  TextEditingController _hostController = TextEditingController();
+  TextEditingController _accountController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
   TextEditingController _portController = TextEditingController();
   @override
   initState() {
     _portController.value = TextEditingValue(text: port);
+    getInfo();
     super.initState();
+  }
+
+  getInfo() async {
+    String https = await Util.getStorage("https");
+    String host = await Util.getStorage("host");
+    String port = await Util.getStorage("port");
+    String account = await Util.getStorage("account");
+    String password = await Util.getStorage("password");
+    if (https.isNotBlank) {
+      setState(() {
+        this.https = https == "1";
+      });
+    }
+    if (host.isNotBlank) {
+      this.host = host;
+      _hostController.value = TextEditingValue(text: host);
+    }
+    if (port.isNotBlank) {
+      this.port = port;
+      _portController.value = TextEditingValue(text: port);
+    }
+    if (account.isNotBlank) {
+      this.account = account;
+      _accountController.value = TextEditingValue(text: account);
+    }
+    if (password.isNotBlank) {
+      this.password = password;
+      _passwordController.value = TextEditingValue(text: password);
+    }
   }
 
   _login() async {
@@ -45,7 +78,9 @@ class _LoginState extends State<Login> {
     setState(() {
       login = true;
     });
-    await Future.delayed(Duration(seconds: 2));
+    Util.smid = "";
+    print(host);
+    print(port);
     var res = await Api.login(host: baseUri, account: account, password: password);
     setState(() {
       login = false;
@@ -55,12 +90,15 @@ class _LoginState extends State<Login> {
       //记住登录信息
 
       Util.setStorage("sid", res['data']['sid']);
-      Util.setStorage("host", baseUri);
+      Util.setStorage("https", https ? "1" : "0");
+      Util.setStorage("host", host.trim());
+      Util.setStorage("port", port);
+      Util.setStorage("account", account);
+      Util.setStorage("password", password);
       Util.sid = res['data']['sid'];
       Util.baseUrl = baseUri;
       Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
     } else {
-      print(res);
       if (res['error']['code'] == 400) {
         Util.toast("用户名/密码有误");
       } else {
@@ -72,8 +110,8 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NeuAppBar(
-        title: Text("File Station"),
+      appBar: AppBar(
+        title: Text("群辉助手"),
       ),
       body: GestureDetector(
         onTap: () {
@@ -82,6 +120,9 @@ class _LoginState extends State<Login> {
         child: ListView(
           padding: EdgeInsets.all(20),
           children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
             NeuCard(
                 decoration: NeumorphicDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
@@ -128,6 +169,7 @@ class _LoginState extends State<Login> {
                     Expanded(
                       flex: 3,
                       child: NeuTextField(
+                        controller: _hostController,
                         onChanged: (v) => host = v,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -138,7 +180,7 @@ class _LoginState extends State<Login> {
                     Expanded(
                       flex: 1,
                       child: NeuTextField(
-                        onChanged: (v) => host = v,
+                        onChanged: (v) => port = v,
                         controller: _portController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -147,7 +189,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                   ],
-                )),
+                ),),
             SizedBox(
               height: 20,
             ),
@@ -160,6 +202,7 @@ class _LoginState extends State<Login> {
               curveType: CurveType.flat,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: NeuTextField(
+                controller: _accountController,
                 onChanged: (v) => account = v,
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -179,6 +222,7 @@ class _LoginState extends State<Login> {
               curveType: CurveType.flat,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: NeuTextField(
+                controller: _passwordController,
                 onChanged: (v) => password = v,
                 obscureText: true,
                 decoration: InputDecoration(

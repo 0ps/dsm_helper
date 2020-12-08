@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:android_intent/android_intent.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:file_station/pages/common/preview.dart';
-import 'package:file_station/util/function.dart';
-import 'package:file_station/widgets/file_icon.dart';
+import 'package:dsm_helper/pages/common/preview.dart';
+import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/file_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';

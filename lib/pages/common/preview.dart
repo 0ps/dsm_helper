@@ -10,7 +10,7 @@ import 'dart:math';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:file_station/util/function.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 class PreviewPage extends StatefulWidget {
@@ -315,6 +315,8 @@ class MySwiperPlugin extends StatelessWidget {
                       color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
+                    curveType: CurveType.flat,
+                    bevel: 10,
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
                       "${data.data + 1} / ${pics.length}",

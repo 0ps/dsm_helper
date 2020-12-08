@@ -1,4 +1,4 @@
-import 'package:file_station/util/function.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
@@ -21,27 +21,35 @@ class _SettingState extends State<Setting> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: Container(),
-      persistentFooterButtons: [
-        Container(
-          width: MediaQuery.of(context).size.width - 16,
-          height: 50,
-          child: NeuButton(
-            onPressed: () {
-              Util.removeStorage("sid");
-              Util.removeStorage("host");
-              Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
-            },
-            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.symmetric(vertical: 5),
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
+      body: Column(
+        children: [
+          Spacer(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: NeuButton(
+              onPressed: () {
+                Util.removeStorage("sid");
+                Util.removeStorage("smid");
+                Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
+              },
+              // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: EdgeInsets.symmetric(vertical: 20),
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              bevel: 20,
+              child: Text(
+                "退出登录",
+                style: TextStyle(fontSize: 18),
+              ),
             ),
-            child: Text("退出登录"),
           ),
-        )
-      ],
+          SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
     );
   }
 }

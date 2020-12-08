@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:file_station/extensions/string.dart';
-import 'package:file_station/util/function.dart';
+import 'package:dsm_helper/extensions/string.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
 
 class CupertinoExtendedImage extends StatelessWidget {

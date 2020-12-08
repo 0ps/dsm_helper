@@ -1,4 +1,4 @@
-package fit.flutter.file_station
+package fit.flutter.dsm_helper
 
 import io.flutter.embedding.android.FlutterActivity
 

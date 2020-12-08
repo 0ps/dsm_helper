@@ -3,9 +3,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cool_ui/cool_ui.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:file_station/pages/download/download.dart';
+import 'package:dsm_helper/pages/download/download.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -15,10 +16,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
-export 'package:file_station/util/api.dart';
-export 'package:file_station/extensions/datetime.dart';
-export 'package:file_station/extensions/string.dart';
-export 'package:file_station/extensions/int.dart';
+export 'package:dsm_helper/util/api.dart';
+export 'package:dsm_helper/extensions/datetime.dart';
+export 'package:dsm_helper/extensions/string.dart';
+export 'package:dsm_helper/extensions/int.dart';
 
 enum FileType {
   folder,
@@ -41,12 +42,31 @@ enum FileType {
 class Util {
   static String sid = "";
   static String baseUrl = "";
+  static String smid = "";
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
     Fluttertoast.showToast(
       msg: text,
       gravity: ToastGravity.CENTER,
     );
+  }
+
+  static String parseOpTime(String optime) {
+    List items = optime.split(":");
+    int days = int.parse(items[0]) ~/ 24;
+    items[0] = (int.parse(items[0]) % 24).toString();
+    return "$days天 ${items.join(":")}";
+  }
+
+  static Map timeLong(int ticket) {
+    int seconds = ticket % 60;
+    int minutes = ticket ~/ 60 % 60;
+    int hours = ticket ~/ 60 ~/ 60;
+    return {
+      "hours": hours,
+      "minutes": minutes,
+      "seconds": seconds,
+    };
   }
 
   static FileType fileType(String name) {
@@ -95,24 +115,47 @@ class Util {
     }
   }
 
-  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host}) async {
+  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers}) async {
+    if (headers == null) {
+      headers = {
+        "Cookie": Util.smid,
+      };
+    } else {
+      headers['Cookie'] = Util.smid;
+    }
+    headers['Cookie'] = "stay_login=0; id=BIFddxkGGt2V-E4EKVq_LxbCfTyaN2smTvZYv7Xoi08XRY-BkHcveWaPYRXIpSk1JPo-sArEdVp0OqVaFU0k5E; smid=xcvrJH3afyzy9uCWeWZFIkeoxwUt6ssvhw23IXxEoyqXb0GfN9Qj7AUgnyuhFd6D5e4zwO7snLcfEMqgjRiQnA";
+    print(headers);
     Dio dio = new Dio(
       BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
+        headers: headers,
       ),
     );
     Response response;
     try {
       response = await dio.get(url, queryParameters: data);
+      if (response.headers.map['set-cookie'] != null && response.headers.map['set-cookie'].length > 0) {
+        List cookies = [];
+        for (int i = 0; i < response.headers.map['set-cookie'].length; i++) {
+          Cookie cookie = Cookie.fromSetCookieValue(response.headers.map['set-cookie'][i]);
+          cookies.add("${cookie.name}=${cookie.value}");
+        }
+        Util.smid = cookies.join("; ");
+        setStorage("smid", Util.smid);
+      }
+
       if (response.data is String) {
         return json.decode(response.data);
       } else if (response.data is Map) {
         return response.data;
       }
-    } catch (error) {
-      print(error);
+    } on DioError catch (error) {
       print("请求出错:$url");
-      return {"success": false, "msg": "加载失败", "data": null};
+      return {
+        "success": false,
+        "error": {"code": error.message},
+        "data": null
+      };
     }
   }
 
@@ -123,20 +166,69 @@ class Util {
         contentType: "application/x-www-form-urlencoded",
       ),
     );
-    print(data);
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+    //   client.findProxy = (uri) {
+    //     return "PROXY 192.168.1.159:8888";
+    //   };
+    // };
     Response response;
     try {
       response = await dio.post(
         url,
         data: data,
       );
-      print(response.request.contentType);
+
       return response.data;
     } on DioError catch (error) {
-      print(error.request.uri);
-      print(error.error);
       print("请求出错:$url 请求内容:$data");
-      return {"success": false, "msg": "加载失败", "data": null};
+      return {
+        "success": false,
+        "error": {"code": error.message},
+        "data": null
+      };
+    }
+  }
+
+  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host}) async {
+    Map<String, dynamic> headers = {
+      "Cookie": "smid=dyE16uD1L3UOaJEKtlaalOibn7L9ANxzMbnPsUBQbUiPF2BcZw_LayqU19AnBwJYkgyizeAeLLa5tdDYjenz1Q; _ga=GA1.2.134020749.1583224437; stay_login=1; photo_remember_me=1; id=5cug6W1ujYmZ6VTI62EHFZ8CE0; PHPSESSID=nn0on2743en89dlcrqia3bhs51; SID=R5yNfiSxi16mWzm1p2uRCG/Sj4ZPehhS",
+    };
+    print(data);
+    Dio dio = new Dio(
+      new BaseOptions(
+        baseUrl: (host ?? baseUrl) + "/webapi/",
+        headers: headers,
+      ),
+    );
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+      // config the http client
+      client.findProxy = (uri) {
+        //proxy all request to localhost:8888
+        return "PROXY 192.168.1.159:8888";
+      };
+      // you can also create a new HttpClient to dio
+      // return new HttpClient();
+    };
+    FormData formData = FormData.fromMap(data);
+    print(formData.toString());
+    Response response;
+
+    try {
+      response = await dio.post(
+        url,
+        data: formData,
+      );
+      FormData requestData = response.request.data;
+      print("fields");
+      print(requestData.fields);
+      return response.data;
+    } on DioError catch (error) {
+      print("请求出错:$url 请求内容:$data");
+      return {
+        "success": false,
+        "error": {"code": error.message},
+        "data": null
+      };
     }
   }
 
@@ -168,9 +260,6 @@ class Util {
       Directory(savePath).create();
     }
     String taskId = await FlutterDownloader.enqueue(url: url, fileName: saveName, savedDir: savePath, showNotification: true, openFileFromNotification: true);
-    FlutterDownloader.registerCallback((String id, DownloadTaskStatus status, int progress) {
-      print(progress);
-    });
     return taskId;
   }
 
@@ -181,8 +270,10 @@ class Util {
       return "${(size / 1024).toStringAsFixed(2)} KB";
     } else if (size < 1024 * 1024 * 1024) {
       return "${(size / 1024 / 1024).toStringAsFixed(2)} MB";
-    } else {
+    } else if (size < 1024 * 1024 * 1024 * 1024) {
       return "${(size / 1024 / 1024 / 1024).toStringAsFixed(2)} GB";
+    } else {
+      return "${(size / 1024 / 1024 / 1024 / 1024).toStringAsFixed(2)} TB";
     }
   }
 

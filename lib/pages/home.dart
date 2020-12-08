@@ -1,9 +1,9 @@
-import 'package:file_station/pages/dashborad/dashboard.dart';
-import 'package:file_station/pages/download/download.dart';
-import 'package:file_station/pages/favorite/favorite.dart';
-import 'package:file_station/pages/file/file.dart';
-import 'package:file_station/pages/setting/setting.dart';
-import 'package:file_station/util/function.dart';
+import 'package:dsm_helper/pages/dashborad/dashboard.dart';
+import 'package:dsm_helper/pages/download/download.dart';
+import 'package:dsm_helper/pages/favorite/favorite.dart';
+import 'package:dsm_helper/pages/file/file.dart';
+import 'package:dsm_helper/pages/setting/setting.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 

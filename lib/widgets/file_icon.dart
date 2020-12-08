@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:file_station/util/function.dart';
-import 'package:file_station/widgets/cupertino_image.dart';
+import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/cupertino_image.dart';
 import 'package:flutter/material.dart';
 
 class FileIcon extends StatelessWidget {

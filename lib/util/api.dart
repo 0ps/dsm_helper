@@ -7,6 +7,43 @@ import 'package:http_parser/http_parser.dart';
 import 'function.dart';
 
 class Api {
+  static Future<Map> update(String buildNumber) async {
+    if (Platform.isAndroid) {
+      var res = await Util.get("http://api.fir.im/apps/latest/5fcf8485b2eb465f9ccc279a?api_token=80aa8eeb47ff77e2d713c17b8aff25f8");
+      if (res != null) {
+        if (int.parse(buildNumber) < int.parse(res['build'])) {
+          return {
+            "code": 1,
+            "msg": "版本更新",
+            "data": {
+              "note": res['changelog'],
+              "url": res['install_url'],
+              "update_time": res['updated_at'],
+              "size": res['binary']['fsize'],
+              "build": res['build'],
+              "version": res['versionShort'],
+            },
+          };
+        } else {
+          return {
+            "code": 0,
+            "msg": "已是最新版本",
+          };
+        }
+      }
+      return {
+        "code": 0,
+        "msg": "已是最新版本",
+      };
+    } else {
+      return {
+        "code": 0,
+        "msg": "已是最新版本",
+      };
+    }
+//    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
+  }
+
   static Future<Map> login({String host, String account, String password}) async {
     var data = {
       "account": account,

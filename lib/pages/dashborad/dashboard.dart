@@ -761,6 +761,7 @@ class _DashboardState extends State<Dashboard> {
                                             tooltipBgColor: Colors.white.withOpacity(0.6),
                                             tooltipRoundedRadius: 20,
                                             fitInsideHorizontally: true,
+                                            fitInsideVertically: true,
                                             getTooltipItems: (items) {
                                               return [
                                                 LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),

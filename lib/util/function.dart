@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:cool_ui/cool_ui.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dsm_helper/pages/update/update.dart';
+import 'package:dsm_helper/util/api.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/download/download.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:neumorphic/neumorphic.dart';
+import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
@@ -247,6 +251,27 @@ class Util {
     return directory.path;
   }
 
+  static Future<dynamic> downloadPkg(String saveName, String url, onReceiveProgress, CancelToken cancelToken) async {
+    Dio dio = new Dio();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    Response response;
+
+    try {
+      response = await dio.download(url, tempPath + "/" + saveName, deleteOnError: true, onReceiveProgress: onReceiveProgress, cancelToken: cancelToken);
+      print(response);
+      return {"code": 1, "msg": "下载完成", "data": tempPath + "/" + saveName};
+    } on DioError catch (error) {
+      print(error);
+      print("请求出错:$url");
+      if (error.type == DioErrorType.CANCEL) {
+        return {"code": 0, "msg": "下载已取消", "data": null};
+      } else {
+        return {"code": 0, "msg": "网络错误", "data": null};
+      }
+    }
+  }
+
   static Future<String> download(String saveName, String url) async {
     //检查权限
     bool permission = false;
@@ -276,65 +301,6 @@ class Util {
       return "${(size / 1024 / 1024 / 1024 / 1024).toStringAsFixed(2)} TB";
     }
   }
-
-//   static checkUpdate(bool showMsg, BuildContext context) async {
-//     var hide;
-//     if (showMsg) {
-//       hide = showWeuiLoadingToast(context: context, message: Text("检查更新中"), alignment: Alignment.center);
-//     }
-//     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-//     var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
-//     if (showMsg) {
-//       hide();
-//     }
-//     if (res['code'] == 1) {
-//       showCupertinoDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return CupertinoAlertDialog(
-//             title: Text(
-//               '版本更新',
-//             ),
-//             content: Text(
-//               res['data']['note'],
-//               textAlign: TextAlign.start,
-//             ),
-//             actions: <Widget>[
-//               CupertinoDialogAction(
-//                 child: Text(
-//                   '取消',
-//                 ),
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//               ),
-//               CupertinoDialogAction(
-//                 isDestructiveAction: true,
-//                 child: Text(
-//                   '立即更新',
-//                 ),
-//                 onPressed: () async {
-//                   Navigator.of(context).pop();
-//                   Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-//                     return Update(res['data']);
-//                   }));
-// //                  toast("开始下载更新");
-// //                  var path = await download(res['data']['url']);
-// //                  toast("开始安装更新");
-// //                  OpenFile.open(path);
-// //                  Navigator.of(context).pop();
-//                 },
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     } else {
-//       if (showMsg) {
-//         toast(res['msg']);
-//       }
-//     }
-//   }
 
   static Future<bool> setStorage(String name, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -416,5 +382,100 @@ class Util {
   static String rand() {
     var r = Random().nextInt(2147483646);
     return r.toString();
+  }
+
+  static checkUpdate(bool showMsg, BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
+    if (res['code'] == 1) {
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+        return Update(res['data']);
+      }));
+      // showCupertinoModalPopup(
+      //   context: context,
+      //   builder: (context) {
+      //     return Material(
+      //       color: Colors.transparent,
+      //       child: NeuCard(
+      //         width: double.infinity,
+      //         padding: EdgeInsets.all(22),
+      //         bevel: 5,
+      //         curveType: CurveType.emboss,
+      //         decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+      //         child: Column(
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: <Widget>[
+      //             Text(
+      //               "版本更新",
+      //               style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+      //             ),
+      //             SizedBox(
+      //               height: 12,
+      //             ),
+      //             Text(
+      //               "确认要删除文件？",
+      //               style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
+      //             ),
+      //             SizedBox(
+      //               height: 22,
+      //             ),
+      //             Row(
+      //               children: [
+      //                 Expanded(
+      //                   child: NeuButton(
+      //                     onPressed: () async {
+      //                       Navigator.of(context).pop();
+      //                       Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+      //                         return Update(res['data']);
+      //                       }));
+      //                     },
+      //                     decoration: NeumorphicDecoration(
+      //                       color: Theme.of(context).scaffoldBackgroundColor,
+      //                       borderRadius: BorderRadius.circular(25),
+      //                     ),
+      //                     bevel: 5,
+      //                     padding: EdgeInsets.symmetric(vertical: 10),
+      //                     child: Text(
+      //                       "立即更新",
+      //                       style: TextStyle(fontSize: 18, color: Colors.redAccent),
+      //                     ),
+      //                   ),
+      //                 ),
+      //                 SizedBox(
+      //                   width: 16,
+      //                 ),
+      //                 Expanded(
+      //                   child: NeuButton(
+      //                     onPressed: () async {
+      //                       Navigator.of(context).pop();
+      //                     },
+      //                     decoration: NeumorphicDecoration(
+      //                       color: Theme.of(context).scaffoldBackgroundColor,
+      //                       borderRadius: BorderRadius.circular(25),
+      //                     ),
+      //                     bevel: 5,
+      //                     padding: EdgeInsets.symmetric(vertical: 10),
+      //                     child: Text(
+      //                       "取消",
+      //                       style: TextStyle(fontSize: 18),
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //             SizedBox(
+      //               height: 8,
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // );
+    } else {
+      if (showMsg) {
+        toast(res['msg']);
+      }
+    }
   }
 }

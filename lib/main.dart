@@ -21,7 +21,7 @@ void main() async {
   if (https.isNotBlank && sid.isNotBlank && host.isNotBlank) {
     Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
     Util.sid = sid;
-    Util.smid = smid;
+    Util.cookie = smid;
     needLogin = false;
   }
   runApp(MyApp(needLogin));

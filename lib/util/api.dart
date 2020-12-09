@@ -53,7 +53,6 @@ class Api {
       "method": "login",
       "session": "FileStation",
     };
-    print(data);
     return await Util.get("auth.cgi", host: host, data: data);
   }
 
@@ -238,39 +237,36 @@ class Api {
     return result;
   }
 
-  static Future<Map> upload(String uploadPath, String filePath) async {
+  static Future<Map> upload(String uploadPath, String filePath, CancelToken cancelToken, Function(int, int) onSendProgress) async {
     File file = File(filePath);
-    var permission = await checkPermission(uploadPath, filePath);
+    // var permission = await checkPermission(uploadPath, filePath);
     MultipartFile multipartFile = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last);
     print(multipartFile.length);
     print(filePath.split("/").last);
 
-    // var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2&_sid=${Util.sid}";
-    var url = "entry.cgi";
-    var data = {
-      "api": "SYNO.FileStation.Upload",
-      "version": 2,
-      "method": "upload",
-      "_sid": Util.sid,
-      "overwrite": "false",
-      "path": uploadPath,
-      "mtime": DateTime.now().millisecondsSinceEpoch,
-      "size": await file.length(),
-      "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
-    };
+    var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2"; //&_sid=${Util.sid}
+    // var url = "entry.cgi";
     // var data = {
+    //   "api": "SYNO.FileStation.Upload",
+    //   "version": 2,
+    //   "method": "upload",
+    //   "_sid": Util.sid,
     //   "overwrite": "false",
-    //   "path": MultipartFile.fromString(uploadPath),
-    //   // "create_parents": true,
-    //   // "path": uploadPath,
+    //   "path": uploadPath,
     //   "mtime": DateTime.now().millisecondsSinceEpoch,
-    //   // "create_parents": false,
     //   "size": await file.length(),
     //   "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
     // };
-    print(data);
-    var result = await Util.upload(url, data: data);
-    print(result);
-    return permission;
+    var data = {
+      "_sid": Util.sid,
+      "mtime": DateTime.now().millisecondsSinceEpoch,
+      "overwrite": "true",
+      "path": uploadPath,
+      "size": await file.length(),
+      "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
+    };
+    var result = await Util.upload(url, data: data, cancelToken: cancelToken, onSendProgress: onSendProgress);
+    // print(result);
+    return result;
   }
 }

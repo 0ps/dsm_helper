@@ -46,7 +46,7 @@ enum FileType {
 class Util {
   static String sid = "";
   static String baseUrl = "";
-  static String smid = "";
+  static String cookie = "";
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
     Fluttertoast.showToast(
@@ -76,7 +76,7 @@ class Util {
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
     List<String> movie = ["mov", "rmvb", "ts", "mp4", "mkv"];
-    List<String> music = ["mp3"];
+    List<String> music = ["mp3", "flac"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];
@@ -122,13 +122,11 @@ class Util {
   static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers}) async {
     if (headers == null) {
       headers = {
-        "Cookie": Util.smid,
+        "Cookie": Util.cookie,
       };
     } else {
-      headers['Cookie'] = Util.smid;
+      headers['Cookie'] = Util.cookie;
     }
-    headers['Cookie'] = "stay_login=0; id=BIFddxkGGt2V-E4EKVq_LxbCfTyaN2smTvZYv7Xoi08XRY-BkHcveWaPYRXIpSk1JPo-sArEdVp0OqVaFU0k5E; smid=xcvrJH3afyzy9uCWeWZFIkeoxwUt6ssvhw23IXxEoyqXb0GfN9Qj7AUgnyuhFd6D5e4zwO7snLcfEMqgjRiQnA";
-    print(headers);
     Dio dio = new Dio(
       BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
@@ -144,8 +142,8 @@ class Util {
           Cookie cookie = Cookie.fromSetCookieValue(response.headers.map['set-cookie'][i]);
           cookies.add("${cookie.name}=${cookie.value}");
         }
-        Util.smid = cookies.join("; ");
-        setStorage("smid", Util.smid);
+        Util.cookie = cookies.join("; ");
+        setStorage("smid", Util.cookie);
       }
 
       if (response.data is String) {
@@ -193,39 +191,42 @@ class Util {
     }
   }
 
-  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host}) async {
+  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress}) async {
     Map<String, dynamic> headers = {
-      "Cookie": "smid=dyE16uD1L3UOaJEKtlaalOibn7L9ANxzMbnPsUBQbUiPF2BcZw_LayqU19AnBwJYkgyizeAeLLa5tdDYjenz1Q; _ga=GA1.2.134020749.1583224437; stay_login=1; photo_remember_me=1; id=5cug6W1ujYmZ6VTI62EHFZ8CE0; PHPSESSID=nn0on2743en89dlcrqia3bhs51; SID=R5yNfiSxi16mWzm1p2uRCG/Sj4ZPehhS",
+      "Cookie": Util.cookie,
     };
     print(data);
     Dio dio = new Dio(
       new BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
         headers: headers,
+        contentType: "",
       ),
     );
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
-      // config the http client
-      client.findProxy = (uri) {
-        //proxy all request to localhost:8888
-        return "PROXY 192.168.1.159:8888";
-      };
-      // you can also create a new HttpClient to dio
-      // return new HttpClient();
-    };
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+    //   // config the http client
+    //   client.findProxy = (uri) {
+    //     //proxy all request to localhost:8888
+    //     return "PROXY 192.168.1.159:8888";
+    //   };
+    //   // you can also create a new HttpClient to dio
+    //   // return new HttpClient();
+    // };
     FormData formData = FormData.fromMap(data);
-    print(formData.toString());
     Response response;
 
     try {
       response = await dio.post(
         url,
         data: formData,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
       );
-      FormData requestData = response.request.data;
-      print("fields");
-      print(requestData.fields);
-      return response.data;
+      if (response.data is String) {
+        return json.decode(response.data);
+      } else if (response.data is Map) {
+        return response.data;
+      }
     } on DioError catch (error) {
       print("请求出错:$url 请求内容:$data");
       return {

@@ -96,7 +96,7 @@ class _DashboardState extends State<Dashboard> {
             setState(() {
               // volumes = item['data']['vol_info'];
               system = item['data'];
-              print(system);
+              // print(system);
             });
           } else if (item['api'] == "SYNO.Core.CurrentConnection") {
             setState(() {

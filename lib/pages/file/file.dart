@@ -928,22 +928,30 @@ class _FilesState extends State<Files> {
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        floatingActionButton: SizedBox(
-          width: 60,
-          height: 60,
-          child: NeuButton(
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            onPressed: () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return Upload(paths.join("/").substring(1));
-              }));
-            },
-            child: Icon(Icons.upload_file),
-          ),
-        ),
+        floatingActionButton: paths.length == 1
+            ? null
+            : SizedBox(
+                width: 60,
+                height: 60,
+                child: NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                      return Upload(paths.join("/").substring(1));
+                    })).then((value) {
+                      String path = paths.join("/").substring(1);
+                      goPath(path);
+                    });
+                  },
+                  child: Image.asset(
+                    "assets/icons/upload.png",
+                    width: 40,
+                  ),
+                ),
+              ),
       ),
     );
   }

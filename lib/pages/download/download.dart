@@ -87,7 +87,7 @@ class DownloadState extends State<Download> {
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
-          "下载失败",
+          "取消下载",
           style: TextStyle(fontSize: 10, color: Colors.white),
         ),
       );
@@ -133,6 +133,8 @@ class DownloadState extends State<Download> {
           style: TextStyle(fontSize: 10, color: Colors.white),
         ),
       );
+    } else {
+      return Container();
     }
   }
 

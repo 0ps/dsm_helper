@@ -78,15 +78,12 @@ class _LoginState extends State<Login> {
     setState(() {
       login = true;
     });
-    Util.smid = "";
-    print(host);
-    print(port);
+    Util.cookie = "";
     var res = await Api.login(host: baseUri, account: account, password: password);
     setState(() {
       login = false;
     });
     if (res['success'] == true) {
-      print(res);
       //记住登录信息
 
       Util.setStorage("sid", res['data']['sid']);
@@ -124,72 +121,73 @@ class _LoginState extends State<Login> {
               height: 20,
             ),
             NeuCard(
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                bevel: 20,
-                curveType: CurveType.flat,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            https = !https;
-                            if (https && port == "5000") {
-                              port = "5001";
-                              _portController.value = TextEditingValue(text: port);
-                            } else if (!https && port == "5001") {
-                              port = "5000";
-                              _portController.value = TextEditingValue(text: port);
-                            }
-                          });
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Text(
-                              "协议",
-                              style: TextStyle(fontSize: 12, color: Colors.grey, height: 1),
-                            ),
-                            Text(
-                              https ? "https" : "http",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              bevel: 20,
+              curveType: CurveType.flat,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          https = !https;
+                          if (https && port == "5000") {
+                            port = "5001";
+                            _portController.value = TextEditingValue(text: port);
+                          } else if (!https && port == "5001") {
+                            port = "5000";
+                            _portController.value = TextEditingValue(text: port);
+                          }
+                        });
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            "协议",
+                            style: TextStyle(fontSize: 12, color: Colors.grey, height: 1),
+                          ),
+                          Text(
+                            https ? "https" : "http",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
                       ),
                     ),
-                    Expanded(
-                      flex: 3,
-                      child: NeuTextField(
-                        controller: _hostController,
-                        onChanged: (v) => host = v,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          labelText: '网址/IP',
-                        ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: NeuTextField(
+                      controller: _hostController,
+                      onChanged: (v) => host = v,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: '网址/IP',
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: NeuTextField(
-                        onChanged: (v) => port = v,
-                        controller: _portController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          labelText: '端口',
-                        ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: NeuTextField(
+                      onChanged: (v) => port = v,
+                      controller: _portController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: '端口',
                       ),
                     ),
-                  ],
-                ),),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               height: 20,
             ),

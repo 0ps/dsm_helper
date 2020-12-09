@@ -105,6 +105,7 @@ class _UpdateState extends State<Update> {
                     ),
                     NeuCard(
                       bevel: 20,
+                      curveType: CurveType.flat,
                       decoration: NeumorphicDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.circular(60),
@@ -145,6 +146,7 @@ class _UpdateState extends State<Update> {
                 NeuCard(
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
                   margin: EdgeInsets.symmetric(horizontal: 20),
+                  curveType: CurveType.flat,
                   decoration: NeumorphicDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(20),

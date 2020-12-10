@@ -99,6 +99,12 @@ class FileIcon extends StatelessWidget {
         width: 40,
         height: 40,
       );
+    } else if (fileType == FileType.iso) {
+      return Image.asset(
+        "assets/icons/iso.png",
+        width: 40,
+        height: 40,
+      );
     } else {
       return Image.asset(
         "assets/icons/other.png",

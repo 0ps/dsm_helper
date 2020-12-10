@@ -87,16 +87,18 @@ class Api {
   }
 
   ///webapi/FileStation/file_delete.cgi?api=SYNO.FileStation.Delete&version=1&method=start&path=%2Fvideo%2Fdel_folder
-  static Future<Map> deleteTask(String path) async {
-    return await Util.post("entry.cgi", data: {
+  static Future<Map> deleteTask(List<String> path) async {
+    var data = {
       "api": '"SYNO.FileStation.Delete"',
       "method": '"start"',
       "accurate_progress": "true",
-      "recursive": "true",
+      // "recursive": "true",
       "version": 2,
       "_sid": Util.sid,
-      "path": path,
-    });
+      "path": json.encode(path),
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
   }
 
   static Future<Map> deleteResult(String taskId) async {
@@ -147,6 +149,34 @@ class Api {
   static Future<Map> dirSizeResult(String taskId) async {
     var result = await Util.post("entry.cgi", data: {
       "api": '"SYNO.FileStation.DirSize"',
+      "method": '"status"',
+      "version": 1,
+      "_sid": Util.sid,
+      "taskid": taskId,
+    });
+    return result;
+  }
+
+  static Future<Map> extractTask(String filePath, String folderPath) async {
+    var data = {
+      "api": '"SYNO.FileStation.Extract"',
+      "overwrite": "false",
+      "method": '"start"',
+      "version": 2,
+      "_sid": Util.sid,
+      "file_path": filePath,
+      "dest_folder_path": folderPath,
+      "keep_dir": "true",
+      "create_subfolder": "false",
+    };
+    print(data);
+    var task = await Util.post("entry.cgi", data: data);
+    return task;
+  }
+
+  static Future<Map> extractResult(String taskId) async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Extract"',
       "method": '"status"',
       "version": 1,
       "_sid": Util.sid,
@@ -234,6 +264,33 @@ class Api {
       "_sid": Util.sid,
     };
     var result = await Util.post("entry.cgi", data: data);
+    return result;
+  }
+
+  static Future<Map> createFolder(String path, String name) async {
+    var data = {
+      "api": '"SYNO.FileStation.CreateFolder"',
+      "method": '"create"',
+      "version": 2,
+      "force_parent": "false",
+      "folder_path": path,
+      "name": name,
+      "_sid": Util.sid,
+    };
+    var result = await Util.get("entry.cgi", data: data);
+    return result;
+  }
+
+  static Future<Map> rename(String path, String name) async {
+    var data = {
+      "api": '"SYNO.FileStation.Rename"',
+      "method": '"rename"',
+      "version": 2,
+      "path": path,
+      "name": name,
+      "_sid": Util.sid,
+    };
+    var result = await Util.get("entry.cgi", data: data);
     return result;
   }
 

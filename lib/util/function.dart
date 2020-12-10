@@ -41,6 +41,7 @@ enum FileType {
   other,
   pdf,
   apk,
+  iso,
 }
 
 class Util {
@@ -83,10 +84,11 @@ class Util {
     List<String> ppt = ["ppt", "pptx"];
     List<String> excel = ["xls", "xlsx"];
     List<String> text = ["txt"];
-    List<String> zip = ["zip", "gz", "tar", "rar", "7z"];
+    List<String> zip = ["zip", "gz", "tar", "tgz", "tbz", "bz2", "rar", "7z"];
     List<String> code = ["py", "php", "c", "java", "jsp", "js", "css", "sql"];
     List<String> pdf = ["pdf"];
     List<String> apk = ["apk"];
+    List<String> iso = ["iso"];
     String ext = name.split(".").last.toLowerCase();
     if (image.contains(ext)) {
       return FileType.image;
@@ -114,6 +116,8 @@ class Util {
       return FileType.pdf;
     } else if (apk.contains(ext)) {
       return FileType.apk;
+    } else if (iso.contains(ext)) {
+      return FileType.iso;
     } else {
       return FileType.other;
     }

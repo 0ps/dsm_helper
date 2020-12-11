@@ -273,7 +273,7 @@ class DownloadState extends State<Download> {
                                   children: <Widget>[
                                     Text(
                                       "选择操作",
-                                      style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                     ),
                                     SizedBox(
                                       height: 22,

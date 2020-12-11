@@ -293,17 +293,17 @@ class Util {
     return taskId;
   }
 
-  static String formatSize(int size) {
-    if (size < 1024) {
+  static String formatSize(int size, {int format = 1024}) {
+    if (size < format) {
       return "${size}B";
-    } else if (size < 1024 * 1024) {
-      return "${(size / 1024).toStringAsFixed(2)} KB";
-    } else if (size < 1024 * 1024 * 1024) {
-      return "${(size / 1024 / 1024).toStringAsFixed(2)} MB";
-    } else if (size < 1024 * 1024 * 1024 * 1024) {
-      return "${(size / 1024 / 1024 / 1024).toStringAsFixed(2)} GB";
+    } else if (size < pow(format, 2)) {
+      return "${(size / format).toStringAsFixed(2)} KB";
+    } else if (size < pow(format, 3)) {
+      return "${(size / pow(format, 2)).toStringAsFixed(2)} MB";
+    } else if (size < pow(format, 4)) {
+      return "${(size / pow(format, 3)).toStringAsFixed(2)} GB";
     } else {
-      return "${(size / 1024 / 1024 / 1024 / 1024).toStringAsFixed(2)} TB";
+      return "${(size / pow(format, 4)).toStringAsFixed(2)} TB";
     }
   }
 

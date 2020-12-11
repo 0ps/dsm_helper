@@ -32,8 +32,8 @@ class _HomeState extends State<Home> {
         index: _currentIndex,
       ),
       bottomNavigationBar: NeuSwitch(
-        backgroundColor: Colors.white,
-        thumbColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        thumbColor: Theme.of(context).scaffoldBackgroundColor,
         // padding: EdgeInsets.symmetric(vertical: 5),
         onValueChanged: (v) {
           setState(() {

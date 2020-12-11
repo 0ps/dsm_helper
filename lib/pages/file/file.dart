@@ -122,14 +122,14 @@ class _FilesState extends State<Files> {
               children: <Widget>[
                 Text(
                   "确认删除",
-                  style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
                 SizedBox(
                   height: 12,
                 ),
                 Text(
                   "确认要删除文件？",
-                  style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(
                   height: 22,
@@ -224,6 +224,134 @@ class _FilesState extends State<Files> {
     );
   }
 
+  compressFile(List<String> file) {
+    String zipName = "";
+    String destPath = "";
+    if (file.length == 1) {
+      zipName = file[0].split("/").last + ".zip";
+    } else {
+      zipName = paths.last + ".zip";
+    }
+    destPath = paths.join("/").substring(1) + "/" + zipName;
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return Material(
+          color: Colors.transparent,
+          child: NeuCard(
+            width: double.infinity,
+            padding: EdgeInsets.all(22),
+            bevel: 5,
+            curveType: CurveType.emboss,
+            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  "压缩文件",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  "确认要压缩到$zipName？",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                ),
+                SizedBox(
+                  height: 22,
+                ),
+                NeuButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    var res = await Api.compressTask(file, destPath);
+                    print(res);
+                    if (res['success']) {
+                      //获取删除进度
+                      timer = Timer.periodic(Duration(seconds: 1), (_) async {
+                        //获取删除进度
+                        try {
+                          var result = await Api.compressResult(res['data']['taskid']);
+                          if (result['success'] != null && result['success']) {
+                            if (result['data']['finished']) {
+                              Util.toast("文件压缩完成");
+                              timer.cancel();
+                              timer = null;
+                              setState(() {
+                                selectedFiles = [];
+                                multiSelect = false;
+                              });
+                              String path = paths.join("/").substring(1);
+                              goPath(path);
+                            }
+                          }
+                        } catch (e) {
+                          Util.toast("文件压缩出错");
+                          timer.cancel();
+                          timer = null;
+                        }
+                      });
+                    }
+                  },
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  bevel: 5,
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    "开始压缩",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                NeuButton(
+                  onPressed: () async {
+                    // Navigator.of(context).pop();
+                    Util.toast("敬请期待");
+                  },
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  bevel: 5,
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    "更多选项",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                NeuButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                  },
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  bevel: 5,
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    "取消",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildFileItem(file) {
     FileType fileType = Util.fileType(file['name']);
     String path = file['path'];
@@ -265,9 +393,12 @@ class _FilesState extends State<Files> {
                         }
                       }
                     }
-                    Navigator.of(context).push(TransparentMaterialPageRoute(builder: (context) {
-                      return PreviewPage(images, index);
-                    }));
+                    Navigator.of(context).push(TransparentMaterialPageRoute(
+                      builder: (context) {
+                        return PreviewPage(images, index);
+                      },
+                      fullscreenDialog: true,
+                    ));
                     break;
                   case FileType.movie:
                     AndroidIntent intent = AndroidIntent(
@@ -396,7 +527,7 @@ class _FilesState extends State<Files> {
                                     children: <Widget>[
                                       Text(
                                         "选择操作",
-                                        style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                       ),
                                       SizedBox(
                                         height: 12,
@@ -519,6 +650,25 @@ class _FilesState extends State<Files> {
                                         ),
                                         NeuButton(
                                           onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            compressFile([file['path']]);
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 5,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Text(
+                                            "压缩",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        NeuButton(
+                                          onPressed: () async {
                                             TextEditingController nameController = TextEditingController.fromValue(TextEditingValue(text: file['name']));
                                             Navigator.of(context).pop();
                                             String name = "";
@@ -545,7 +695,7 @@ class _FilesState extends State<Files> {
                                                               children: [
                                                                 Text(
                                                                   "重命名",
-                                                                  style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                                                 ),
                                                                 SizedBox(
                                                                   height: 16,
@@ -679,7 +829,7 @@ class _FilesState extends State<Files> {
                         },
                         padding: EdgeInsets.only(left: 5, right: 3, top: 4, bottom: 4),
                         decoration: NeumorphicDecoration(
-                          color: Color(0xfff0f0f0),
+                          color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         bevel: 2,
@@ -882,7 +1032,7 @@ class _FilesState extends State<Files> {
                               children: <Widget>[
                                 Text(
                                   "选择操作",
-                                  style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                 ),
                                 SizedBox(
                                   height: 12,
@@ -914,7 +1064,7 @@ class _FilesState extends State<Files> {
                                                       children: [
                                                         Text(
                                                           "新建文件夹",
-                                                          style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                                         ),
                                                         SizedBox(
                                                           height: 16,
@@ -1223,7 +1373,7 @@ class _FilesState extends State<Files> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Util.toast("敬请期待");
+                                    compressFile(selectedFiles);
                                   },
                                   child: Column(
                                     children: [
@@ -1254,7 +1404,7 @@ class _FilesState extends State<Files> {
                                       ),
                                     ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),

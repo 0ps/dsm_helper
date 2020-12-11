@@ -61,14 +61,18 @@ class _FileDetailState extends State<FileDetail> {
       ),
       body: ListView(
         children: [
+          SizedBox(
+            height: 30,
+          ),
           NeuCard(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.all(20),
             decoration: NeumorphicDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            bevel: 8,
+            curveType: CurveType.flat,
+            bevel: 20,
             child: Row(
               children: [
                 Text("名称："),
@@ -80,12 +84,13 @@ class _FileDetailState extends State<FileDetail> {
           ),
           NeuCard(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.all(20),
             decoration: NeumorphicDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            bevel: 8,
+            curveType: CurveType.flat,
+            bevel: 20,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -100,12 +105,13 @@ class _FileDetailState extends State<FileDetail> {
           ),
           NeuCard(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.all(20),
             decoration: NeumorphicDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            bevel: 8,
+            curveType: CurveType.flat,
+            bevel: 20,
             child: Row(
               children: [Text("大小："), loadingSize ? CupertinoActivityIndicator() : Text(Util.formatSize(size))],
             ),
@@ -113,36 +119,39 @@ class _FileDetailState extends State<FileDetail> {
           if (widget.file['isdir'])
             NeuCard(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              padding: EdgeInsets.all(20),
               decoration: NeumorphicDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(20),
               ),
-              bevel: 8,
+              curveType: CurveType.flat,
+              bevel: 20,
               child: Row(
                 children: [Text("包含："), loadingSize ? CupertinoActivityIndicator() : Text("$folderCount个文件夹，$fileCount个文件")],
               ),
             ),
           NeuCard(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.all(20),
             decoration: NeumorphicDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            bevel: 8,
+            curveType: CurveType.flat,
+            bevel: 20,
             child: Row(
               children: [Text("创建时间："), Text(DateTime.fromMillisecondsSinceEpoch(widget.file['additional']['time']['ctime'] * 1000).format("Y-m-d H:i:s"))],
             ),
           ),
           NeuCard(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: EdgeInsets.all(20),
             decoration: NeumorphicDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            bevel: 8,
+            curveType: CurveType.flat,
+            bevel: 20,
             child: Row(
               children: [Text("修改时间："), Text(DateTime.fromMillisecondsSinceEpoch(widget.file['additional']['time']['mtime'] * 1000).format("Y-m-d H:i:s"))],
             ),

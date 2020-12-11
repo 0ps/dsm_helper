@@ -54,6 +54,9 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Color(0xFFF4F4F4),
       ),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Colors.black,
+      ),
       home: needLogin ? Login() : Home(),
       routes: {
         "/login": (BuildContext context) => Login(),

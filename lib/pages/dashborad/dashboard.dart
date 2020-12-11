@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
@@ -26,6 +27,7 @@ class _DashboardState extends State<Dashboard> {
   bool loading = true;
   bool success = true;
   String hostname = "获取中";
+  int maxNetworkSpeed = 0;
   Map volWarnings;
   String msg = "";
   List<Color> gradientColors = [
@@ -64,6 +66,32 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  double get chartInterval {
+    if (maxNetworkSpeed < pow(1024, 2)) {
+      return 100 * 1024.0;
+    } else if (maxNetworkSpeed < pow(1024, 2) * 5) {
+      return 1.0 * pow(1024, 2);
+    } else if (maxNetworkSpeed < pow(1024, 2) * 10) {
+      return 2.0 * pow(1024, 2);
+    } else if (maxNetworkSpeed < pow(1024, 2) * 50) {
+      return 10.0 * pow(1024, 2);
+    } else if (maxNetworkSpeed < pow(1024, 2) * 100) {
+      return 20.0 * pow(1024, 2);
+    } else {
+      return 50.0 * pow(1024, 2);
+    }
+  }
+
+  String chartTitle(double v) {
+    if (maxNetworkSpeed < pow(1024, 2)) {
+      v = v / 1024;
+      return (v.floor() * 100).toString();
+    } else {
+      v = v / pow(1024, 2);
+      return (v.floor()).toString() + "M";
+    }
+  }
+
   getData() async {
     if (!mounted) {
       if (timer != null) {
@@ -90,6 +118,12 @@ class _DashboardState extends State<Dashboard> {
                 networks.removeAt(0);
               }
               networks.add(item['data']['network']);
+              int tx = int.parse("${item['data']['network'][0]['tx']}");
+              int rx = int.parse("${item['data']['network'][0]['rx']}");
+              num maxSpeed = max(tx, rx);
+              if (maxSpeed > maxNetworkSpeed) {
+                maxNetworkSpeed = maxSpeed;
+              }
             });
           } else if (item['api'] == "SYNO.Core.System") {
             // print(item['data']);
@@ -784,12 +818,13 @@ class _DashboardState extends State<Dashboard> {
                                             color: Color(0xff67727d),
                                             fontSize: 12,
                                           ),
-                                          getTitles: (value) {
-                                            value = value / 1000 / 1000;
-                                            return (value.floor() * 1000).toString();
-                                          },
+                                          getTitles: chartTitle,
+                                          // getTitles: (value) {
+                                          //   value = value / 1000 / 1000;
+                                          //   return (value.floor() * 1000).toString();
+                                          // },
                                           reservedSize: 28,
-                                          interval: 1000 * 1000.0,
+                                          interval: chartInterval,
                                         ),
                                       ),
                                       // maxY: 20,

@@ -98,47 +98,45 @@ class _UpdateState extends State<Update> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 50,
+                SizedBox(
+                  height: 50,
+                ),
+                Center(
+                  child: NeuCard(
+                    bevel: 20,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(60),
                     ),
-                    NeuCard(
-                      bevel: 20,
-                      curveType: CurveType.flat,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(60),
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage(
+                        "assets/logo.png",
                       ),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage(
-                          "assets/logo.png",
-                        ),
-                        radius: 60,
-                      ),
+                      radius: 60,
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Text(
-                      "新版本 v${widget.data['version']} build ${widget.data['build']}",
-                      style: TextStyle(color: Color(0xFF242424), fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "更新时间：${DateTime.fromMillisecondsSinceEpoch(widget.data['update_time'] * 1000).format("Y-m-d H:i")}",
-                      style: TextStyle(color: Color(0xFF242424), fontSize: 14),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "安装包大小：${Util.formatSize(widget.data['size'])}",
-                      style: TextStyle(color: Color(0xFF242424), fontSize: 12),
-                    ),
-                  ],
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "新版本 v${widget.data['version']} build ${widget.data['build']}",
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "更新时间：${DateTime.fromMillisecondsSinceEpoch(widget.data['update_time'] * 1000).format("Y-m-d H:i")}",
+                  style: TextStyle(fontSize: 14),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "安装包大小：${Util.formatSize(widget.data['size'])}",
+                  style: TextStyle(fontSize: 12),
                 ),
                 SizedBox(
                   height: 40,
@@ -156,14 +154,14 @@ class _UpdateState extends State<Update> {
                     children: <Widget>[
                       Text(
                         "更新日志：",
-                        style: TextStyle(fontSize: 20, color: Colors.black),
+                        style: TextStyle(fontSize: 16),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
                         "${widget.data['note'] ?? "暂无更新日志"}",
-                        style: TextStyle(fontSize: 22, color: Colors.black54),
+                        style: TextStyle(fontSize: 18, color: Colors.black54),
                       ),
                     ],
                   ),

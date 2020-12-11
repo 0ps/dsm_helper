@@ -1,3 +1,4 @@
+import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,24 +26,14 @@ class _SettingState extends State<Setting> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: 40,
-          ),
           Spacer(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: NeuButton(
-              onPressed: () async {
-                if (checking) {
-                  return;
-                }
-                setState(() {
-                  checking = true;
-                });
-                await Util.checkUpdate(true, context);
-                setState(() {
-                  checking = false;
-                });
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return About();
+                }));
               },
               // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               padding: EdgeInsets.symmetric(vertical: 20),
@@ -51,20 +42,14 @@ class _SettingState extends State<Setting> {
                 borderRadius: BorderRadius.circular(20),
               ),
               bevel: 20,
-              child: checking
-                  ? Center(
-                      child: CupertinoActivityIndicator(
-                        radius: 13,
-                      ),
-                    )
-                  : Text(
-                      "检查更新",
-                      style: TextStyle(fontSize: 18),
-                    ),
+              child: Text(
+                "关于群晖助手",
+                style: TextStyle(fontSize: 18),
+              ),
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 20,
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),

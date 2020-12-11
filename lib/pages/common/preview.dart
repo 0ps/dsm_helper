@@ -82,8 +82,8 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     Widget result = Material(
-      color: Colors.transparent,
-      shadowColor: Colors.transparent,
+      color: Theme.of(context).scaffoldBackgroundColor == Colors.black ? Colors.black : Colors.transparent,
+      shadowColor: Theme.of(context).scaffoldBackgroundColor == Colors.black ? Colors.black : Colors.transparent,
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -273,7 +273,7 @@ class MySwiperPlugin extends StatelessWidget {
     return StreamBuilder<int>(
       builder: (BuildContext context, data) {
         return DefaultTextStyle(
-          style: TextStyle(color: Colors.blue),
+          style: TextStyle(),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -301,11 +301,10 @@ class MySwiperPlugin extends StatelessWidget {
                         Icon(
                           Icons.file_download,
                           size: 13,
-                          color: Colors.black,
                         ),
                         Text(
                           " 保存图片",
-                          style: TextStyle(color: Colors.black, fontSize: 12),
+                          style: TextStyle(fontSize: 12),
                         ),
                       ],
                     ),
@@ -320,7 +319,7 @@ class MySwiperPlugin extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
                       "${data.data + 1} / ${pics.length}",
-                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      style: TextStyle(fontSize: 12),
                     ),
                   ),
                 ],

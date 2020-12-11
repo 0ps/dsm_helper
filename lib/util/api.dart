@@ -111,6 +111,42 @@ class Api {
     });
   }
 
+  static Future<Map> compressTask(
+    List<String> path,
+    String destPath, {
+    String level: "normal",
+    String mode: "replace",
+    String format: "zip",
+    String password,
+    String codepage,
+  }) async {
+    var data = {
+      "api": '"SYNO.FileStation.Compress"',
+      "method": '"start"',
+      "version": 3,
+      "_sid": Util.sid,
+      "path": json.encode(path),
+      "dest_file_path": "$destPath",
+      "level": "$level",
+      "mode": "$mode",
+      "format": "$format",
+      "password": password,
+      "codepage": codepage,
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> compressResult(String taskId) async {
+    return await Util.post("entry.cgi", data: {
+      "taskid": taskId,
+      "api": '"SYNO.FileStation.Compress"',
+      "method": '"status"',
+      "version": 2,
+      "_sid": Util.sid,
+    });
+  }
+
   static Future<Map> copyMoveTask(List<String> path, String destFolderPath, bool remove) async {
     return await Util.post("entry.cgi", data: {
       "overwrite": "true",

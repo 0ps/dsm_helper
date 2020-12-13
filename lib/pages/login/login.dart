@@ -15,8 +15,9 @@ class _LoginState extends State<Login> {
   String password = "";
   String port = "5000";
   bool https = false;
-  bool remember = true;
   bool login = false;
+  bool rememberPassword = true;
+  bool autoLogin = true;
   TextEditingController _hostController = TextEditingController();
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -34,6 +35,8 @@ class _LoginState extends State<Login> {
     String port = await Util.getStorage("port");
     String account = await Util.getStorage("account");
     String password = await Util.getStorage("password");
+    String autoLogin = await Util.getStorage("auto_login");
+    String rememberPassword = await Util.getStorage("remember_password");
     if (https.isNotBlank) {
       setState(() {
         this.https = https == "1";
@@ -54,6 +57,16 @@ class _LoginState extends State<Login> {
     if (password.isNotBlank) {
       this.password = password;
       _passwordController.value = TextEditingValue(text: password);
+    }
+    if (autoLogin.isNotBlank) {
+      setState(() {
+        this.autoLogin = autoLogin == "1";
+      });
+    }
+    if (rememberPassword.isNotBlank) {
+      setState(() {
+        this.rememberPassword = rememberPassword == "1";
+      });
     }
   }
 
@@ -86,13 +99,22 @@ class _LoginState extends State<Login> {
     if (res['success'] == true) {
       //记住登录信息
 
-      Util.setStorage("sid", res['data']['sid']);
       Util.setStorage("https", https ? "1" : "0");
       Util.setStorage("host", host.trim());
       Util.setStorage("port", port);
       Util.setStorage("account", account);
-      Util.setStorage("password", password);
+      Util.setStorage("remember_password", rememberPassword ? "1" : "0");
+      Util.setStorage("auto_login", autoLogin ? "1" : "0");
       Util.sid = res['data']['sid'];
+      if (rememberPassword) {
+        Util.setStorage("password", password);
+      } else {
+        Util.removeStorage("password");
+      }
+      if (autoLogin) {
+        Util.setStorage("sid", res['data']['sid']);
+      }
+
       Util.baseUrl = baseUri;
       Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
     } else {
@@ -228,6 +250,82 @@ class _LoginState extends State<Login> {
                   labelText: '密码',
                 ),
               ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        rememberPassword = !rememberPassword;
+                        if (!rememberPassword) {
+                          autoLogin = false;
+                        }
+                      });
+                    },
+                    child: NeuCard(
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      curveType: rememberPassword ? CurveType.emboss : CurveType.flat,
+                      bevel: 12,
+                      height: 60,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      child: Row(
+                        children: [
+                          Text("记住密码"),
+                          Spacer(),
+                          if (rememberPassword)
+                            Icon(
+                              CupertinoIcons.checkmark_alt,
+                              color: Color(0xffff9813),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        autoLogin = !autoLogin;
+                        if (autoLogin) {
+                          rememberPassword = true;
+                        }
+                      });
+                    },
+                    child: NeuCard(
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      curveType: autoLogin ? CurveType.emboss : CurveType.flat,
+                      bevel: 12,
+                      height: 60,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      child: Row(
+                        children: [
+                          Text("自动登录"),
+                          Spacer(),
+                          if (autoLogin)
+                            Icon(
+                              CupertinoIcons.checkmark_alt,
+                              color: Color(0xffff9813),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 20,

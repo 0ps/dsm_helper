@@ -246,6 +246,32 @@ class Api {
         "api": "SYNO.Core.System",
         "method": "info",
         "version": 1,
+      },
+      {
+        "api": "SYNO.Core.TaskScheduler",
+        "sort_by": "next_trigger_time",
+        "sort_direction": "ASC",
+        "start": 0,
+        "limit": 50,
+        "method": "list",
+        "version": 1,
+      },
+      {
+        "api": "SYNO.Core.SyslogClient.Status",
+        "start": 0,
+        "limit": 50,
+        "widget": true,
+        "dir": "desc",
+        "method": "latestlog_get",
+        "version": 1,
+      },
+      {
+        "action": "load",
+        "lastRead": 1607624596,
+        "lastSeen": 1607624596,
+        "api": "SYNO.Core.DSMNotify",
+        "method": "notify",
+        "version": 1,
       }
     ];
     var result = await Util.post("entry.cgi", data: {
@@ -328,6 +354,17 @@ class Api {
     };
     var result = await Util.get("entry.cgi", data: data);
     return result;
+  }
+
+  static Future<Map> power(String method) async {
+    var data = {
+      "api": "SYNO.Core.System",
+      "force": false,
+      "local": true,
+      "version": 6,
+      "method": method,
+    };
+    return await Util.post("entry.cgi", data: data);
   }
 
   static Future<Map> upload(String uploadPath, String filePath, CancelToken cancelToken, Function(int, int) onSendProgress) async {

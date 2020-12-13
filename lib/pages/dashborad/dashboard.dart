@@ -16,6 +16,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Timer timer;
   Map utilization;
   List volumes = [];
@@ -23,6 +24,11 @@ class _DashboardState extends State<Dashboard> {
   List interfaces = [];
   List networks = [];
   List ssdCaches = [];
+  List tasks = [];
+  List latestLog = [];
+  List notifies = [];
+  List widgets = [];
+  List applications = [];
   Map system;
   bool loading = true;
   bool success = true;
@@ -30,10 +36,6 @@ class _DashboardState extends State<Dashboard> {
   int maxNetworkSpeed = 0;
   Map volWarnings;
   String msg = "";
-  List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
-  ];
   @override
   void initState() {
     getData();
@@ -42,25 +44,28 @@ class _DashboardState extends State<Dashboard> {
   }
 
   getInfo() async {
-    var res = await Api.info();
-    if (res['success'] != null && res['success'] == false) {
-      // print(res);
-    } else {
-      if (mounted) {
-        setState(() {
-          interfaces = res['interfaces'];
-          volWarnings = res['vol_warnings'];
-        });
-      } else {
-        if (timer != null) {
-          timer.cancel();
-          timer = null;
-        }
-      }
-    }
+    // var res = await Api.info();
+    // if (res['success'] != null && res['success'] == false) {
+    //   // print(res);
+    // } else {
+    //   if (mounted) {
+    //     setState(() {
+    //       interfaces = res['interfaces'];
+    //       volWarnings = res['vol_warnings'];
+    //     });
+    //   } else {
+    //     if (timer != null) {
+    //       timer.cancel();
+    //       timer = null;
+    //     }
+    //   }
+    // }
     var init = await Api.initData();
     if (init['success']) {
       setState(() {
+        widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
+        applications = init['data']['UserSettings']['Desktop']['appview_order'];
+        print(applications);
         hostname = init['data']['Session']['hostname'];
       });
     }
@@ -103,8 +108,10 @@ class _DashboardState extends State<Dashboard> {
     var res = await Api.systemInfo();
     // print(res);
     setState(() {
+      if (loading) {
+        success = res['success'];
+      }
       loading = false;
-      success = res['success'];
     });
     if (res['success']) {
       List result = res['data']['result'];
@@ -141,6 +148,22 @@ class _DashboardState extends State<Dashboard> {
               ssdCaches = item['data']['ssdCaches'];
               volumes = item['data']['volumes'];
             });
+          } else if (item['api'] == 'SYNO.Core.TaskScheduler') {
+            setState(() {
+              tasks = item['data']['tasks'];
+            });
+          } else if (item['api'] == 'SYNO.Core.SyslogClient.Status') {
+            setState(() {
+              latestLog = item['data']['logs'];
+            });
+          } else if (item['api'] == "SYNO.Core.DSMNotify") {
+            notifies = [];
+            List items = item['data']['items'];
+            setState(() {
+              items.forEach((item) {
+                notifies.addAll(item['msg']);
+              });
+            });
           }
         }
 
@@ -164,6 +187,534 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  Widget _buildWidgetItem(widget) {
+    if (widget == "SYNO.SDS.SystemInfoApp.SystemHealthWidget") {
+      return NeuCard(
+        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        bevel: 20,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                getInfo();
+              },
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/info.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "系统状态",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            if (system != null && system['model'] != null)
+              Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: Row(
+                  children: [
+                    Text("产品型号："),
+                    Text("${system['model']}"),
+                  ],
+                ),
+              ),
+            SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: [
+                Text("系统名称："),
+                Text("$hostname"),
+              ],
+            ),
+            if (system != null && system['sys_temp'] != null && system['temperature_warning'] != null)
+              Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: Row(
+                  children: [
+                    Text("散热状态："),
+                    Text(
+                      "${system['sys_temp']}℃ ${system['temperature_warning'] == true ? "警告" : "正常"}",
+                      style: TextStyle(color: system['temperature_warning'] ? Colors.red : Colors.green),
+                    ),
+                  ],
+                ),
+              ),
+            if (system != null && system['up_time'] != null && system['up_time'] != "")
+              Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: Row(
+                  children: [
+                    Text("运行时间："),
+                    Text("${Util.parseOpTime(system['up_time'])}"),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      );
+    } else if (widget == "SYNO.SDS.SystemInfoApp.ConnectionLogWidget" && connectedUsers.length > 0) {
+      return NeuCard(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        bevel: 20,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/user.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "登录用户",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            ...connectedUsers.map(_buildUserItem).toList(),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      );
+    } else if (widget == "SYNO.SDS.TaskScheduler.TaskSchedulerWidget" && tasks.length > 0) {
+      return NeuCard(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        bevel: 20,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/task.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "计划任务",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            ...tasks.map(_buildTaskItem).toList(),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      );
+    } else if (widget == "SYNO.SDS.SystemInfoApp.RecentLogWidget" && latestLog.length > 0) {
+      return NeuCard(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        bevel: 20,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/log.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "最新日志",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 300,
+              child: CupertinoScrollbar(
+                child: ListView.builder(
+                  itemBuilder: (context, i) {
+                    return _buildLogItem(latestLog[i]);
+                  },
+                  itemCount: latestLog.length,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+      );
+    } else if (widget == "SYNO.SDS.ResourceMonitor.Widget" && utilization != null) {
+      return NeuCard(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        bevel: 20,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/resources.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "资源监控",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Text("CPU："),
+                  ),
+                  Expanded(
+                    child: NeuCard(
+                      curveType: CurveType.flat,
+                      bevel: 10,
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: FAProgressBar(
+                        backgroundColor: Colors.transparent,
+                        changeColorValue: 90,
+                        changeProgressColor: Colors.red,
+                        progressColor: Colors.blue,
+                        currentValue: utilization['cpu']['user_load'] + utilization['cpu']['system_load'] + utilization['cpu']['other_load'],
+                        displayText: '%',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  SizedBox(width: 50, child: Text("RAM：")),
+                  Expanded(
+                    child: NeuCard(
+                      curveType: CurveType.flat,
+                      bevel: 10,
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: FAProgressBar(
+                        backgroundColor: Colors.transparent,
+                        changeColorValue: 90,
+                        changeProgressColor: Colors.red,
+                        progressColor: Colors.blue,
+                        currentValue: utilization['memory']['real_usage'],
+                        displayText: '%',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  SizedBox(width: 50, child: Text("网络：")),
+                  Icon(
+                    Icons.upload_sharp,
+                    color: Colors.blue,
+                  ),
+                  Text(
+                    Util.formatSize(utilization['network'][0]['tx']) + "/S",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Icon(
+                    Icons.download_sharp,
+                    color: Colors.green,
+                  ),
+                  Text(
+                    Util.formatSize(utilization['network'][0]['rx']) + "/S",
+                    style: TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            AspectRatio(
+              aspectRatio: 1.70,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: NeuCard(
+                  curveType: CurveType.flat,
+                  bevel: 20,
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: LineChart(
+                    LineChartData(
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                            tooltipBgColor: Colors.white.withOpacity(0.6),
+                            tooltipRoundedRadius: 20,
+                            fitInsideHorizontally: true,
+                            fitInsideVertically: true,
+                            getTooltipItems: (items) {
+                              return [
+                                LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
+                                LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
+                              ];
+                            }),
+                      ),
+                      gridData: FlGridData(
+                        show: false,
+                      ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        bottomTitles: SideTitles(
+                          showTitles: false,
+                          reservedSize: 22,
+                        ),
+                        leftTitles: SideTitles(
+                          showTitles: true,
+                          getTextStyles: (value) => const TextStyle(
+                            color: Color(0xff67727d),
+                            fontSize: 12,
+                          ),
+                          getTitles: chartTitle,
+                          // getTitles: (value) {
+                          //   value = value / 1000 / 1000;
+                          //   return (value.floor() * 1000).toString();
+                          // },
+                          reservedSize: 28,
+                          interval: chartInterval,
+                        ),
+                      ),
+                      // maxY: 20,
+                      borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: networks.map((network) {
+                            return FlSpot(networks.indexOf(network).toDouble(), network[0]['tx'].toDouble());
+                          }).toList(),
+                          isCurved: true,
+                          colors: [
+                            Colors.blue,
+                          ],
+                          barWidth: 2,
+                          isStrokeCapRound: true,
+                          dotData: FlDotData(
+                            show: false,
+                          ),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            colors: [Colors.blue.withOpacity(0.2)],
+                          ),
+                        ),
+                        LineChartBarData(
+                          spots: networks.map((network) {
+                            return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
+                          }).toList(),
+                          isCurved: true,
+                          colors: [
+                            Colors.green,
+                          ],
+                          barWidth: 2,
+                          isStrokeCapRound: true,
+                          dotData: FlDotData(
+                            show: false,
+                          ),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            colors: [
+                              Colors.green.withOpacity(0.2),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {
+      return NeuCard(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        curveType: CurveType.flat,
+        bevel: 20,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/pie.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "存储",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            ...volumes.reversed.map(_buildVolumeItem).toList(),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      );
+    } else if (ssdCaches != null && ssdCaches.length > 0) {
+      return NeuCard(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        curveType: CurveType.flat,
+        bevel: 20,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/icons/cache.png",
+                    width: 26,
+                    height: 26,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "缓存",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            ...ssdCaches.map(_buildSSDCacheItem).toList(),
+            SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+
   Widget _buildUserItem(user) {
     DateTime loginTime = DateTime.parse(user['time'].toString().replaceAll("/", "-"));
     DateTime currentTime = DateTime.now();
@@ -171,7 +722,7 @@ class _DashboardState extends State<Dashboard> {
     return NeuCard(
       decoration: NeumorphicDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
       ),
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -293,6 +844,60 @@ class _DashboardState extends State<Dashboard> {
             child: Icon(
               Icons.remove_circle_outline,
               color: Colors.redAccent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTaskItem(task) {
+    return NeuCard(
+      decoration: NeumorphicDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: EdgeInsets.all(15),
+      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+      bevel: 10,
+      curveType: CurveType.flat,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              "${task['name']}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Text(
+            "${task['next_trigger_time']}",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogItem(log) {
+    return NeuCard(
+      decoration: NeumorphicDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: EdgeInsets.all(15),
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      bevel: 10,
+      curveType: CurveType.flat,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              "${log['msg']}",
             ),
           ),
         ],
@@ -497,6 +1102,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           "控制台",
@@ -506,6 +1112,59 @@ class _DashboardState extends State<Dashboard> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         centerTitle: true,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+          child: NeuButton(
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: EdgeInsets.all(10),
+            bevel: 5,
+            onPressed: () {
+              _scaffoldKey.currentState.openDrawer();
+            },
+            child: Image.asset(
+              "assets/icons/application.png",
+              width: 20,
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () {
+                Util.toast("当前有${notifies.length}条通知，暂不支持查看");
+              },
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Image.asset(
+                    "assets/icons/message.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  if (notifies.length > 0)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      width: 5,
+                      height: 5,
+                    )
+                ],
+              ),
+            ),
+          )
+        ],
       ),
       body: loading
           ? Center(
@@ -524,443 +1183,11 @@ class _DashboardState extends State<Dashboard> {
             )
           : success
               ? ListView(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    NeuCard(
-                      padding: EdgeInsets.all(20),
-                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      bevel: 20,
-                      curveType: CurveType.flat,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              getInfo();
-                            },
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/info.png",
-                                  width: 26,
-                                  height: 26,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "系统状态",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          if (system['model'] != null)
-                            Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Row(
-                                children: [
-                                  Text("产品型号："),
-                                  Text("${system['model']}"),
-                                ],
-                              ),
-                            ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                            children: [
-                              Text("系统名称："),
-                              Text("$hostname"),
-                            ],
-                          ),
-                          if (system['sys_temp'] != null && system['temperature_warning'] != null)
-                            Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Row(
-                                children: [
-                                  Text("散热状态："),
-                                  Text(
-                                    "${system['sys_temp']}℃ ${system['temperature_warning'] == true ? "警告" : "正常"}",
-                                    style: TextStyle(color: system['temperature_warning'] ? Colors.red : Colors.green),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          if (system['up_time'] != null && system['up_time'] != "")
-                            Padding(
-                              padding: EdgeInsets.only(top: 5),
-                              child: Row(
-                                children: [
-                                  Text("运行时间："),
-                                  Text("${Util.parseOpTime(system['up_time'])}"),
-                                ],
-                              ),
-                            ),
-                          ...interfaces.map(_buildInterfaceItem).toList(),
-                        ],
-                      ),
-                    ),
-                    if (connectedUsers.length > 0)
-                      NeuCard(
-                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        bevel: 20,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/icons/user.png",
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "登录用户",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ...connectedUsers.map(_buildUserItem).toList(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (utilization != null)
-                      NeuCard(
-                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        bevel: 20,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/icons/resources.png",
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "资源监控",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                    child: Text("CPU："),
-                                  ),
-                                  Expanded(
-                                    child: NeuCard(
-                                      curveType: CurveType.flat,
-                                      bevel: 10,
-                                      decoration: NeumorphicDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: FAProgressBar(
-                                        backgroundColor: Colors.transparent,
-                                        changeColorValue: 90,
-                                        changeProgressColor: Colors.red,
-                                        progressColor: Colors.blue,
-                                        currentValue: utilization['cpu']['user_load'] + utilization['cpu']['system_load'] + utilization['cpu']['other_load'],
-                                        displayText: '%',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 50, child: Text("RAM：")),
-                                  Expanded(
-                                    child: NeuCard(
-                                      curveType: CurveType.flat,
-                                      bevel: 10,
-                                      decoration: NeumorphicDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: FAProgressBar(
-                                        backgroundColor: Colors.transparent,
-                                        changeColorValue: 90,
-                                        changeProgressColor: Colors.red,
-                                        progressColor: Colors.blue,
-                                        currentValue: utilization['memory']['real_usage'],
-                                        displayText: '%',
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 50, child: Text("网络：")),
-                                  Icon(
-                                    Icons.upload_sharp,
-                                    color: Colors.blue,
-                                  ),
-                                  Text(
-                                    Util.formatSize(utilization['network'][0]['tx']) + "/S",
-                                    style: TextStyle(color: Colors.blue),
-                                  ),
-                                  SizedBox(
-                                    width: 30,
-                                  ),
-                                  Icon(
-                                    Icons.download_sharp,
-                                    color: Colors.green,
-                                  ),
-                                  Text(
-                                    Util.formatSize(utilization['network'][0]['rx']) + "/S",
-                                    style: TextStyle(color: Colors.green),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            AspectRatio(
-                              aspectRatio: 1.70,
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: NeuCard(
-                                  curveType: CurveType.flat,
-                                  bevel: 20,
-                                  decoration: NeumorphicDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  padding: EdgeInsets.all(10),
-                                  child: LineChart(
-                                    LineChartData(
-                                      lineTouchData: LineTouchData(
-                                        touchTooltipData: LineTouchTooltipData(
-                                            tooltipBgColor: Colors.white.withOpacity(0.6),
-                                            tooltipRoundedRadius: 20,
-                                            fitInsideHorizontally: true,
-                                            fitInsideVertically: true,
-                                            getTooltipItems: (items) {
-                                              return [
-                                                LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
-                                                LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
-                                              ];
-                                            }),
-                                      ),
-                                      gridData: FlGridData(
-                                        show: false,
-                                      ),
-                                      titlesData: FlTitlesData(
-                                        show: true,
-                                        bottomTitles: SideTitles(
-                                          showTitles: false,
-                                          reservedSize: 22,
-                                        ),
-                                        leftTitles: SideTitles(
-                                          showTitles: true,
-                                          getTextStyles: (value) => const TextStyle(
-                                            color: Color(0xff67727d),
-                                            fontSize: 12,
-                                          ),
-                                          getTitles: chartTitle,
-                                          // getTitles: (value) {
-                                          //   value = value / 1000 / 1000;
-                                          //   return (value.floor() * 1000).toString();
-                                          // },
-                                          reservedSize: 28,
-                                          interval: chartInterval,
-                                        ),
-                                      ),
-                                      // maxY: 20,
-                                      borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
-                                      lineBarsData: [
-                                        LineChartBarData(
-                                          spots: networks.map((network) {
-                                            return FlSpot(networks.indexOf(network).toDouble(), network[0]['tx'].toDouble());
-                                          }).toList(),
-                                          isCurved: true,
-                                          colors: [
-                                            Colors.blue,
-                                          ],
-                                          barWidth: 2,
-                                          isStrokeCapRound: true,
-                                          dotData: FlDotData(
-                                            show: false,
-                                          ),
-                                          belowBarData: BarAreaData(
-                                            show: true,
-                                            colors: [Colors.blue.withOpacity(0.2)],
-                                          ),
-                                        ),
-                                        LineChartBarData(
-                                          spots: networks.map((network) {
-                                            return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
-                                          }).toList(),
-                                          isCurved: true,
-                                          colors: [
-                                            Colors.green,
-                                          ],
-                                          barWidth: 2,
-                                          isStrokeCapRound: true,
-                                          dotData: FlDotData(
-                                            show: false,
-                                          ),
-                                          belowBarData: BarAreaData(
-                                            show: true,
-                                            colors: [
-                                              Colors.green.withOpacity(0.2),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (volumes != null && volumes.length > 0)
-                      NeuCard(
-                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        curveType: CurveType.flat,
-                        bevel: 20,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/icons/pie.png",
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "存储",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ...volumes.reversed.map(_buildVolumeItem).toList(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    if (ssdCaches != null && ssdCaches.length > 0)
-                      NeuCard(
-                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        curveType: CurveType.flat,
-                        bevel: 20,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    "assets/icons/cache.png",
-                                    width: 26,
-                                    height: 26,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "缓存",
-                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ...ssdCaches.map(_buildSSDCacheItem).toList(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  children: widgets.map((widget) {
+                    return _buildWidgetItem(widget);
+                    // return Text(widget);
+                  }).toList(),
                 )
               : Center(
                   child: Column(
@@ -991,6 +1218,56 @@ class _DashboardState extends State<Dashboard> {
                     ],
                   ),
                 ),
+      drawer: Container(
+        width: MediaQuery.of(context).size.width * 0.8,
+        color: Colors.white,
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              Row(
+                children: [
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset("assets/applications/control_panel.png"),
+                        Text("控制面板"),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset("assets/applications/ez_internet.png"),
+                        Text("EZ-Internet"),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -59,7 +59,7 @@ class Util {
   static String parseOpTime(String optime) {
     List items = optime.split(":");
     int days = int.parse(items[0]) ~/ 24;
-    items[0] = (int.parse(items[0]) % 24).toString();
+    items[0] = (int.parse(items[0]) % 24).toString().padLeft(2, "0");
     return "$days天 ${items.join(":")}";
   }
 

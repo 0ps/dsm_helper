@@ -37,6 +37,11 @@ class _FilesState extends State<Files> {
     super.initState();
   }
 
+  refresh() {
+    String path = paths.join("/").substring(1);
+    goPath(path);
+  }
+
   setPaths(String path) {
     if (path == "/") {
       setState(() {
@@ -157,8 +162,7 @@ class _FilesState extends State<Files> {
                                       selectedFiles = [];
                                       multiSelect = false;
                                     });
-                                    String path = paths.join("/").substring(1);
-                                    goPath(path);
+                                    refresh();
                                   }
                                 }
                               } catch (e) {
@@ -168,16 +172,6 @@ class _FilesState extends State<Files> {
                               }
                             });
                           }
-                          // if (res['success']) {
-                          //   Util.toast("删除完成");
-                          //   setState(() {
-                          //     selectedFiles = [];
-                          //     multiSelect = false;
-                          //   });
-                          //   String path = paths.join("/").substring(1);
-                          //   print(path);
-                          //   goPath(path);
-                          // }
                         },
                         decoration: NeumorphicDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
@@ -281,8 +275,7 @@ class _FilesState extends State<Files> {
                                 selectedFiles = [];
                                 multiSelect = false;
                               });
-                              String path = paths.join("/").substring(1);
-                              goPath(path);
+                              refresh();
                             }
                           }
                         } catch (e) {
@@ -620,8 +613,7 @@ class _FilesState extends State<Files> {
                                                     timer.cancel();
                                                     timer = null;
 
-                                                    String path = paths.join("/").substring(1);
-                                                    goPath(path);
+                                                    refresh();
                                                     Future.delayed(Duration(seconds: 5)).then((value) {
                                                       setState(() {
                                                         processing.remove(res['data']['taskid']);
@@ -734,8 +726,7 @@ class _FilesState extends State<Files> {
                                                                           var res = await Api.rename(file['path'], name);
                                                                           if (res['success']) {
                                                                             Util.toast("重命名成功");
-                                                                            String path = paths.join("/").substring(1);
-                                                                            goPath(path);
+                                                                            refresh();
                                                                           } else {
                                                                             if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
                                                                               Util.toast("重命名失败：指定的名称已存在");
@@ -900,7 +891,6 @@ class _FilesState extends State<Files> {
         } else {
           path = paths.join("/").substring(1);
         }
-        print(path);
         goPath(path);
       }
     }
@@ -1104,7 +1094,7 @@ class _FilesState extends State<Files> {
                                                                   print(res);
                                                                   if (res['success']) {
                                                                     Util.toast("文件夹创建成功");
-                                                                    goPath(path);
+                                                                    refresh();
                                                                   } else {
                                                                     if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
                                                                       Util.toast("文件夹创建失败：指定的名称已存在");
@@ -1287,8 +1277,7 @@ class _FilesState extends State<Files> {
                                                 timer.cancel();
                                                 timer = null;
 
-                                                String path = paths.join("/").substring(1);
-                                                goPath(path);
+                                                refresh();
                                                 Future.delayed(Duration(seconds: 5)).then((value) {
                                                   setState(() {
                                                     processing.remove(res['data']['taskid']);
@@ -1344,8 +1333,7 @@ class _FilesState extends State<Files> {
                                                 timer.cancel();
                                                 timer = null;
 
-                                                String path = paths.join("/").substring(1);
-                                                goPath(path);
+                                                refresh();
                                                 Future.delayed(Duration(seconds: 5)).then((value) {
                                                   setState(() {
                                                     processing.remove(res['data']['taskid']);
@@ -1449,8 +1437,7 @@ class _FilesState extends State<Files> {
                               ),
                               bevel: 5,
                               onPressed: () {
-                                String path = paths.join("/").substring(1);
-                                goPath(path);
+                                refresh();
                               },
                               child: Text(
                                 ' 刷新 ',
@@ -1479,8 +1466,7 @@ class _FilesState extends State<Files> {
                     Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                       return Upload(paths.join("/").substring(1));
                     })).then((value) {
-                      String path = paths.join("/").substring(1);
-                      goPath(path);
+                      refresh();
                     });
                   },
                   child: Image.asset(

@@ -10,8 +10,7 @@ import 'package:neumorphic/neumorphic.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool needLogin = true;
-  await FlutterDownloader.initialize(debug: true // optional: set false to disable printing logs to console
-      );
+  await FlutterDownloader.initialize(debug: false);
   String sid = await Util.getStorage("sid");
   String https = await Util.getStorage("https");
   String host = await Util.getStorage("host");

@@ -22,6 +22,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: null,
       body: IndexedStack(
         children: [
           Dashboard(),

@@ -173,9 +173,12 @@ class _AboutState extends State<About> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             curveType: CurveType.flat,
-                            child: Image.asset(
-                              "assets/pay_qr.png",
-                              width: MediaQuery.of(context).size.width / 2 - 50,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.asset(
+                                "assets/pay_qr.png",
+                                width: MediaQuery.of(context).size.width / 2 - 50,
+                              ),
                             ),
                           ),
                         ),

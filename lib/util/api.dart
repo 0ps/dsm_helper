@@ -313,6 +313,17 @@ class Api {
     return result;
   }
 
+  static Future<Map> networkInfo() async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": '"SYNO.Core.System"',
+      "method": '"info"',
+      "version": 1,
+      "type": "network",
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
   static Future<Map> checkPermission(String uploadPath, String filePath) async {
     File file = File(filePath);
     var data = {

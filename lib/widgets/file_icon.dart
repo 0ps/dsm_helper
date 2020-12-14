@@ -18,7 +18,11 @@ class FileIcon extends StatelessWidget {
         height: 40,
       );
     } else if (fileType == FileType.music) {
-      return Icon(Icons.music_note_rounded);
+      return Image.asset(
+        "assets/icons/music.png",
+        width: 40,
+        height: 40,
+      );
     } else if (fileType == FileType.movie) {
       return Image.asset(
         "assets/icons/movie.png",

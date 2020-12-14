@@ -43,7 +43,6 @@ class _UpdateState extends State<Update> {
     setState(() {
       downloading = true;
     });
-    print(widget.data);
     cancelToken = CancelToken();
     var res = await Util.downloadPkg(fileName, widget.data['url'], (downloaded, total) {
       setState(() {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -20,6 +21,7 @@ class _DashboardState extends State<Dashboard> {
   Timer timer;
   Map utilization;
   List volumes = [];
+  List disks = [];
   List connectedUsers = [];
   List interfaces = [];
   List networks = [];
@@ -64,8 +66,9 @@ class _DashboardState extends State<Dashboard> {
     if (init['success']) {
       setState(() {
         widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
+        print(widgets);
         applications = init['data']['UserSettings']['Desktop']['appview_order'];
-        print(applications);
+        // print(applications);
         hostname = init['data']['Session']['hostname'];
       });
     }
@@ -135,9 +138,7 @@ class _DashboardState extends State<Dashboard> {
           } else if (item['api'] == "SYNO.Core.System") {
             // print(item['data']);
             setState(() {
-              // volumes = item['data']['vol_info'];
               system = item['data'];
-              // print(system);
             });
           } else if (item['api'] == "SYNO.Core.CurrentConnection") {
             setState(() {
@@ -147,6 +148,7 @@ class _DashboardState extends State<Dashboard> {
             setState(() {
               ssdCaches = item['data']['ssdCaches'];
               volumes = item['data']['volumes'];
+              disks = item['data']['disks'];
             });
           } else if (item['api'] == 'SYNO.Core.TaskScheduler') {
             setState(() {
@@ -189,22 +191,24 @@ class _DashboardState extends State<Dashboard> {
 
   Widget _buildWidgetItem(widget) {
     if (widget == "SYNO.SDS.SystemInfoApp.SystemHealthWidget") {
-      return NeuCard(
-        padding: EdgeInsets.all(20),
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        bevel: 20,
-        curveType: CurveType.flat,
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                getInfo();
-              },
-              child: Row(
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return SystemInfo(0, system, volumes, disks);
+          }));
+        },
+        child: NeuCard(
+          padding: EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          bevel: 20,
+          curveType: CurveType.flat,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              Row(
                 children: [
                   Image.asset(
                     "assets/icons/info.png",
@@ -220,53 +224,53 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            if (system != null && system['model'] != null)
-              Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: Row(
-                  children: [
-                    Text("产品型号："),
-                    Text("${system['model']}"),
-                  ],
-                ),
+              SizedBox(
+                height: 5,
               ),
-            SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                Text("系统名称："),
-                Text("$hostname"),
-              ],
-            ),
-            if (system != null && system['sys_temp'] != null && system['temperature_warning'] != null)
-              Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: Row(
-                  children: [
-                    Text("散热状态："),
-                    Text(
-                      "${system['sys_temp']}℃ ${system['temperature_warning'] == true ? "警告" : "正常"}",
-                      style: TextStyle(color: system['temperature_warning'] ? Colors.red : Colors.green),
-                    ),
-                  ],
+              if (system != null && system['model'] != null)
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: Row(
+                    children: [
+                      Text("产品型号："),
+                      Text("${system['model']}"),
+                    ],
+                  ),
                 ),
+              SizedBox(
+                height: 5,
               ),
-            if (system != null && system['up_time'] != null && system['up_time'] != "")
-              Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: Row(
-                  children: [
-                    Text("运行时间："),
-                    Text("${Util.parseOpTime(system['up_time'])}"),
-                  ],
+              Row(
+                children: [
+                  Text("系统名称："),
+                  Text("$hostname"),
+                ],
+              ),
+              if (system != null && system['sys_temp'] != null && system['temperature_warning'] != null)
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: Row(
+                    children: [
+                      Text("散热状态："),
+                      Text(
+                        "${system['sys_temp']}℃ ${system['temperature_warning'] == true ? "警告" : "正常"}",
+                        style: TextStyle(color: system['temperature_warning'] ? Colors.red : Colors.green),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-          ],
+              if (system != null && system['up_time'] != null && system['up_time'] != "")
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: Row(
+                    children: [
+                      Text("运行时间："),
+                      Text("${Util.parseOpTime(system['up_time'])}"),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       );
     } else if (widget == "SYNO.SDS.SystemInfoApp.ConnectionLogWidget" && connectedUsers.length > 0) {
@@ -631,43 +635,50 @@ class _DashboardState extends State<Dashboard> {
         ),
       );
     } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {
-      return NeuCard(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        curveType: CurveType.flat,
-        bevel: 20,
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icons/pie.png",
-                    width: 26,
-                    height: 26,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "存储",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ],
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return SystemInfo(2, system, volumes, disks);
+          }));
+        },
+        child: NeuCard(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          curveType: CurveType.flat,
+          bevel: 20,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            ),
-            ...volumes.reversed.map(_buildVolumeItem).toList(),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "assets/icons/pie.png",
+                      width: 26,
+                      height: 26,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "存储",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+              ...volumes.reversed.map(_buildVolumeItem).toList(),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       );
     } else if (ssdCaches != null && ssdCaches.length > 0) {
@@ -1225,26 +1236,59 @@ class _DashboardState extends State<Dashboard> {
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),
             children: [
-              Row(
+              Wrap(
+                spacing: 20,
+                runSpacing: 20,
                 children: [
                   NeuCard(
                     width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    height: 110,
+                    padding: EdgeInsets.symmetric(vertical: 20),
                     curveType: CurveType.flat,
                     decoration: NeumorphicDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     bevel: 20,
-                    padding: EdgeInsets.symmetric(vertical: 20),
                     child: Column(
                       children: [
-                        Image.asset("assets/applications/control_panel.png"),
+                        Image.asset(
+                          "assets/applications/control_panel.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
                         Text("控制面板"),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    width: 20,
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    height: 110,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/ez_internet.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("EZ-Internet"),
+                      ],
+                    ),
                   ),
                   NeuCard(
                     width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
@@ -1257,13 +1301,213 @@ class _DashboardState extends State<Dashboard> {
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Column(
                       children: [
-                        Image.asset("assets/applications/ez_internet.png"),
-                        Text("EZ-Internet"),
+                        Image.asset(
+                          "assets/applications/package_center.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("套件中心"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/resource_monitor.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("资源监控"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/storage_manager.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("存储空间管理员"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/log_center.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("日志中心"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/security_scan.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("安全顾问"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/support_center.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("技术支持中心"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/iSCSI_manager.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("iSCSI Manager"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/file_browser.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("File Station"),
+                      ],
+                    ),
+                  ),
+                  NeuCard(
+                    width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "assets/applications/search.png",
+                          height: 45,
+                          width: 45,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text("Universal Search"),
                       ],
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

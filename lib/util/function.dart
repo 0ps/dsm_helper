@@ -74,10 +74,25 @@ class Util {
     };
   }
 
+  static Color getAdjustColor(Color baseColor, double amount) {
+    Map<String, int> colors = {'r': baseColor.red, 'g': baseColor.green, 'b': baseColor.blue};
+
+    colors = colors.map((key, value) {
+      if (value + amount < 0) {
+        return MapEntry(key, 0);
+      }
+      if (value + amount > 255) {
+        return MapEntry(key, 255);
+      }
+      return MapEntry(key, (value + amount).floor());
+    });
+    return Color.fromRGBO(colors['r'], colors['g'], colors['b'], 1);
+  }
+
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
     List<String> movie = ["mov", "rmvb", "ts", "mp4", "mkv"];
-    List<String> music = ["mp3", "flac"];
+    List<String> music = ["mp3", "flac", "ape"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];

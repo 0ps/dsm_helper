@@ -161,6 +161,16 @@ class Api {
     });
   }
 
+  static Future<Map> createShare(List<String> path) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Sharing"',
+      "method": '"create"',
+      "version": 3,
+      "_sid": Util.sid,
+      "path": jsonEncode(path),
+    });
+  }
+
   static Future<Map> copyMoveResult(String taskId) async {
     return await Util.post("entry.cgi", data: {
       "taskid": taskId,

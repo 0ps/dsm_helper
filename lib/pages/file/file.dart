@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:android_intent/android_intent.dart';
 import 'package:dsm_helper/pages/file/select_folder.dart';
+import 'package:dsm_helper/pages/file/share.dart';
 import 'package:dsm_helper/pages/file/upload.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
@@ -654,6 +655,26 @@ class FilesState extends State<Files> {
                                           padding: EdgeInsets.symmetric(vertical: 10),
                                           child: Text(
                                             "压缩",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                              return Share([file['path']]);
+                                            }));
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 5,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Text(
+                                            "分享",
                                             style: TextStyle(fontSize: 18),
                                           ),
                                         ),

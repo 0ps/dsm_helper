@@ -19,12 +19,18 @@ class _HomeState extends State<Home> {
   int _currentIndex = 0;
   DateTime lastPopTime;
   GlobalKey<FilesState> _filesStateKey = GlobalKey<FilesState>();
+  GlobalKey<DashboardState> _dashboardStateKey = GlobalKey<DashboardState>();
   @override
   void initState() {
     super.initState();
   }
 
   Future<bool> onWillPop() {
+    if (_dashboardStateKey.currentState.isDrawerOpen) {
+      print("open");
+      _dashboardStateKey.currentState.closeDrawer();
+      return Future.value(false);
+    }
     Future<bool> value = Future.value(true);
     if (_currentIndex == 1) {
       value = _filesStateKey.currentState.onWillPop();
@@ -52,7 +58,9 @@ class _HomeState extends State<Home> {
         appBar: null,
         body: IndexedStack(
           children: [
-            Dashboard(),
+            Dashboard(
+              key: _dashboardStateKey,
+            ),
             Files(
               key: _filesStateKey,
             ),

@@ -84,7 +84,7 @@ class _UpdateState extends State<Update> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "设置",
+          "软件更新",
           style: Theme.of(context).textTheme.headline6,
         ),
         brightness: Brightness.light,
@@ -119,23 +119,27 @@ class _UpdateState extends State<Update> {
                 SizedBox(
                   height: 30,
                 ),
-                Text(
-                  "新版本 v${widget.data['version']} build ${widget.data['build']}",
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "更新时间：${DateTime.fromMillisecondsSinceEpoch(widget.data['update_time'] * 1000).format("Y-m-d H:i")}",
-                  style: TextStyle(fontSize: 14),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "安装包大小：${Util.formatSize(widget.data['size'])}",
-                  style: TextStyle(fontSize: 12),
+                Column(
+                  children: [
+                    Text(
+                      "新版本 v${widget.data['version']} build ${widget.data['build']}",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "更新时间：${DateTime.fromMillisecondsSinceEpoch(widget.data['update_time'] * 1000).format("Y-m-d H:i")}",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "安装包大小：${Util.formatSize(widget.data['size'])}",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
                 ),
                 SizedBox(
                   height: 40,

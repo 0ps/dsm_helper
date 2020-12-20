@@ -161,14 +161,86 @@ class Api {
     });
   }
 
-  static Future<Map> createShare(List<String> path) async {
-    return await Util.post("entry.cgi", data: {
+  static Future<Map> createShare(
+    List<String> path, {
+    bool fileRequest = false,
+    String requestName,
+    String requestInfo,
+  }) async {
+    var data = {
       "api": '"SYNO.FileStation.Sharing"',
       "method": '"create"',
       "version": 3,
       "_sid": Util.sid,
       "path": jsonEncode(path),
-    });
+    };
+    if (fileRequest) {
+      data['file_request'] = true;
+      data['request_name'] = requestName;
+      data['request_info'] = requestInfo;
+    }
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> editShare(
+    String path,
+    List<String> id,
+    List<String> url,
+    DateTime dateExpired,
+    DateTime dateAvailabe,
+    String expireTimes, {
+    bool fileRequest = false,
+    String requestName,
+    String requestInfo,
+  }) async {
+    var data = {
+      "path": path,
+      "url": jsonEncode(url),
+      "protect_type_enable": '"false"',
+      "date_expired": dateExpired == null ? "" : '"${dateExpired.format("Y-m-d H:i:s")}"',
+      "expire_times": expireTimes ?? "",
+      "protect_type": "none",
+      "redirect_uri": null,
+      "id": jsonEncode(id),
+      "date_available": dateAvailabe == null ? "" : '"${dateAvailabe.format("Y-m-d H:i:s")}"',
+      "api": '"SYNO.FileStation.Sharing"',
+      "method": '"edit"',
+      "version": 3,
+      "_sid": Util.sid,
+    };
+    if (fileRequest) {
+      data['file_request'] = true;
+      data['request_name'] = requestName;
+      data['request_info'] = requestInfo;
+    }
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> listShare() async {
+    var data = {
+      "offset": 0,
+      "limit": 100,
+      "filter_type": "SYNO.SDS.App.FileStation3.Instance,SYNO.SDS.App.SharingUpload.Application",
+      "api": '"SYNO.FileStation.Sharing"',
+      "method": '"list"',
+      "version": 3,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> deleteShare(
+    List<String> id,
+  ) async {
+    var data = {
+      "id": jsonEncode(id),
+      "api": '"SYNO.FileStation.Sharing"',
+      "method": '"delete"',
+      "version": 3,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
   }
 
   static Future<Map> copyMoveResult(String taskId) async {
@@ -277,8 +349,8 @@ class Api {
       },
       {
         "action": "load",
-        "lastRead": 1607624596,
-        "lastSeen": 1607624596,
+        "lastRead": DateTime.now().secondsSinceEpoch,
+        "lastSeen": DateTime.now().secondsSinceEpoch,
         "api": "SYNO.Core.DSMNotify",
         "method": "notify",
         "version": 1,
@@ -303,6 +375,18 @@ class Api {
       "_sid": Util.sid,
       "http_conn": jsonEncode(connection),
       "service_conn": "[]",
+    });
+    return result;
+  }
+
+  static Future<Map> clearNotify() async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": '"SYNO.Core.DSMNotify"',
+      "method": '"notify"',
+      "version": 1,
+      "_sid": Util.sid,
+      "action": '"apply"',
+      "clean": '"all"',
     });
     return result;
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
@@ -12,11 +13,12 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 
 class Dashboard extends StatefulWidget {
+  Dashboard({key}) : super(key: key);
   @override
-  _DashboardState createState() => _DashboardState();
+  DashboardState createState() => DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class DashboardState extends State<Dashboard> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Timer timer;
   Map utilization;
@@ -31,6 +33,7 @@ class _DashboardState extends State<Dashboard> {
   List notifies = [];
   List widgets = [];
   List applications = [];
+  Map strings;
   Map system;
   bool loading = true;
   bool success = true;
@@ -43,6 +46,16 @@ class _DashboardState extends State<Dashboard> {
     getData();
     getInfo();
     super.initState();
+  }
+
+  bool get isDrawerOpen {
+    return _scaffoldKey.currentState.isDrawerOpen;
+  }
+
+  closeDrawer() {
+    if (_scaffoldKey.currentState.isDrawerOpen) {
+      Navigator.of(context).pop();
+    }
   }
 
   getInfo() async {
@@ -66,10 +79,9 @@ class _DashboardState extends State<Dashboard> {
     if (init['success']) {
       setState(() {
         widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
-        print(widgets);
         applications = init['data']['UserSettings']['Desktop']['appview_order'];
-        // print(applications);
         hostname = init['data']['Session']['hostname'];
+        strings = init['data']['Strings'];
       });
     }
   }
@@ -159,13 +171,7 @@ class _DashboardState extends State<Dashboard> {
               latestLog = item['data']['logs'];
             });
           } else if (item['api'] == "SYNO.Core.DSMNotify") {
-            notifies = [];
-            List items = item['data']['items'];
-            setState(() {
-              items.forEach((item) {
-                notifies.addAll(item['msg']);
-              });
-            });
+            notifies = item['data']['items'];
           }
         }
 
@@ -1152,7 +1158,9 @@ class _DashboardState extends State<Dashboard> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Util.toast("当前有${notifies.length}条通知，暂不支持查看");
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return Notify(notifies, strings);
+                }));
               },
               child: Stack(
                 alignment: Alignment.topRight,
@@ -1231,7 +1239,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
       drawer: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 20),

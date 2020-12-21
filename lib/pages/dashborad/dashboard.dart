@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/system/info.dart';
+import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -34,6 +35,7 @@ class DashboardState extends State<Dashboard> {
   List widgets = [];
   List applications = [];
   Map strings;
+  Map appNotify;
   Map system;
   bool loading = true;
   bool success = true;
@@ -76,7 +78,6 @@ class DashboardState extends State<Dashboard> {
     //   }
     // }
     var init = await Api.initData();
-    print(init['data']['Session']);
     if (init['success']) {
       setState(() {
         if (init['data']['UserSettings'] != null) {
@@ -139,46 +140,60 @@ class DashboardState extends State<Dashboard> {
       List result = res['data']['result'];
       result.forEach((item) {
         if (item['success'] == true) {
-          if (item['api'] == "SYNO.Core.System.Utilization") {
-            setState(() {
-              utilization = item['data'];
-              // print(utilization);
-              if (networks.length > 20) {
-                networks.removeAt(0);
-              }
-              networks.add(item['data']['network']);
-              int tx = int.parse("${item['data']['network'][0]['tx']}");
-              int rx = int.parse("${item['data']['network'][0]['rx']}");
-              num maxSpeed = max(tx, rx);
-              if (maxSpeed > maxNetworkSpeed) {
-                maxNetworkSpeed = maxSpeed;
-              }
-            });
-          } else if (item['api'] == "SYNO.Core.System") {
-            // print(item['data']);
-            setState(() {
-              system = item['data'];
-            });
-          } else if (item['api'] == "SYNO.Core.CurrentConnection") {
-            setState(() {
-              connectedUsers = item['data']['items'];
-            });
-          } else if (item['api'] == "SYNO.Storage.CGI.Storage") {
-            setState(() {
-              ssdCaches = item['data']['ssdCaches'];
-              volumes = item['data']['volumes'];
-              disks = item['data']['disks'];
-            });
-          } else if (item['api'] == 'SYNO.Core.TaskScheduler') {
-            setState(() {
-              tasks = item['data']['tasks'];
-            });
-          } else if (item['api'] == 'SYNO.Core.SyslogClient.Status') {
-            setState(() {
-              latestLog = item['data']['logs'];
-            });
-          } else if (item['api'] == "SYNO.Core.DSMNotify") {
-            notifies = item['data']['items'];
+          switch (item['api']) {
+            case "SYNO.Core.System.Utilization":
+              setState(() {
+                utilization = item['data'];
+                // print(utilization);
+                if (networks.length > 20) {
+                  networks.removeAt(0);
+                }
+                networks.add(item['data']['network']);
+                int tx = int.parse("${item['data']['network'][0]['tx']}");
+                int rx = int.parse("${item['data']['network'][0]['rx']}");
+                num maxSpeed = max(tx, rx);
+                if (maxSpeed > maxNetworkSpeed) {
+                  maxNetworkSpeed = maxSpeed;
+                }
+              });
+              break;
+            case "SYNO.Core.System":
+              setState(() {
+                system = item['data'];
+              });
+              break;
+            case "SYNO.Core.CurrentConnection":
+              setState(() {
+                connectedUsers = item['data']['items'];
+              });
+              break;
+            case "SYNO.Storage.CGI.Storage":
+              setState(() {
+                ssdCaches = item['data']['ssdCaches'];
+                volumes = item['data']['volumes'];
+                disks = item['data']['disks'];
+              });
+              break;
+            case 'SYNO.Core.TaskScheduler':
+              setState(() {
+                tasks = item['data']['tasks'];
+              });
+              break;
+            case 'SYNO.Core.SyslogClient.Status':
+              setState(() {
+                latestLog = item['data']['logs'];
+              });
+              break;
+            case "SYNO.Core.DSMNotify":
+              setState(() {
+                notifies = item['data']['items'];
+              });
+              break;
+            case "SYNO.Core.AppNotify":
+              setState(() {
+                appNotify = item['data'];
+              });
+              break;
           }
         }
 
@@ -1265,18 +1280,33 @@ class DashboardState extends State<Dashboard> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     bevel: 20,
-                    child: Column(
+                    child: Stack(
                       children: [
-                        Image.asset(
-                          "assets/applications/control_panel.png",
-                          height: 45,
-                          width: 45,
-                          fit: BoxFit.contain,
+                        Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                "assets/applications/control_panel.png",
+                                height: 45,
+                                width: 45,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text("控制面板"),
+                            ],
+                          ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text("控制面板"),
+                        if (appNotify != null)
+                          Positioned(
+                            right: 30,
+                            child: Badge(
+                              appNotify['SYNO.SDS.AdminCenter.Application']['unread'],
+                              size: 20,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -1314,18 +1344,33 @@ class DashboardState extends State<Dashboard> {
                     ),
                     bevel: 20,
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
+                    child: Stack(
                       children: [
-                        Image.asset(
-                          "assets/applications/package_center.png",
-                          height: 45,
-                          width: 45,
-                          fit: BoxFit.contain,
+                        Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                "assets/applications/package_center.png",
+                                height: 45,
+                                width: 45,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text("套件中心"),
+                            ],
+                          ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text("套件中心"),
+                        if (appNotify != null)
+                          Positioned(
+                            right: 30,
+                            child: Badge(
+                              appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
+                              size: 20,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -1410,18 +1455,33 @@ class DashboardState extends State<Dashboard> {
                     ),
                     bevel: 20,
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
+                    child: Stack(
                       children: [
-                        Image.asset(
-                          "assets/applications/security_scan.png",
-                          height: 45,
-                          width: 45,
-                          fit: BoxFit.contain,
+                        Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                "assets/applications/security_scan.png",
+                                height: 45,
+                                width: 45,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text("安全顾问"),
+                            ],
+                          ),
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text("安全顾问"),
+                        if (appNotify != null)
+                          Positioned(
+                            right: 30,
+                            child: Badge(
+                              appNotify['SYNO.SDS.SecurityScan.Instance']['unread'],
+                              size: 20,
+                            ),
+                          ),
                       ],
                     ),
                   ),

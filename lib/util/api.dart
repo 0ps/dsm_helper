@@ -354,7 +354,12 @@ class Api {
         "api": "SYNO.Core.DSMNotify",
         "method": "notify",
         "version": 1,
-      }
+      },
+      {
+        "api": "SYNO.Core.AppNotify",
+        "method": "get",
+        "version": 1,
+      },
     ];
     var result = await Util.post("entry.cgi", data: {
       "api": 'SYNO.Entry.Request',

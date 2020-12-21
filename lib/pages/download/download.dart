@@ -325,7 +325,7 @@ class DownloadState extends State<Download> {
                       },
                       padding: EdgeInsets.only(left: 5, right: 3, top: 4, bottom: 4),
                       decoration: NeumorphicDecoration(
-                        color: Color(0xfff0f0f0),
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       bevel: 2,

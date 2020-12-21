@@ -472,6 +472,30 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
+  static Future<Map> setTerminal(bool ssh, bool telnet, String sshPort) async {
+    var data = {
+      "api": '"SYNO.Core.Terminal"',
+      "enable_telnet": telnet,
+      "enable_ssh": ssh,
+      "ssh_port": sshPort,
+      "version": 3,
+      "method": "set",
+      "_sid": Util.sid,
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> terminalInfo() async {
+    var data = {
+      "api": "SYNO.Core.Terminal",
+      "version": 3,
+      "method": "get",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
   static Future<Map> upload(String uploadPath, String filePath, CancelToken cancelToken, Function(int, int) onSendProgress) async {
     File file = File(filePath);
     // var permission = await checkPermission(uploadPath, filePath);

@@ -21,7 +21,28 @@ void main() async {
     Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
     Util.sid = sid;
     Util.cookie = smid;
-    needLogin = false;
+    //如果开启了自动登录，则判断当前登录状态
+
+    String autoLogin = await Util.getStorage("auto_login");
+    if (autoLogin == "1") {
+      var checkLogin = await Api.shareList();
+      if (!checkLogin['success']) {
+        //如果登录失效，尝试重新登录
+        String account = await Util.getStorage("account");
+        String password = await Util.getStorage("password");
+        var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password);
+        if (loginRes['success'] == true) {
+          //重新登录成功
+          Util.setStorage("sid", loginRes['data']['sid']);
+          Util.sid = loginRes['data']['sid'];
+          needLogin = false;
+        } else {
+          needLogin = true;
+        }
+      } else {
+        needLogin = false;
+      }
+    }
   }
   runApp(MyApp(needLogin));
   if (Platform.isAndroid) {

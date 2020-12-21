@@ -76,12 +76,19 @@ class DashboardState extends State<Dashboard> {
     //   }
     // }
     var init = await Api.initData();
+    print(init['data']['Session']);
     if (init['success']) {
       setState(() {
-        widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
-        applications = init['data']['UserSettings']['Desktop']['appview_order'];
-        hostname = init['data']['Session']['hostname'];
-        strings = init['data']['Strings'];
+        if (init['data']['UserSettings'] != null) {
+          widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
+          applications = init['data']['UserSettings']['Desktop']['appview_order'];
+        }
+        if (init['data']['Session'] != null) {
+          hostname = init['data']['Session']['hostname'];
+        }
+        if (init['data']['Strings'] != null) {
+          strings = init['data']['Strings'];
+        }
       });
     }
   }

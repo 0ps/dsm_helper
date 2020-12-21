@@ -11,6 +11,30 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
   bool checking = false;
+  bool ssh;
+  bool telnet;
+
+  bool sshLoading = true;
+  String sshPort;
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  getData() async {
+    var res = await Api.terminalInfo();
+    if (res['success']) {
+      setState(() {
+        ssh = res['data']['enable_ssh'];
+        telnet = res['data']['enable_telnet'];
+        sshPort = res['data']['ssh_port'].toString();
+        sshLoading = false;
+      });
+    }
+    print(res);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,11 +156,14 @@ class _SettingState extends State<Setting> {
                           children: [
                             Image.asset(
                               "assets/icons/shutdown.png",
-                              width: 50,
+                              width: 40,
+                            ),
+                            SizedBox(
+                              height: 5,
                             ),
                             Text(
                               "关机",
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: 16),
                             )
                           ],
                         ),
@@ -242,13 +269,68 @@ class _SettingState extends State<Setting> {
                           children: [
                             Image.asset(
                               "assets/icons/reboot.png",
-                              width: 50,
+                              width: 40,
+                            ),
+                            SizedBox(
+                              height: 5,
                             ),
                             Text(
                               "重启",
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: 16),
                             )
                           ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () async {
+                          if (ssh == null) {
+                            Util.toast("未获取到SSH状态，正在重试");
+                            getData();
+                          } else {
+                            setState(() {
+                              sshLoading = true;
+                            });
+                            await Api.setTerminal(!ssh, telnet, sshPort);
+                            await getData();
+                          }
+                        },
+                        child: NeuCard(
+                          // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          curveType: ssh == null
+                              ? CurveType.convex
+                              : ssh
+                                  ? CurveType.emboss
+                                  : CurveType.flat,
+                          bevel: 20,
+                          child: Column(
+                            children: [
+                              sshLoading
+                                  ? CupertinoActivityIndicator(
+                                      radius: 20,
+                                    )
+                                  : Image.asset(
+                                      "assets/icons/ssh.png",
+                                      width: 40,
+                                    ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "SSH",
+                                style: TextStyle(fontSize: 16),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),

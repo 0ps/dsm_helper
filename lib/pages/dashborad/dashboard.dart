@@ -1299,7 +1299,7 @@ class DashboardState extends State<Dashboard> {
                             ],
                           ),
                         ),
-                        if (appNotify != null)
+                        if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null)
                           Positioned(
                             right: 30,
                             child: Badge(
@@ -1363,7 +1363,7 @@ class DashboardState extends State<Dashboard> {
                             ],
                           ),
                         ),
-                        if (appNotify != null)
+                        if (appNotify != null && appNotify['SYNO.SDS.PkgManApp.Instance'] != null)
                           Positioned(
                             right: 30,
                             child: Badge(
@@ -1474,7 +1474,7 @@ class DashboardState extends State<Dashboard> {
                             ],
                           ),
                         ),
-                        if (appNotify != null)
+                        if (appNotify != null && appNotify['SYNO.SDS.SecurityScan.Instance'] != null)
                           Positioned(
                             right: 30,
                             child: Badge(

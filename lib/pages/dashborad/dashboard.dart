@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/badge.dart';
@@ -1433,44 +1434,52 @@ class DashboardState extends State<Dashboard> {
                       runSpacing: 20,
                       children: [
                         if (applications.contains("SYNO.SDS.AdminCenter.Application"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            height: 110,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      Image.asset(
-                                        "assets/applications/control_panel.png",
-                                        height: 45,
-                                        width: 45,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text("控制面板"),
-                                    ],
-                                  ),
-                                ),
-                                if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null)
-                                  Positioned(
-                                    right: 30,
-                                    child: Badge(
-                                      appNotify['SYNO.SDS.AdminCenter.Application']['unread'],
-                                      size: 20,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                return ControlPanel(system, volumes, disks);
+                              }));
+                            },
+                            child: NeuCard(
+                              width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                              height: 110,
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              curveType: CurveType.flat,
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              bevel: 20,
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: [
+                                        Image.asset(
+                                          "assets/applications/control_panel.png",
+                                          height: 45,
+                                          width: 45,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text("控制面板"),
+                                      ],
                                     ),
                                   ),
-                              ],
+                                  if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null)
+                                    Positioned(
+                                      right: 30,
+                                      child: Badge(
+                                        appNotify['SYNO.SDS.AdminCenter.Application']['unread'],
+                                        size: 20,
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         if (applications.contains("SYNO.SDS.EzInternet.Instance"))

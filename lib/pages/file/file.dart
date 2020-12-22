@@ -679,29 +679,31 @@ class FilesState extends State<Files> {
                                             style: TextStyle(fontSize: 18),
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 16,
-                                        ),
-                                        NeuButton(
-                                          onPressed: () async {
-                                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                              return Share(
-                                                paths: [file['path']],
-                                                fileRequest: true,
-                                              );
-                                            }));
-                                          },
-                                          decoration: NeumorphicDecoration(
-                                            color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(25),
+                                        if (file['isdir']) ...[
+                                          SizedBox(
+                                            height: 16,
                                           ),
-                                          bevel: 5,
-                                          padding: EdgeInsets.symmetric(vertical: 10),
-                                          child: Text(
-                                            "创建文件请求",
-                                            style: TextStyle(fontSize: 18),
+                                          NeuButton(
+                                            onPressed: () async {
+                                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                                return Share(
+                                                  paths: [file['path']],
+                                                  fileRequest: true,
+                                                );
+                                              }));
+                                            },
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(25),
+                                            ),
+                                            bevel: 5,
+                                            padding: EdgeInsets.symmetric(vertical: 10),
+                                            child: Text(
+                                              "创建文件请求",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                         SizedBox(
                                           height: 16,
                                         ),

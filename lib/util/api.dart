@@ -56,7 +56,7 @@ class Api {
     return await Util.get("auth.cgi", host: host, data: data);
   }
 
-  static Future<Map> shareList() async {
+  static Future<Map> shareList({List<String> additional = const ["perm", "time", "size"]}) async {
     return await Util.post("entry.cgi", data: {
       "api": '"SYNO.FileStation.List"',
       "method": '"list_share"',
@@ -66,9 +66,41 @@ class Api {
       "limit": 1000,
       "sort_by": '"name"',
       "sort_direction": '"asc"',
-      "additional": '["perm", "time", "size"]',
+      "additional": jsonEncode(additional),
     });
   }
+
+  static Future<Map> shareCore({List<String> additional = const []}) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.Core.Share"',
+      "method": '"list"',
+      "version": 1,
+      "_sid": Util.sid,
+      "shareType": '"all"',
+      "additional": jsonEncode(additional),
+    });
+  }
+
+  static Future<Map> deleteSharedFolderTask(List<String> path) async {
+    var data = {
+      "api": '"SYNO.Core.Share"',
+      "method": '"delete"',
+      "version": 1,
+      "_sid": Util.sid,
+      "name": json.encode(path),
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  // static Future<Map> deleteSharedFolderResult(String taskId) async {
+  //   return await Util.post("entry.cgi", data: {
+  //     "taskid": taskId,
+  //     "api": '"SYNO.FileStation.Delete"',
+  //     "method": '"status"',
+  //     "version": 2,
+  //     "_sid": Util.sid,
+  //   });
+  // }
 
   static Future<Map> fileList(String path) async {
     return await Util.post("entry.cgi", data: {
@@ -532,5 +564,18 @@ class Api {
     var result = await Util.upload(url, data: data, cancelToken: cancelToken, onSendProgress: onSendProgress);
     // print(result);
     return result;
+  }
+
+  static Future<Map> volumes() async {
+    var data = {
+      "limit": -1,
+      "offset": 0,
+      "location": '"internal"',
+      "api": "SYNO.Core.Storage.Volume",
+      "version": 1,
+      "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
   }
 }

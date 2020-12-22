@@ -45,7 +45,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
     return NeuCard(
       decoration: NeumorphicDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
       ),
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       bevel: 10,
@@ -409,7 +409,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                     NeuCard(
                       decoration: NeumorphicDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       margin: EdgeInsets.only(left: 20, right: 20),
                       bevel: 10,
@@ -677,7 +677,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                     NeuCard(
                       decoration: NeumorphicDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
                       bevel: 10,
@@ -790,7 +790,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                           NeuCard(
                             decoration: NeumorphicDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             margin: EdgeInsets.only(top: 20, left: 20, right: 20),
                             bevel: 10,

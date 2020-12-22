@@ -267,7 +267,8 @@ class Util {
   }
 
   static Future<String> getLocalPath() async {
-    final directory = Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationDocumentsDirectory();
+    // final directory = Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationDocumentsDirectory();
+    final directory = Platform.isAndroid ? Directory("/storage/emulated/0/dsm_helper") : await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
@@ -302,13 +303,13 @@ class Util {
     }
     String savePath = await getLocalPath() + "/Download";
     if (!Directory(savePath).existsSync()) {
-      Directory(savePath).create();
+      await Directory(savePath).create(recursive: true);
     }
     String taskId = await FlutterDownloader.enqueue(url: url, fileName: saveName, savedDir: savePath, showNotification: true, openFileFromNotification: true);
     return taskId;
   }
 
-  static String formatSize(int size, {int format = 1024}) {
+  static String formatSize(num size, {int format = 1024}) {
     if (size < format) {
       return "${size}B";
     } else if (size < pow(format, 2)) {

@@ -32,7 +32,6 @@ class _SettingState extends State<Setting> {
         sshLoading = false;
       });
     }
-    print(res);
   }
 
   @override

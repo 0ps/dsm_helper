@@ -239,7 +239,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                 Row(
                   children: [
                     Text(
-                      "${volume['deploy_path'].toString().replaceFirst("volume_", "存储空间 ")}",
+                      "${volume['deploy_path'] != null ? volume['deploy_path'].toString().replaceFirst("volume_", "存储空间 ") : volume['id'].toString().replaceFirst("volume_", "存储空间 ")}",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
@@ -303,7 +303,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                 Row(
                   children: [
                     Text(
-                      "${disk['longName'].toString().replaceFirst("Disk", "硬盘")}",
+                      "${disk['longName'].toString().replaceFirst("Disk", "硬盘").replaceFirst("Drive", "硬盘")}",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
@@ -660,8 +660,8 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == true ? "警告" : "正常"}",
-                                    style: TextStyle(color: widget.system['temperature_warning'] ? Colors.red : Colors.green),
+                                    "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
+                                    style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -753,31 +753,32 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                         ],
                       ),
                     ),
-                    NeuCard(
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                      bevel: 10,
-                      curveType: CurveType.flat,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 20, left: 20),
-                            child: Text(
-                              "外接设备",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    if (usbDev.length > 0)
+                      NeuCard(
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                        bevel: 10,
+                        curveType: CurveType.flat,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 20, left: 20),
+                              child: Text(
+                                "外接设备",
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
                             ),
-                          ),
-                          ...usbDev.map(_buildDevItem).toList(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                        ],
+                            ...usbDev.map(_buildDevItem).toList(),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 network == null

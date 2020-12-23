@@ -81,13 +81,72 @@ class Api {
     });
   }
 
-  static Future<Map> deleteSharedFolderTask(List<String> path) async {
+  static Future<Map> addSharedFolder(
+    String name,
+    String volPath,
+    String desc, {
+    bool encryption = false,
+    String password = "",
+    bool recycleBin = false,
+    bool recycleBinAdminOnly = false,
+    bool hidden: false,
+    // bool hideUnreadable: false,
+    bool enableShareCow: false,
+    bool enableShareCompress: false,
+    String shareQuota: "",
+  }) async {
+    //"{"name":"test","vol_path":"/volume3","desc":"test","hidden":true,"enable_recycle_bin":true,"recycle_bin_admin_only":true,"hide_unreadable":true,"enable_share_cow":true,"enable_share_compress":true,"share_quota":1024,"name_org":""}"
+    Map shareInfo = {
+      "name": "${name}",
+      "vol_path": volPath,
+      "desc": desc,
+      "name_org": "",
+    };
+    if (encryption) {
+      shareInfo['encryption'] = true;
+      shareInfo['enc_passwd'] = password;
+    }
+    if (recycleBin) {
+      shareInfo['enable_recycle_bin'] = true;
+    }
+    if (recycleBinAdminOnly) {
+      shareInfo['recycle_bin_admin_only'] = true;
+    }
+    if (hidden) {
+      shareInfo['hidden'] = true;
+      shareInfo['hide_unreadable'] = true;
+    }
+    if (enableShareCow) {
+      shareInfo['enable_share_cow'] = true;
+      if (enableShareCompress) {
+        shareInfo['enable_share_compress'] = true;
+      }
+    }
+    if (shareQuota != "") {
+      shareInfo['enable_share_compress'] = num.parse(shareQuota);
+    }
+    var data = {
+      "api": '"SYNO.Core.Share"',
+      "method": '"create"',
+      "version": 1,
+      "_sid": Util.sid,
+      "name": name,
+      "shareinfo": jsonEncode(shareInfo),
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  // api: SYNO.Core.User.PasswordConfirm
+  // method: auth
+  // version: 1
+  // __cIpHeRtExT: {"rsa":"DgxTALmFkPtaeA0Koo7ZT6WO0rObNh+AnHCfsN/AHcLh1JnInMNfVbXIDyWVDbPYUtlFh/mzdJCXh1/i/IPoMo3aR17zyJ89FJ/fVhT3/Hcw4kaNP6cZDTW259EZiJ61HCJ+UWsTRLfafhuCZtu+5wMyEzelgcf9nipu5PdNv6tDjeYpL2q3z36OJL70BK0+m+R9ogaua6yMIk+0soPHUlqLJ6pq77ZoYFob1u08v9mNGKIUPanfFk8VZcxbKCZOWquHFYmKf+fry0/Ip4Zn7FhzDVZdQD/Vu0zP66Sf4cdUgjmepxedonFkiVW79DqssnQUqprriFOosQISZlZjSuLTfLEN9SvZB3WCGeoy8NVu/PfN4uOUqktNPB1nre0S5lERbnDpHl2DVAry8MouGNnNSrJOakU3QRCtXwwhFnw2aHZ0uzAY9+Rybb6hSMMnoYyiwAb/rmRq+OlGOx9GdAnNMS1Ddhs61+YCMoYXcdyPqyHR5VrjTiPptej9KXzwIio9U+InCJXseRqvhIVOJWaJrz7Nw5rxrvJUC4llV48QdMRX0y0GFeQyFUkqMwvX8KQn/6EtNUVzNrm+NmPBVTlwhGcryUMMlrLLNzzUiOBTWVYcJxSljRSMhlgm5tP2E8l6Wp1660AizbspCI7lvYCYHGG4EjTcjIhkAUh/USs=","aes":"U2FsdGVkX18vXNyLWW8eyi8S8CEgOStKeKSsEBYXFStQM0JcSH2K7TKTiQHa270bzwuTUDwxxOIsRVNFnvGXrQlBl7+KdPfqy/pIFTu1UKg="}
+  static Future<Map> deleteSharedFolder(List<String> name) async {
     var data = {
       "api": '"SYNO.Core.Share"',
       "method": '"delete"',
       "version": 1,
       "_sid": Util.sid,
-      "name": json.encode(path),
+      "name": json.encode(name),
     };
     return await Util.post("entry.cgi", data: data);
   }

@@ -85,10 +85,7 @@ class DashboardState extends State<Dashboard> {
           if (init['data']['UserSettings']['SYNO.SDS._Widget.Instance'] != null) {
             widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
           }
-          print(init['data']['UserSettings']['Desktop']);
           applications = init['data']['UserSettings']['Desktop']['appview_order'] ?? init['data']['UserSettings']['Desktop']['valid_appview_order'];
-          print("applications");
-          print(applications);
         }
         if (init['data']['Session'] != null) {
           hostname = init['data']['Session']['hostname'];
@@ -107,6 +104,10 @@ class DashboardState extends State<Dashboard> {
       return 1.0 * pow(1024, 2);
     } else if (maxNetworkSpeed < pow(1024, 2) * 10) {
       return 2.0 * pow(1024, 2);
+    } else if (maxNetworkSpeed < pow(1024, 2) * 20) {
+      return 4.0 * pow(1024, 2);
+    } else if (maxNetworkSpeed < pow(1024, 2) * 40) {
+      return 8.0 * pow(1024, 2);
     } else if (maxNetworkSpeed < pow(1024, 2) * 50) {
       return 10.0 * pow(1024, 2);
     } else if (maxNetworkSpeed < pow(1024, 2) * 100) {
@@ -581,88 +582,91 @@ class DashboardState extends State<Dashboard> {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: EdgeInsets.all(10),
-                  child: LineChart(
-                    LineChartData(
-                      lineTouchData: LineTouchData(
-                        touchTooltipData: LineTouchTooltipData(
-                            tooltipBgColor: Colors.white.withOpacity(0.6),
-                            tooltipRoundedRadius: 20,
-                            fitInsideHorizontally: true,
-                            fitInsideVertically: true,
-                            getTooltipItems: (items) {
-                              return [
-                                LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
-                                LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
-                              ];
-                            }),
-                      ),
-                      gridData: FlGridData(
-                        show: false,
-                      ),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        bottomTitles: SideTitles(
-                          showTitles: false,
-                          reservedSize: 22,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: LineChart(
+                      LineChartData(
+                        lineTouchData: LineTouchData(
+                          touchTooltipData: LineTouchTooltipData(
+                              tooltipBgColor: Colors.white.withOpacity(0.6),
+                              tooltipRoundedRadius: 20,
+                              fitInsideHorizontally: true,
+                              fitInsideVertically: true,
+                              getTooltipItems: (items) {
+                                return [
+                                  LineTooltipItem("上传：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.blue)),
+                                  LineTooltipItem("下载：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.green)),
+                                ];
+                              }),
                         ),
-                        leftTitles: SideTitles(
-                          showTitles: true,
-                          getTextStyles: (value) => const TextStyle(
-                            color: Color(0xff67727d),
-                            fontSize: 12,
-                          ),
-                          getTitles: chartTitle,
-                          // getTitles: (value) {
-                          //   value = value / 1000 / 1000;
-                          //   return (value.floor() * 1000).toString();
-                          // },
-                          reservedSize: 28,
-                          interval: chartInterval,
+                        gridData: FlGridData(
+                          show: false,
                         ),
-                      ),
-                      // maxY: 20,
-                      borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: networks.map((network) {
-                            return FlSpot(networks.indexOf(network).toDouble(), network[0]['tx'].toDouble());
-                          }).toList(),
-                          isCurved: true,
-                          colors: [
-                            Colors.blue,
-                          ],
-                          barWidth: 2,
-                          isStrokeCapRound: true,
-                          dotData: FlDotData(
-                            show: false,
+                        titlesData: FlTitlesData(
+                          show: true,
+                          bottomTitles: SideTitles(
+                            showTitles: false,
+                            reservedSize: 22,
                           ),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            colors: [Colors.blue.withOpacity(0.2)],
+                          leftTitles: SideTitles(
+                            showTitles: true,
+                            getTextStyles: (value) => const TextStyle(
+                              color: Color(0xff67727d),
+                              fontSize: 12,
+                            ),
+                            getTitles: chartTitle,
+                            // getTitles: (value) {
+                            //   value = value / 1000 / 1000;
+                            //   return (value.floor() * 1000).toString();
+                            // },
+                            reservedSize: 28,
+                            interval: chartInterval,
                           ),
                         ),
-                        LineChartBarData(
-                          spots: networks.map((network) {
-                            return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
-                          }).toList(),
-                          isCurved: true,
-                          colors: [
-                            Colors.green,
-                          ],
-                          barWidth: 2,
-                          isStrokeCapRound: true,
-                          dotData: FlDotData(
-                            show: false,
-                          ),
-                          belowBarData: BarAreaData(
-                            show: true,
+                        // maxY: 20,
+                        borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: networks.map((network) {
+                              return FlSpot(networks.indexOf(network).toDouble(), network[0]['tx'].toDouble());
+                            }).toList(),
+                            isCurved: true,
                             colors: [
-                              Colors.green.withOpacity(0.2),
+                              Colors.blue,
                             ],
+                            barWidth: 2,
+                            isStrokeCapRound: true,
+                            dotData: FlDotData(
+                              show: false,
+                            ),
+                            belowBarData: BarAreaData(
+                              show: true,
+                              colors: [Colors.blue.withOpacity(0.2)],
+                            ),
                           ),
-                        ),
-                      ],
+                          LineChartBarData(
+                            spots: networks.map((network) {
+                              return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
+                            }).toList(),
+                            isCurved: true,
+                            colors: [
+                              Colors.green,
+                            ],
+                            barWidth: 2,
+                            isStrokeCapRound: true,
+                            dotData: FlDotData(
+                              show: false,
+                            ),
+                            belowBarData: BarAreaData(
+                              show: true,
+                              colors: [
+                                Colors.green.withOpacity(0.2),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

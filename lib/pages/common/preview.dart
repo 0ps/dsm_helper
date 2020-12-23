@@ -272,58 +272,55 @@ class MySwiperPlugin extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<int>(
       builder: (BuildContext context, data) {
-        return DefaultTextStyle(
-          style: TextStyle(),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  NeuButton(
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    onPressed: () {
-                      print(index);
-                      Util.saveImage(pics[index], context: context).then((res) {
-                        if (res['code'] == 1) {
-                          Util.toast("已保存到相册");
-                        } else {
-                          Util.toast("图片下载失败");
-                        }
-                      });
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.file_download,
-                          size: 13,
-                        ),
-                        Text(
-                          " 保存图片",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ],
-                    ),
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  NeuCard(
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    curveType: CurveType.flat,
-                    bevel: 10,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      "${data.data + 1} / ${pics.length}",
-                      style: TextStyle(fontSize: 12),
-                    ),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  onPressed: () {
+                    print(index);
+                    Util.saveImage(pics[index], context: context).then((res) {
+                      if (res['code'] == 1) {
+                        Util.toast("已保存到相册");
+                      } else {
+                        Util.toast("图片下载失败");
+                      }
+                    });
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.file_download,
+                        size: 13,
+                      ),
+                      Text(
+                        " 保存图片",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                NeuCard(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  curveType: CurveType.flat,
+                  bevel: 10,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Text(
+                    "${data.data + 1} / ${pics.length}",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+              ],
             ),
           ),
         );

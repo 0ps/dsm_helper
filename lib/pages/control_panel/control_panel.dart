@@ -1,4 +1,4 @@
-import 'package:dsm_helper/pages/control_panel/shared_folders.dart';
+import 'shared_folders/shared_folders.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

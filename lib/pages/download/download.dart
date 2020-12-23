@@ -19,7 +19,6 @@ class Download extends StatefulWidget {
 class DownloadState extends State<Download> {
   List<DownloadTask> tasks = [];
   bool loading = true;
-  bool multiSelect = false;
   List<DownloadTask> selectedTasks = [];
   Timer timer;
   @override
@@ -115,7 +114,7 @@ class DownloadState extends State<Download> {
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
-          "$progress",
+          "$progress%",
           style: TextStyle(fontSize: 10, color: Colors.white),
         ),
       );
@@ -144,44 +143,28 @@ class DownloadState extends State<Download> {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20, right: 20),
       child: NeuButton(
-        onLongPress: () {
-          setState(() {
-            multiSelect = true;
-            selectedTasks.add(task);
-          });
-        },
         onPressed: () async {
-          if (multiSelect) {
-            setState(() {
-              if (selectedTasks.contains(task)) {
-                selectedTasks.remove(task);
-              } else {
-                selectedTasks.add(task);
-              }
-            });
-          } else {
-            if (fileType == FileType.image) {
-              //获取当前目录全部图片文件
-              List<String> images = [];
-              int index = 0;
-              for (int i = 0; i < tasks.length; i++) {
-                if (task.status == DownloadTaskStatus.complete && Util.fileType(task.filename) == FileType.image) {
-                  images.add(tasks[i].savedDir + "/" + tasks[i].filename);
-                  if (tasks[i] == task) {
-                    index = images.length - 1;
-                  }
+          if (fileType == FileType.image) {
+            //获取当前目录全部图片文件
+            List<String> images = [];
+            int index = 0;
+            for (int i = 0; i < tasks.length; i++) {
+              if (task.status == DownloadTaskStatus.complete && Util.fileType(task.filename) == FileType.image) {
+                images.add(tasks[i].savedDir + "/" + tasks[i].filename);
+                if (tasks[i] == task) {
+                  index = images.length - 1;
                 }
               }
-              Navigator.of(context).push(TransparentMaterialPageRoute(builder: (context) {
-                return PreviewPage(
-                  images,
-                  index,
-                  network: false,
-                );
-              }));
-            } else {
-              FlutterDownloader.open(taskId: task.taskId);
             }
+            Navigator.of(context).push(TransparentMaterialPageRoute(builder: (context) {
+              return PreviewPage(
+                images,
+                index,
+                network: false,
+              );
+            }));
+          } else {
+            FlutterDownloader.open(taskId: task.taskId);
           }
         },
         // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -236,104 +219,85 @@ class DownloadState extends State<Download> {
             ),
             AnimatedSwitcher(
               duration: Duration(milliseconds: 200),
-              child: multiSelect
-                  ? NeuCard(
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.all(5),
-                      bevel: 5,
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: selectedTasks.contains(task)
-                            ? Icon(
-                                CupertinoIcons.checkmark_alt,
-                                color: Color(0xffff9813),
-                              )
-                            : null,
-                      ),
-                    )
-                  : NeuButton(
-                      onPressed: () {
-                        showCupertinoModalPopup(
-                          context: context,
-                          builder: (context) {
-                            return Material(
-                              color: Colors.transparent,
-                              child: NeuCard(
-                                width: double.infinity,
-                                padding: EdgeInsets.all(22),
+              child: NeuButton(
+                onPressed: () {
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (context) {
+                      return Material(
+                        color: Colors.transparent,
+                        child: NeuCard(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(22),
+                          bevel: 5,
+                          curveType: CurveType.emboss,
+                          decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                "选择操作",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                height: 22,
+                              ),
+                              NeuButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  await FlutterDownloader.remove(taskId: task.taskId, shouldDeleteContent: true);
+                                  await getData();
+                                },
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
                                 bevel: 5,
-                                curveType: CurveType.emboss,
-                                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                      "选择操作",
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(
-                                      height: 22,
-                                    ),
-                                    NeuButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                        await FlutterDownloader.remove(taskId: task.taskId, shouldDeleteContent: true);
-                                        await getData();
-                                      },
-                                      decoration: NeumorphicDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(25),
-                                      ),
-                                      bevel: 5,
-                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                      child: Text(
-                                        "删除",
-                                        style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 16,
-                                    ),
-                                    NeuButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                      },
-                                      decoration: NeumorphicDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(25),
-                                      ),
-                                      bevel: 5,
-                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                      child: Text(
-                                        "取消",
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                  ],
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  "删除",
+                                  style: TextStyle(fontSize: 18, color: Colors.redAccent),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      padding: EdgeInsets.only(left: 5, right: 3, top: 4, bottom: 4),
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      bevel: 2,
-                      child: Icon(
-                        CupertinoIcons.right_chevron,
-                        size: 18,
-                      ),
-                    ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              NeuButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                bevel: 5,
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  "取消",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                padding: EdgeInsets.only(left: 5, right: 3, top: 4, bottom: 4),
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                bevel: 2,
+                child: Icon(
+                  CupertinoIcons.right_chevron,
+                  size: 18,
+                ),
+              ),
             ),
             SizedBox(
               width: 20,

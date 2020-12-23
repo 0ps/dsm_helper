@@ -67,8 +67,7 @@ class _UpdateState extends State<Update> {
 
   install() async {
     //检查安装权限
-    print(filePath);
-    OpenResult result = await OpenFile.open(filePath);
+    await OpenFile.open(filePath);
   }
 
   cancel() {

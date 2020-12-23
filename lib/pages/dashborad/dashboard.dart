@@ -178,8 +178,9 @@ class DashboardState extends State<Dashboard> {
               setState(() {
                 ssdCaches = item['data']['ssdCaches'];
                 volumes = item['data']['volumes'];
+                print(volumes);
                 disks = item['data']['disks'];
-
+                print(disks);
                 // print(disks);
               });
               break;
@@ -595,8 +596,8 @@ class DashboardState extends State<Dashboard> {
                               fitInsideVertically: true,
                               getTooltipItems: (items) {
                                 return [
-                                  LineTooltipItem("上传：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.blue)),
-                                  LineTooltipItem("下载：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.green)),
+                                  LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
+                                  LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
                                 ];
                               }),
                         ),

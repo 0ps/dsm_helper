@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:android_intent/android_intent.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
 import 'package:dsm_helper/util/function.dart';

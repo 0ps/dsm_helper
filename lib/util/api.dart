@@ -90,14 +90,14 @@ class Api {
     bool recycleBin = false,
     bool recycleBinAdminOnly = false,
     bool hidden: false,
-    // bool hideUnreadable: false,
+    bool hideUnreadable: false,
     bool enableShareCow: false,
     bool enableShareCompress: false,
     String shareQuota: "",
   }) async {
     //"{"name":"test","vol_path":"/volume3","desc":"test","hidden":true,"enable_recycle_bin":true,"recycle_bin_admin_only":true,"hide_unreadable":true,"enable_share_cow":true,"enable_share_compress":true,"share_quota":1024,"name_org":""}"
     Map shareInfo = {
-      "name": "${name}",
+      "name": "$name",
       "vol_path": volPath,
       "desc": desc,
       "name_org": "",
@@ -114,6 +114,8 @@ class Api {
     }
     if (hidden) {
       shareInfo['hidden'] = true;
+    }
+    if (hideUnreadable) {
       shareInfo['hide_unreadable'] = true;
     }
     if (enableShareCow) {

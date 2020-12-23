@@ -303,7 +303,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                 Row(
                   children: [
                     Text(
-                      "${disk['longName'].toString().replaceFirst("Disk", "硬盘").replaceFirst("Drive", "硬盘")}",
+                      "${disk['longName']}",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     SizedBox(

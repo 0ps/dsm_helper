@@ -4,7 +4,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Label extends StatelessWidget {
   Label(this.name, this.color, {this.fill: false, this.fontSize});

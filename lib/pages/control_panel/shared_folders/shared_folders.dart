@@ -171,8 +171,6 @@ class _SharedFoldersState extends State<SharedFolders> {
   }
 
   Widget _buildFolderItem(folder) {
-    FileType fileType = Util.fileType(folder['name']);
-    String path = folder['path'];
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
       child: Opacity(
@@ -422,29 +420,31 @@ class _SharedFoldersState extends State<SharedFolders> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
-            child: NeuButton(
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: EdgeInsets.all(10),
-              bevel: 5,
-              onPressed: () async {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return AddSharedFolders(volumes);
-                })).then((res) {
-                  if (res != null && res) {
-                    getData();
-                  }
-                });
-              },
-              child: Icon(Icons.add),
-            ),
-          )
-        ],
+        actions: volumes != null && volumes.length > 0
+            ? [
+                Padding(
+                  padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+                  child: NeuButton(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    bevel: 5,
+                    onPressed: () async {
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                        return AddSharedFolders(volumes);
+                      })).then((res) {
+                        if (res != null && res) {
+                          getData();
+                        }
+                      });
+                    },
+                    child: Icon(Icons.add),
+                  ),
+                )
+              ]
+            : null,
       ),
       body: success
           ? Stack(

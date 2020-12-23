@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cool_ui/cool_ui.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dsm_helper/pages/update/update.dart';
 import 'package:dsm_helper/util/api.dart';
@@ -14,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'package:neumorphic/neumorphic.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -142,9 +140,11 @@ class Util {
     if (headers == null) {
       headers = {
         "Cookie": Util.cookie,
+        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5",
       };
     } else {
       headers['Cookie'] = Util.cookie;
+      headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
     }
     Dio dio = new Dio(
       BaseOptions(
@@ -185,6 +185,7 @@ class Util {
       new BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
         contentType: "application/x-www-form-urlencoded",
+        headers: {"Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5"},
       ),
     );
     // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {

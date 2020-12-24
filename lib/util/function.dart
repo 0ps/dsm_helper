@@ -54,6 +54,43 @@ class Util {
     );
   }
 
+  static int versionCompare(String v1, String v2) {
+    String versionName1;
+    String buildNumber1;
+    String versionName2;
+    String buildNumber2;
+    List version1 = v1.split("-");
+    versionName1 = version1[0];
+    if (version1.length > 1) {
+      buildNumber1 = version1[1];
+    }
+    List version2 = v2.split("-");
+    versionName2 = version2[0];
+    if (version2.length > 1) {
+      buildNumber2 = version2[1];
+    }
+    //对比build
+    if (buildNumber1 != null && buildNumber2 != null) {
+      return int.parse(buildNumber1).compareTo(int.parse(buildNumber2));
+    } else {
+      //对比version
+      List versionNames1 = versionName1.split(".");
+      List versionNames2 = versionName2.split(".");
+      int minLength = min(versionNames1.length, versionNames2.length);
+      int position = 0;
+      int diff = 0;
+
+      while (position < minLength) {
+        diff = int.parse(versionNames1[position]) - int.parse(versionNames2[position]);
+        if (diff != 0) {
+          break;
+        }
+        position++;
+      }
+      return diff;
+    }
+  }
+
   static String parseOpTime(String optime) {
     List items = optime.split(":");
     int days = int.parse(items[0]) ~/ 24;

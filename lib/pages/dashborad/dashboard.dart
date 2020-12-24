@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/dashborad/notify.dart';
+import 'package:dsm_helper/pages/packages/packages.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -178,9 +179,9 @@ class DashboardState extends State<Dashboard> {
               setState(() {
                 ssdCaches = item['data']['ssdCaches'];
                 volumes = item['data']['volumes'];
-                print(volumes);
+                // print(volumes);
                 disks = item['data']['disks'];
-                print(disks);
+                // print(disks);
                 // print(disks);
               });
               break;
@@ -1022,11 +1023,23 @@ class DashboardState extends State<Dashboard> {
                     SizedBox(
                       width: 5,
                     ),
-                    Label(
-                      volume['status'] == "normal" ? "正常" : volume['status'],
-                      volume['status'] == "normal" ? Colors.green : Colors.red,
-                      fill: true,
-                    ),
+                    volume['status'] == "normal"
+                        ? Label(
+                            "正常",
+                            Colors.green,
+                            fill: true,
+                          )
+                        : volume['status'] == "background"
+                            ? Label(
+                                "正在检查硬盘",
+                                Colors.lightBlueAccent,
+                                fill: true,
+                              )
+                            : Label(
+                                volume['status'],
+                                Colors.red,
+                                fill: true,
+                              ),
                   ],
                 ),
                 SizedBox(
@@ -1262,38 +1275,45 @@ class DashboardState extends State<Dashboard> {
         break;
     }
 
-    return NeuCard(
-      width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-      curveType: CurveType.flat,
-      decoration: NeumorphicDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      bevel: 20,
-      padding: EdgeInsets.symmetric(vertical: 20),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              children: [
-                icon,
-                SizedBox(
-                  height: 5,
-                ),
-                Text("套件中心"),
-              ],
-            ),
-          ),
-          if (appNotify != null && appNotify[application] != null)
-            Positioned(
-              right: 30,
-              child: Badge(
-                appNotify[application]['unread'],
-                size: 20,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+          return Packages();
+        }));
+      },
+      child: NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  icon,
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("套件中心"),
+                ],
               ),
             ),
-        ],
+            if (appNotify != null && appNotify[application] != null)
+              Positioned(
+                right: 30,
+                child: Badge(
+                  appNotify[application]['unread'],
+                  size: 20,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -1554,43 +1574,50 @@ class DashboardState extends State<Dashboard> {
                             ),
                           ),
                         if (applications.contains("SYNO.SDS.PkgManApp.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      Image.asset(
-                                        "assets/applications/package_center.png",
-                                        height: 45,
-                                        width: 45,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text("套件中心"),
-                                    ],
-                                  ),
-                                ),
-                                if (appNotify != null && appNotify['SYNO.SDS.PkgManApp.Instance'] != null)
-                                  Positioned(
-                                    right: 30,
-                                    child: Badge(
-                                      appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
-                                      size: 20,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                return Packages();
+                              }));
+                            },
+                            child: NeuCard(
+                              width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                              curveType: CurveType.flat,
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: [
+                                        Image.asset(
+                                          "assets/applications/package_center.png",
+                                          height: 45,
+                                          width: 45,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text("套件中心"),
+                                      ],
                                     ),
                                   ),
-                              ],
+                                  if (appNotify != null && appNotify['SYNO.SDS.PkgManApp.Instance'] != null)
+                                    Positioned(
+                                      right: 30,
+                                      child: Badge(
+                                        appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
+                                        size: 20,
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         if (applications.contains("SYNO.SDS.ResourceMonitor.Instance"))

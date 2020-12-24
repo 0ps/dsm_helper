@@ -93,6 +93,7 @@ class Api {
     bool hideUnreadable: false,
     bool enableShareCow: false,
     bool enableShareCompress: false,
+    bool enableShareQuota: false,
     String shareQuota: "",
   }) async {
     //"{"name":"test","vol_path":"/volume3","desc":"test","hidden":true,"enable_recycle_bin":true,"recycle_bin_admin_only":true,"hide_unreadable":true,"enable_share_cow":true,"enable_share_compress":true,"share_quota":1024,"name_org":""}"
@@ -124,9 +125,11 @@ class Api {
         shareInfo['enable_share_compress'] = true;
       }
     }
-    if (shareQuota != "") {
-      shareInfo['enable_share_compress'] = num.parse(shareQuota);
+    if (enableShareQuota) {
+      shareInfo['share_quota'] = num.parse(shareQuota);
     }
+    print(shareInfo);
+    //"{"name":"testc","vol_path":"/volume3","desc":"bjxjbddb","enable_share_cow":true,"enable_share_compress":true,"share_quota":1024,"encryption":true,"enc_passwd":""}"
     var data = {
       "api": '"SYNO.Core.Share"',
       "method": '"create"',
@@ -635,6 +638,68 @@ class Api {
       "api": "SYNO.Core.Storage.Volume",
       "version": 1,
       "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> packages({bool others = false}) async {
+    var data = {
+      "updateSprite": true,
+      "blforcereload": false,
+      "blloadothers": others,
+      "api": "SYNO.Core.Package.Server",
+      "version": 2,
+      "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> installedPackages() async {
+    List<String> additional = [
+      "description",
+      "description_enu",
+      "beta",
+      "distributor",
+      "distributor_url",
+      "maintainer",
+      "maintainer_url",
+      "dsm_apps",
+      "report_beta_url",
+      "support_center",
+      "startable",
+      "installed_info",
+      "support_url",
+      "is_uninstall_pages",
+      "install_type",
+      "autoupdate",
+      "silent_upgrade",
+      "installing_progress",
+      "ctl_uninstall",
+      "updated_at",
+      "status",
+      "url",
+    ];
+    var data = {
+      "additional": jsonEncode(additional),
+      "polling_interval": 15,
+      "force_set_params": true,
+      "api": "SYNO.Core.Package",
+      "version": 2,
+      "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> launchedPackages() async {
+    var data = {
+      "action": "load",
+      "load_disabled_port": true,
+      "api": "SYNO.Core.Polling.Data",
+      "version": 1,
+      "method": "get",
       "_sid": Util.sid,
     };
     return await Util.post("entry.cgi", data: data);

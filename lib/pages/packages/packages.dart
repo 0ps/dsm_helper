@@ -1,6 +1,7 @@
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/cupertino_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
@@ -18,6 +19,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   List installedPackages = [];
   List canUpdatePackages = [];
   List launchedPackages = [];
+  bool loading = false;
   @override
   void initState() {
     _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
@@ -49,6 +51,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   getLaunchedPackages() async {
+    launchedPackages = [];
     var res = await Api.launchedPackages();
     if (res['success']) {
       Map packages = res['data']['packages'];
@@ -60,6 +63,8 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   getInstalledPackages() async {
+    installedPackages = [];
+    canUpdatePackages = [];
     var res = await Api.installedPackages();
     if (res['success']) {
       List installedPackagesInfo = res['data']['packages'];
@@ -156,16 +161,40 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     } else if (package['installed']) {
       String text = "";
       if (package['launched']) {
-        text = "已启动";
+        text = "停用";
       } else if (package['additional'] != null && package['additional']['startable']) {
         text = "启动";
       } else {
         text = "已安装";
       }
       button = NeuButton(
-        onPressed: () {
+        onPressed: () async {
           if (text == "启动") {
-            Util.toast("暂不支持启动套件，敬请期待");
+            setState(() {
+              loading = true;
+            });
+            var res = await Api.launchPackage(package['id'], package['dsm_apps'], "start");
+            if (res['success']) {
+              Util.toast("已启动");
+              await getLaunchedPackages();
+              await getInstalledPackages();
+              setState(() {
+                loading = false;
+              });
+            }
+          } else if (text == "停用") {
+            setState(() {
+              loading = true;
+            });
+            var res = await Api.launchPackage(package['id'], package['dsm_apps'], "stop");
+            if (res['success']) {
+              Util.toast("已停用");
+              await getLaunchedPackages();
+              await getInstalledPackages();
+              setState(() {
+                loading = false;
+              });
+            }
           }
         },
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -175,7 +204,11 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
         ),
         child: Text(
           "$text",
-          style: text == "启动" ? null : TextStyle(color: Colors.grey),
+          style: text == "启动"
+              ? null
+              : text == "停用"
+                  ? TextStyle(color: Colors.red)
+                  : TextStyle(color: Colors.grey),
           textAlign: TextAlign.center,
         ),
       );
@@ -198,6 +231,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   Widget _buildUpdateItem(update) {
     return NeuCard(
       width: (MediaQuery.of(context).size.width - 60) / 2,
+      margin: EdgeInsets.only(bottom: 20),
       curveType: CurveType.flat,
       decoration: NeumorphicDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -211,6 +245,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
             CupertinoExtendedImage(
               update['thumbnail'].last,
               width: 80,
+              height: 80,
             ),
             SizedBox(
               width: 10,
@@ -309,101 +344,124 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
         elevation: 0,
         centerTitle: true,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          NeuCard(
-            width: double.infinity,
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            curveType: CurveType.flat,
-            bevel: 10,
-            child: TabBar(
-              isScrollable: false,
-              controller: _tabController,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              indicator: BubbleTabIndicator(
-                indicatorColor: Theme.of(context).scaffoldBackgroundColor,
-                shadowColor: Util.getAdjustColor(Theme.of(context).scaffoldBackgroundColor, -20),
+          Column(
+            children: [
+              NeuCard(
+                width: double.infinity,
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                curveType: CurveType.flat,
+                bevel: 10,
+                child: TabBar(
+                  isScrollable: false,
+                  controller: _tabController,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  indicator: BubbleTabIndicator(
+                    indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                    shadowColor: Util.getAdjustColor(Theme.of(context).scaffoldBackgroundColor, -20),
+                  ),
+                  tabs: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      child: Text("已安装"),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      child: Text("全部套件"),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      child: Text("社群"),
+                    ),
+                  ],
+                ),
               ),
-              tabs: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Text("已安装"),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    Container(
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        children: [
+                          if (canUpdatePackages.length > 0)
+                            ListView.builder(
+                              itemBuilder: (content, i) {
+                                return _buildUpdateItem(canUpdatePackages[i]);
+                              },
+                              itemCount: canUpdatePackages.length,
+                              shrinkWrap: true,
+                            ),
+                          Wrap(
+                            runSpacing: 20,
+                            spacing: 20,
+                            children: installedPackages.map((package) {
+                              return _buildPackageItem(package, true);
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        children: [
+                          Wrap(
+                            runSpacing: 20,
+                            spacing: 20,
+                            children: packages.map((package) {
+                              return _buildPackageItem(package, false);
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        children: [
+                          Wrap(
+                            runSpacing: 20,
+                            spacing: 20,
+                            children: others.map((package) {
+                              return _buildPackageItem(package, false);
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Text("全部套件"),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Text("社群"),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                Container(
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    children: [
-                      if (canUpdatePackages.length > 0)
-                        ListView.builder(
-                          padding: EdgeInsets.only(bottom: 20),
-                          itemBuilder: (content, i) {
-                            return _buildUpdateItem(canUpdatePackages[i]);
-                          },
-                          itemCount: canUpdatePackages.length,
-                          shrinkWrap: true,
-                        ),
-                      Wrap(
-                        runSpacing: 20,
-                        spacing: 20,
-                        children: installedPackages.map((package) {
-                          return _buildPackageItem(package, true);
-                        }).toList(),
-                      ),
-                    ],
+          if (loading)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
+              child: Center(
+                child: NeuCard(
+                  padding: EdgeInsets.all(50),
+                  curveType: CurveType.flat,
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  child: CupertinoActivityIndicator(
+                    radius: 14,
                   ),
                 ),
-                Container(
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    children: [
-                      Wrap(
-                        runSpacing: 20,
-                        spacing: 20,
-                        children: packages.map((package) {
-                          return _buildPackageItem(package, false);
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    children: [
-                      Wrap(
-                        runSpacing: 20,
-                        spacing: 20,
-                        children: others.map((package) {
-                          return _buildPackageItem(package, false);
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
         ],
       ),
     );

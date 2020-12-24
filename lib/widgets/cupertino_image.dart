@@ -35,10 +35,15 @@ class CupertinoExtendedImage extends StatelessWidget {
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
-            return Image.asset(
-              "assets/icons/image.png",
-              width: 40,
-              height: 40,
+            return Container(
+              width: width,
+              height: height,
+              alignment: Alignment.center,
+              child: Image.asset(
+                "assets/icons/image.png",
+                width: 40,
+                height: 40,
+              ),
             );
             break;
           case LoadState.completed:
@@ -50,10 +55,15 @@ class CupertinoExtendedImage extends StatelessWidget {
             );
             break;
           case LoadState.failed:
-            return Image.asset(
-              "assets/icons/image.png",
-              width: 40,
-              height: 40,
+            return Container(
+              width: width,
+              height: height,
+              alignment: Alignment.center,
+              child: Image.asset(
+                "assets/icons/image.png",
+                width: 40,
+                height: 40,
+              ),
             );
             break;
           default:

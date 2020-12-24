@@ -704,4 +704,18 @@ class Api {
     };
     return await Util.post("entry.cgi", data: data);
   }
+
+  static Future<Map> launchPackage(String id, String app, String method) async {
+    var data = {
+      "id": id,
+      "api": "SYNO.Core.Package.Control",
+      "version": 1,
+      "method": method,
+      "_sid": Util.sid,
+    };
+    if (method == "start") {
+      data["dsm_apps"] = jsonEncode([app]);
+    }
+    return await Util.post("entry.cgi", data: data);
+  }
 }

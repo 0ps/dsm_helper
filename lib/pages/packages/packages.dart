@@ -1,3 +1,4 @@
+import 'package:dsm_helper/pages/packages/detail.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/cupertino_image.dart';
@@ -20,6 +21,9 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   List canUpdatePackages = [];
   List launchedPackages = [];
   bool loading = false;
+  bool loadingAll = true;
+  bool loadingInstalled = true;
+  bool loadingOthers = true;
   @override
   void initState() {
     _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
@@ -35,7 +39,14 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
         packages = res['data']['packages'];
         categories = res['data']['categories'];
       });
-    } else {}
+      setState(() {
+        loadingAll = false;
+      });
+    } else {
+      Util.toast("数据加载失败");
+      Navigator.of(context).pop();
+      return;
+    }
     await getOthers();
     await getLaunchedPackages();
     await getInstalledPackages();
@@ -46,6 +57,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     if (res['success']) {
       setState(() {
         others = res['data']['packages'];
+        loadingOthers = false;
       });
     }
   }
@@ -68,7 +80,9 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     var res = await Api.installedPackages();
     if (res['success']) {
       List installedPackagesInfo = res['data']['packages'];
-
+      setState(() {
+        loadingInstalled = false;
+      });
       installedPackagesInfo.forEach((installedPackageInfo) {
         packages.forEach((package) {
           package['installed'] = package['installed'] ?? false;
@@ -229,104 +243,132 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   Widget _buildUpdateItem(update) {
-    return NeuCard(
-      width: (MediaQuery.of(context).size.width - 60) / 2,
-      margin: EdgeInsets.only(bottom: 20),
-      curveType: CurveType.flat,
-      decoration: NeumorphicDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      bevel: 20,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Row(
-          children: [
-            CupertinoExtendedImage(
-              update['thumbnail'].last,
-              width: 80,
-              height: 80,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    update['dname'],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    update['version'],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ],
+    String thumbnailUrl = update['thumbnail'].last;
+    if (!thumbnailUrl.startsWith("http")) {
+      thumbnailUrl = Util.baseUrl + thumbnailUrl;
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+          return PackageDetail(update);
+        }));
+      },
+      child: NeuCard(
+        width: (MediaQuery.of(context).size.width - 60) / 2,
+        margin: EdgeInsets.only(bottom: 20),
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                height: 80,
+                width: 80,
+                alignment: Alignment.center,
+                child: CupertinoExtendedImage(
+                  thumbnailUrl,
+                  width: 80,
+                  height: 80,
+                ),
               ),
-            ),
-            _buildButton(update),
-          ],
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      update['dname'],
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      update['version'],
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              _buildButton(update),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildPackageItem(package, bool installed) {
-    return NeuCard(
-      width: (MediaQuery.of(context).size.width - 60) / 2,
-      curveType: CurveType.flat,
-      decoration: NeumorphicDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      bevel: 20,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                CupertinoExtendedImage(
-                  package['thumbnail'].last,
-                  width: 80,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 40,
-                  child: Text(
-                    "${package['dname']}",
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
+    String thumbnailUrl = package['thumbnail'].last;
+    if (!thumbnailUrl.startsWith("http")) {
+      thumbnailUrl = Util.baseUrl + thumbnailUrl;
+    }
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+          return PackageDetail(package);
+        }));
+      },
+      child: NeuCard(
+        width: (MediaQuery.of(context).size.width - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                Text(
-                  "${installed ? package['additional']['updated_at'] : getCategoryName(package['category']).length > 0 ? getCategoryName(package['category']).join(",") : package['maintainer']}",
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
+                  CupertinoExtendedImage(
+                    thumbnailUrl,
+                    width: 80,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 40,
+                    child: Text(
+                      "${package['dname']}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Text(
+                    // "${package['category']}",
+                    "${installed ? package['additional']['updated_at'] : package['category'] is List && getCategoryName(package['category']).length > 0 ? getCategoryName(package['category']).join(",") : package['maintainer']}",
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(padding: EdgeInsets.all(20), child: _buildButton(package)),
-        ],
+            Padding(padding: EdgeInsets.all(20), child: _buildButton(package)),
+          ],
+        ),
       ),
     );
   }
@@ -388,54 +430,99 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                   controller: _tabController,
                   children: [
                     Container(
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        children: [
-                          if (canUpdatePackages.length > 0)
-                            ListView.builder(
-                              itemBuilder: (content, i) {
-                                return _buildUpdateItem(canUpdatePackages[i]);
-                              },
-                              itemCount: canUpdatePackages.length,
-                              shrinkWrap: true,
+                      child: loadingInstalled
+                          ? Center(
+                              child: NeuCard(
+                                padding: EdgeInsets.all(50),
+                                curveType: CurveType.flat,
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                bevel: 20,
+                                child: CupertinoActivityIndicator(
+                                  radius: 14,
+                                ),
+                              ),
+                            )
+                          : ListView(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              children: [
+                                if (canUpdatePackages.length > 0)
+                                  ListView.builder(
+                                    itemBuilder: (content, i) {
+                                      return _buildUpdateItem(canUpdatePackages[i]);
+                                    },
+                                    itemCount: canUpdatePackages.length,
+                                    shrinkWrap: true,
+                                  ),
+                                Wrap(
+                                  runSpacing: 20,
+                                  spacing: 20,
+                                  children: installedPackages.map((package) {
+                                    return _buildPackageItem(package, true);
+                                  }).toList(),
+                                ),
+                              ],
                             ),
-                          Wrap(
-                            runSpacing: 20,
-                            spacing: 20,
-                            children: installedPackages.map((package) {
-                              return _buildPackageItem(package, true);
-                            }).toList(),
-                          ),
-                        ],
-                      ),
                     ),
                     Container(
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        children: [
-                          Wrap(
-                            runSpacing: 20,
-                            spacing: 20,
-                            children: packages.map((package) {
-                              return _buildPackageItem(package, false);
-                            }).toList(),
-                          ),
-                        ],
-                      ),
+                      child: loadingAll
+                          ? Center(
+                              child: NeuCard(
+                                padding: EdgeInsets.all(50),
+                                curveType: CurveType.flat,
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                bevel: 20,
+                                child: CupertinoActivityIndicator(
+                                  radius: 14,
+                                ),
+                              ),
+                            )
+                          : ListView(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              children: [
+                                Wrap(
+                                  runSpacing: 20,
+                                  spacing: 20,
+                                  children: packages.map((package) {
+                                    return _buildPackageItem(package, false);
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
                     ),
                     Container(
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                        children: [
-                          Wrap(
-                            runSpacing: 20,
-                            spacing: 20,
-                            children: others.map((package) {
-                              return _buildPackageItem(package, false);
-                            }).toList(),
-                          ),
-                        ],
-                      ),
+                      child: loadingOthers
+                          ? Center(
+                              child: NeuCard(
+                                padding: EdgeInsets.all(50),
+                                curveType: CurveType.flat,
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                bevel: 20,
+                                child: CupertinoActivityIndicator(
+                                  radius: 14,
+                                ),
+                              ),
+                            )
+                          : ListView(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              children: [
+                                Wrap(
+                                  runSpacing: 20,
+                                  spacing: 20,
+                                  children: others.map((package) {
+                                    return _buildPackageItem(package, false);
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
                     ),
                   ],
                 ),

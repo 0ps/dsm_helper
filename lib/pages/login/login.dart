@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +24,7 @@ class _LoginState extends State<Login> {
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _portController = TextEditingController();
+  List servers = [];
   @override
   initState() {
     _portController.value = TextEditingValue(text: port);
@@ -37,6 +40,10 @@ class _LoginState extends State<Login> {
     String password = await Util.getStorage("password");
     String autoLogin = await Util.getStorage("auto_login");
     String rememberPassword = await Util.getStorage("remember_password");
+    String serverString = await Util.getStorage("servers");
+    if (serverString.isNotBlank) {
+      servers = jsonDecode(serverString);
+    }
     if (https.isNotBlank) {
       setState(() {
         this.https = https == "1";
@@ -116,6 +123,41 @@ class _LoginState extends State<Login> {
       }
 
       Util.baseUrl = baseUri;
+
+      //添加服务器记录
+      bool exist = false;
+      for (int i = 0; i < servers.length; i++) {
+        if (servers[i]['https'] == https && servers[i]['host'] == host && servers[i]['port'] == port && servers[i]['account'] == account) {
+          print("账号已存在，更新信息");
+          if (rememberPassword) {
+            servers[i]['password'] = password;
+          } else {
+            servers[i]['password'] = "";
+          }
+
+          servers[i]['remember_password'] = rememberPassword;
+          servers[i]['auto_login'] = autoLogin;
+          exist = true;
+        }
+      }
+      if (!exist) {
+        print("账号不存在");
+        Map server = {
+          "https": https,
+          "host": host,
+          "port": port,
+          "account": account,
+          "remember_password": rememberPassword,
+          "auto_login": autoLogin,
+        };
+        if (rememberPassword) {
+          server['password'] = password;
+        } else {
+          server['password'] = "";
+        }
+        servers.add(server);
+      }
+      Util.setStorage("servers", jsonEncode(servers));
       Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
     } else {
       if (res['error']['code'] == 400) {
@@ -130,7 +172,162 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("群辉助手"),
+        title: Text(
+          "群辉助手",
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        brightness: Brightness.light,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        centerTitle: true,
+        actions: servers.length > 0
+            ? [
+                Padding(
+                  padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+                  child: NeuButton(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    bevel: 5,
+                    onPressed: () {
+                      setState(() {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return Material(
+                              color: Colors.transparent,
+                              child: NeuCard(
+                                width: double.infinity,
+                                bevel: 5,
+                                curveType: CurveType.emboss,
+                                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                child: Padding(
+                                  padding: EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        "选择账号",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      ...servers.map((server) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(bottom: 20),
+                                          child: NeuButton(
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                              print(server);
+                                              // return;
+                                              setState(() {
+                                                https = server['https'];
+                                                host = server['host'];
+                                                _hostController.value = TextEditingValue(text: host);
+                                                port = server['port'];
+                                                _portController.value = TextEditingValue(text: port);
+                                                account = server['account'];
+                                                _accountController.value = TextEditingValue(text: account);
+                                                password = server['password'];
+                                                _passwordController.value = TextEditingValue(text: password);
+                                                autoLogin = server['auto_login'];
+                                                rememberPassword = server['remember_password'];
+                                              });
+                                            },
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            bevel: 20,
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          "${server['account']}",
+                                                          style: TextStyle(fontSize: 18),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}",
+                                                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  NeuButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                      setState(() {
+                                                        servers.remove(server);
+                                                      });
+
+                                                      Util.setStorage("servers", jsonEncode(servers));
+                                                      Util.toast("删除成功");
+                                                    },
+                                                    decoration: NeumorphicDecoration(
+                                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                                      borderRadius: BorderRadius.circular(10),
+                                                    ),
+                                                    bevel: 20,
+                                                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                                    child: Image.asset(
+                                                      "assets/icons/delete.png",
+                                                      width: 20,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 20,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "取消",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      });
+                    },
+                    child: Image.asset(
+                      "assets/icons/history.png",
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
+                )
+              ]
+            : null,
       ),
       body: GestureDetector(
         onTap: () {

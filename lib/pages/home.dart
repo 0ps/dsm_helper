@@ -33,6 +33,9 @@ class _HomeState extends State<Home> {
     if (_currentIndex == 1) {
       value = _filesStateKey.currentState.onWillPop();
     }
+    if (_currentIndex == 2) {
+      value = Util.downloadKey.currentState.onWillPop();
+    }
     value.then((v) {
       if (v) {
         if (lastPopTime == null || DateTime.now().difference(lastPopTime) > Duration(seconds: 2)) {
@@ -56,12 +59,8 @@ class _HomeState extends State<Home> {
         appBar: null,
         body: IndexedStack(
           children: [
-            Dashboard(
-              key: _dashboardStateKey,
-            ),
-            Files(
-              key: _filesStateKey,
-            ),
+            Dashboard(key: _dashboardStateKey),
+            Files(key: _filesStateKey),
             Download(key: Util.downloadKey),
             Setting(),
           ],

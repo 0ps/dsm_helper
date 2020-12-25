@@ -45,6 +45,32 @@ class DownloadState extends State<Download> {
     }
   }
 
+  Future<bool> onWillPop() {
+    // if (multiSelect) {
+    //   setState(() {
+    //     multiSelect = false;
+    //     selectedFiles = [];
+    //   });
+    // } else {
+    //   if (paths.length > 1) {
+    //     paths.removeLast();
+    //     String path = "";
+    //
+    //     if (paths.length == 1) {
+    //       path = "/";
+    //     } else {
+    //       path = paths.join("/").substring(1);
+    //     }
+    //     goPath(path);
+    //   } else {
+    //     print("可以返回");
+    //     return Future.value(true);
+    //   }
+    // }
+
+    return Future.value(true);
+  }
+
   Widget _buildDownloadStatus(DownloadTaskStatus status, int progress) {
     if (status == DownloadTaskStatus.complete) {
       return NeuCard(

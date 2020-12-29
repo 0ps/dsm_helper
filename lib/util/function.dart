@@ -46,6 +46,7 @@ class Util {
   static String sid = "";
   static String baseUrl = "";
   static String cookie = "";
+  static Map strings = {};
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
     Fluttertoast.showToast(

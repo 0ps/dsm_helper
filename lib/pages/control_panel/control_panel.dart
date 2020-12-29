@@ -1,3 +1,7 @@
+import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
+import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
+import 'package:dsm_helper/pages/control_panel/users/users.dart';
+
 import 'shared_folders/shared_folders.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:flutter/cupertino.dart';
@@ -116,60 +120,74 @@ class _ControlPanelState extends State<ControlPanel> {
                           ],
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/users.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "用户账户",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return Users();
+                          }));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/users.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "用户账户",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/groups.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "用户群组",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return UserGroups();
+                          }));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/groups.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "用户群组",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       NeuCard(
@@ -553,32 +571,39 @@ class _ControlPanelState extends State<ControlPanel> {
                           ],
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/task_scheduler.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "任务计划",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return TaskScheduler();
+                          }));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/task_scheduler.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "任务计划",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       NeuCard(

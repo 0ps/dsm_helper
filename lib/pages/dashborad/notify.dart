@@ -5,8 +5,7 @@ import 'package:neumorphic/neumorphic.dart';
 
 class Notify extends StatefulWidget {
   final List notifies;
-  final Map strings;
-  Notify(this.notifies, this.strings);
+  Notify(this.notifies);
   @override
   _NotifyState createState() => _NotifyState();
 }
@@ -27,9 +26,13 @@ class _NotifyState extends State<Notify> {
     List<String> titles = notify['title'].split(":");
     //判断是否在string内
     if (WebManagerStrings[titles[0]] != null && WebManagerStrings[titles[0]][titles[1]] != null) {
-      title = WebManagerStrings[titles[0]][titles[1]];
-    } else if (widget.strings[notify['className']] != null && widget.strings[notify['className']]['common'] != null && widget.strings[notify['className']]['common']['displayname'] != null) {
-      title = widget.strings[notify['className']]['common']['displayname'];
+      if (WebManagerStrings[titles[0]][titles[1]] != null) {
+        title = WebManagerStrings[titles[0]][titles[1]];
+      }
+    } else if (Util.strings[notify['className']][titles[0]] != null && Util.strings[notify['className']][titles[0]][titles[1]] != null) {
+      title = Util.strings[notify['className']][titles[0]][titles[1]];
+    } else if (Util.strings[notify['className']] != null && Util.strings[notify['className']]['common'] != null && Util.strings[notify['className']]['common']['displayname'] != null) {
+      title = Util.strings[notify['className']]['common']['displayname'];
     }
     return NeuCard(
       decoration: NeumorphicDecoration(

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
+import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/dashborad/notify.dart';
+import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/badge.dart';
@@ -36,9 +38,9 @@ class DashboardState extends State<Dashboard> {
   List notifies = [];
   List widgets = [];
   List applications = [];
-  Map strings;
   Map appNotify;
   Map system;
+  Map restoreSizePos;
   bool loading = true;
   bool success = true;
   String hostname = "获取中";
@@ -85,6 +87,7 @@ class DashboardState extends State<Dashboard> {
         if (init['data']['UserSettings'] != null) {
           if (init['data']['UserSettings']['SYNO.SDS._Widget.Instance'] != null) {
             widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
+            restoreSizePos = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['restoreSizePos'];
           }
           applications = init['data']['UserSettings']['Desktop']['appview_order'] ?? init['data']['UserSettings']['Desktop']['valid_appview_order'];
         }
@@ -92,7 +95,7 @@ class DashboardState extends State<Dashboard> {
           hostname = init['data']['Session']['hostname'];
         }
         if (init['data']['Strings'] != null) {
-          strings = init['data']['Strings'];
+          Util.strings = init['data']['Strings'];
         }
       });
     }
@@ -219,6 +222,7 @@ class DashboardState extends State<Dashboard> {
       }
     } else {
       setState(() {
+        loading = false;
         msg = res['msg'] ?? "加载失败，code:${res['error']['code']}";
       });
       if (timer != null) {
@@ -354,43 +358,50 @@ class DashboardState extends State<Dashboard> {
         ),
       );
     } else if (widget == "SYNO.SDS.TaskScheduler.TaskSchedulerWidget" && tasks.length > 0) {
-      return NeuCard(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        bevel: 20,
-        curveType: CurveType.flat,
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icons/task.png",
-                    width: 26,
-                    height: 26,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "计划任务",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ],
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return TaskScheduler();
+          }));
+        },
+        child: NeuCard(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          bevel: 20,
+          curveType: CurveType.flat,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            ),
-            ...tasks.map(_buildTaskItem).toList(),
-            SizedBox(
-              height: 20,
-            ),
-          ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "assets/icons/task.png",
+                      width: 26,
+                      height: 26,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "计划任务",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+              ...tasks.map(_buildTaskItem).toList(),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       );
     } else if (widget == "SYNO.SDS.SystemInfoApp.RecentLogWidget" && latestLog.length > 0) {
@@ -770,6 +781,7 @@ class DashboardState extends State<Dashboard> {
   }
 
   Widget _buildUserItem(user) {
+    user['running'] = user['running'] ?? false;
     DateTime loginTime = DateTime.parse(user['time'].toString().replaceAll("/", "-"));
     DateTime currentTime = DateTime.now();
     Map timeLong = Util.timeLong(currentTime.difference(loginTime).inSeconds);
@@ -778,37 +790,40 @@ class DashboardState extends State<Dashboard> {
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: EdgeInsets.all(10),
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       bevel: 10,
       curveType: CurveType.flat,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              "${user['who']}",
-              overflow: TextOverflow.ellipsis,
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "${user['who']}",
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              "${user['type']}",
-              overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Text(
+                "${user['type']}",
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              "${timeLong['hours'].toString().padLeft(2, "0")}:${timeLong['minutes'].toString().padLeft(2, "0")}:${timeLong['seconds'].toString().padLeft(2, "0")}",
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right,
+            Expanded(
+              child: Text(
+                "${timeLong['hours'].toString().padLeft(2, "0")}:${timeLong['minutes'].toString().padLeft(2, "0")}:${timeLong['seconds'].toString().padLeft(2, "0")}",
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+              ),
             ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          GestureDetector(
-            onTap: () async {
-              if (user['can_be_kicked']) {
+            SizedBox(
+              width: 5,
+            ),
+            NeuButton(
+              onPressed: () async {
+                if (user['running']) {
+                  return;
+                }
                 showCupertinoModalPopup(
                   context: context,
                   builder: (context) {
@@ -843,7 +858,14 @@ class DashboardState extends State<Dashboard> {
                                   child: NeuButton(
                                     onPressed: () async {
                                       Navigator.of(context).pop();
+                                      setState(() {
+                                        user['running'] = true;
+                                      });
                                       var res = await Api.kickConnection({"who": user['who'], "from": user['from']});
+                                      setState(() {
+                                        user['running'] = false;
+                                      });
+
                                       if (res['success']) {
                                         Util.toast("连接已终止");
                                       }
@@ -891,48 +913,101 @@ class DashboardState extends State<Dashboard> {
                     );
                   },
                 );
-              } else {
-                Util.toast("此连接无法被终止");
-              }
-            },
-            child: Icon(
-              Icons.remove_circle_outline,
-              color: Colors.redAccent,
+              },
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(5),
+              bevel: 5,
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: user['running']
+                    ? CupertinoActivityIndicator()
+                    : Icon(
+                        Icons.remove_circle_outline,
+                        color: Colors.red,
+                        size: 18,
+                      ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTaskItem(task) {
+    task['running'] = task['running'] ?? false;
     return NeuCard(
       decoration: NeumorphicDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: EdgeInsets.all(15),
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       bevel: 10,
       curveType: CurveType.flat,
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              "${task['name']}",
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "${task['name']}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              "${task['next_trigger_time']}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Text(
-            "${task['next_trigger_time']}",
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+            SizedBox(
+              width: 5,
+            ),
+            NeuButton(
+              onPressed: () async {
+                if (task['running']) {
+                  return;
+                }
+                setState(() {
+                  task['running'] = true;
+                });
+                var res = await Api.taskRun([task['id']]);
+                setState(() {
+                  task['running'] = false;
+                });
+                if (res['success']) {
+                  Util.toast("任务计划执行成功");
+                } else {
+                  Util.toast("任务计划执行失败，code：${res['error']['code']}");
+                }
+              },
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(5),
+              bevel: 5,
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: task['running']
+                    ? CupertinoActivityIndicator()
+                    : Icon(
+                        CupertinoIcons.play_arrow_solid,
+                        color: Color(0xffff9813),
+                        size: 16,
+                      ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1361,7 +1436,34 @@ class DashboardState extends State<Dashboard> {
               bevel: 5,
               onPressed: () {
                 Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return Notify(notifies, strings);
+                  return WidgetSetting(widgets, restoreSizePos);
+                })).then((res) {
+                  if (res != null) {
+                    setState(() {
+                      widgets = res;
+                    });
+                  }
+                });
+              },
+              child: Image.asset(
+                "assets/icons/edit.png",
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return Notify(notifies);
                 }));
               },
               child: Stack(
@@ -1384,7 +1486,7 @@ class DashboardState extends State<Dashboard> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
       body: loading
@@ -1412,9 +1514,34 @@ class DashboardState extends State<Dashboard> {
                       }).toList(),
                     )
                   : Center(
-                      child: Text(
-                        "无可用小组件",
-                        style: TextStyle(color: Colors.red),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "无可用小组件",
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: 200,
+                            child: NeuButton(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              bevel: 5,
+                              onPressed: () {
+                                getData();
+                              },
+                              child: Text(
+                                ' 添加 ',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     )
               : Center(

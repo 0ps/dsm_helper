@@ -562,13 +562,14 @@ class Api {
     return result;
   }
 
-  static Future<Map> power(String method) async {
+  static Future<Map> power(String method, bool force) async {
     var data = {
-      "api": "SYNO.Core.System",
-      "force": false,
+      "api": '"SYNO.Core.System"',
+      "force": force,
       "local": true,
-      "version": 6,
+      "version": 1,
       "method": method,
+      "_sid": Util.sid,
     };
     return await Util.post("entry.cgi", data: data);
   }
@@ -583,7 +584,6 @@ class Api {
       "method": "set",
       "_sid": Util.sid,
     };
-    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -716,6 +716,99 @@ class Api {
     if (method == "start") {
       data["dsm_apps"] = jsonEncode([app]);
     }
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> taskScheduler() async {
+    var data = {
+      "api": "SYNO.Core.TaskScheduler",
+      "offset": 0,
+      "limit": -1,
+      "sort_by": "next_trigger_time",
+      "sort_direction": "DESC",
+      "version": 1,
+      "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> taskRun(List<int> task) async {
+    var data = {
+      "api": "SYNO.Core.TaskScheduler",
+      "version": 1,
+      "method": "run",
+      "task": jsonEncode(task),
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> taskRecord(int task) async {
+    var data = {
+      "api": "SYNO.Core.TaskScheduler",
+      "version": 1,
+      "method": "view",
+      "id": task,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> taskEnable(int task, bool enable) async {
+    var status = [
+      {
+        "id": task,
+        "enable": enable,
+      }
+    ];
+    var data = {
+      "api": "SYNO.Core.TaskScheduler",
+      "version": 1,
+      "method": "set_enable",
+      "status": jsonEncode(status),
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> users() async {
+    var data = {
+      "api": "SYNO.Core.User",
+      "offset": 0,
+      "limit": -1,
+      "additional": jsonEncode(["email", "description", "expired"]),
+      "version": 1,
+      "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> userGroups() async {
+    var data = {
+      "api": "SYNO.Core.Group",
+      "offset": 0,
+      "limit": -1,
+      "name_only": false,
+      "version": 1,
+      "method": "list",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> userSetting(Map save) async {
+    String dataStr = jsonEncode(jsonEncode(save));
+    var data = {
+      "api": "SYNO.Core.UserSettings",
+      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "method": "apply",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    print(dataStr);
+    print(data['data']);
     return await Util.post("entry.cgi", data: data);
   }
 }

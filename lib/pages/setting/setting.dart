@@ -15,6 +15,8 @@ class _SettingState extends State<Setting> {
   bool telnet;
 
   bool sshLoading = true;
+  bool shutdowning = false;
+  bool rebooting = false;
   String sshPort;
   @override
   void initState() {
@@ -36,6 +38,119 @@ class _SettingState extends State<Setting> {
         sshLoading = false;
         ssh = null;
       });
+    }
+  }
+
+  power(String type, bool force) async {
+    setState(() {
+      if (type == "shutdown") {
+        shutdowning = true;
+      } else {
+        rebooting = true;
+      }
+    });
+    var res = await Api.power(type, force);
+    setState(() {
+      if (type == "shutdown") {
+        shutdowning = false;
+      } else {
+        rebooting = false;
+      }
+    });
+    if (res['success']) {
+      Util.toast("已发送指令");
+    } else if (res['error']['code'] == 117) {
+      List errors = res['error']['errors']['runningTasks'];
+      List msgs = [];
+      for (int i = 0; i < errors.length; i++) {
+        List titles = errors[i].split(":");
+        if (titles.length == 3) {
+          msgs.add(Util.strings[titles[0]][titles[1]][titles[2]]);
+        }
+        //系统正在处理下列任务。现在关机可能会导致套件异常或数据丢失。是否确定要继续？
+        showCupertinoModalPopup(
+          context: context,
+          builder: (context) {
+            return Material(
+              color: Colors.transparent,
+              child: NeuCard(
+                width: double.infinity,
+                padding: EdgeInsets.all(22),
+                bevel: 5,
+                curveType: CurveType.emboss,
+                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "系统正在处理下列任务。现在关机可能会导致套件异常或数据丢失。是否确定要继续？",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      "${msgs.join("\n")}",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                    ),
+                    SizedBox(
+                      height: 22,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: NeuButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              power("shutdown", true);
+                            },
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            bevel: 5,
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              "强制${type == "shutdown" ? "关机" : "重启"}",
+                              style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Expanded(
+                          child: NeuButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                            },
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            bevel: 5,
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              "取消",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }
+      print(msgs);
+    } else {
+      Util.toast("操作失败，code:${res['error']['code']}");
     }
   }
 
@@ -66,6 +181,9 @@ class _SettingState extends State<Setting> {
                     Expanded(
                       child: NeuButton(
                         onPressed: () async {
+                          if (shutdowning) {
+                            return;
+                          }
                           showCupertinoModalPopup(
                             context: context,
                             builder: (context) {
@@ -100,10 +218,7 @@ class _SettingState extends State<Setting> {
                                             child: NeuButton(
                                               onPressed: () async {
                                                 Navigator.of(context).pop();
-                                                var init = await Api.power("shutdown");
-                                                if (init['success']) {
-                                                  Util.toast("已发送指令");
-                                                }
+                                                power("shutdown", false);
                                               },
                                               decoration: NeumorphicDecoration(
                                                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -112,7 +227,7 @@ class _SettingState extends State<Setting> {
                                               bevel: 5,
                                               padding: EdgeInsets.symmetric(vertical: 10),
                                               child: Text(
-                                                "确认删除",
+                                                "确认关机",
                                                 style: TextStyle(fontSize: 18, color: Colors.redAccent),
                                               ),
                                             ),
@@ -158,10 +273,14 @@ class _SettingState extends State<Setting> {
                         bevel: 20,
                         child: Column(
                           children: [
-                            Image.asset(
-                              "assets/icons/shutdown.png",
-                              width: 40,
-                            ),
+                            shutdowning
+                                ? CupertinoActivityIndicator(
+                                    radius: 20,
+                                  )
+                                : Image.asset(
+                                    "assets/icons/shutdown.png",
+                                    width: 40,
+                                  ),
                             SizedBox(
                               height: 5,
                             ),
@@ -179,6 +298,9 @@ class _SettingState extends State<Setting> {
                     Expanded(
                       child: NeuButton(
                         onPressed: () async {
+                          if (rebooting) {
+                            return;
+                          }
                           showCupertinoModalPopup(
                             context: context,
                             builder: (context) {
@@ -213,10 +335,7 @@ class _SettingState extends State<Setting> {
                                             child: NeuButton(
                                               onPressed: () async {
                                                 Navigator.of(context).pop();
-                                                var init = await Api.power("reboot");
-                                                if (init['success']) {
-                                                  Util.toast("已发送指令");
-                                                }
+                                                power("reboot", false);
                                               },
                                               decoration: NeumorphicDecoration(
                                                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -225,7 +344,7 @@ class _SettingState extends State<Setting> {
                                               bevel: 5,
                                               padding: EdgeInsets.symmetric(vertical: 10),
                                               child: Text(
-                                                "确认删除",
+                                                "确认重启",
                                                 style: TextStyle(fontSize: 18, color: Colors.redAccent),
                                               ),
                                             ),
@@ -271,10 +390,14 @@ class _SettingState extends State<Setting> {
                         bevel: 20,
                         child: Column(
                           children: [
-                            Image.asset(
-                              "assets/icons/reboot.png",
-                              width: 40,
-                            ),
+                            rebooting
+                                ? CupertinoActivityIndicator(
+                                    radius: 20,
+                                  )
+                                : Image.asset(
+                                    "assets/icons/reboot.png",
+                                    width: 40,
+                                  ),
                             SizedBox(
                               height: 5,
                             ),

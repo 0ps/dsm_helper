@@ -1518,7 +1518,7 @@ class DashboardState extends State<Dashboard> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "无可用小组件",
+                            "未添加小组件",
                           ),
                           SizedBox(
                             height: 20,
@@ -1533,7 +1533,9 @@ class DashboardState extends State<Dashboard> {
                               ),
                               bevel: 5,
                               onPressed: () {
-                                getData();
+                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                  return WidgetSetting(widgets, restoreSizePos);
+                                }));
                               },
                               child: Text(
                                 ' 添加 ',

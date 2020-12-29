@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:provider/provider.dart';
+
+import 'pages/provider/dark_mode.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,39 +52,113 @@ void main() async {
     // 以下两行 设置android状态栏为透明的沉浸。写在组件渲染之后，是为了在渲染后进行set赋值，覆盖状态栏，写在渲染之前MaterialApp组件会覆盖掉这个值。
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Color(0xFFF4F4F4),
     ));
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final bool needLogin;
   MyApp(this.needLogin);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  getData() async {
+    String darkModeStr = await Util.getStorage("dark_mode");
+    print(darkModeStr);
+    int darkMode = 2;
+    if (darkModeStr.isNotBlank) {
+      darkMode = int.parse(darkModeStr);
+    }
+    // Provider.of<DarkModeProvider>(context, listen: false).changeMode(darkMode);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '群辉助手',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
-        appBarTheme: AppBarTheme(
-          centerTitle: true,
-          elevation: 0,
-          color: Color(0xFFF4F4F4),
-          iconTheme: IconThemeData(color: Colors.black),
-          actionsIconTheme: IconThemeData(color: Colors.black),
-          textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
-          brightness: Brightness.light,
-        ),
-        scaffoldBackgroundColor: Color(0xFFF4F4F4),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: DarkModeProvider()),
+      ],
+      child: Consumer<DarkModeProvider>(
+        builder: (context, darkModeProvider, _) {
+          return darkModeProvider.darkMode == 2
+              ? MaterialApp(
+                  title: '群辉助手',
+                  debugShowCheckedModeBanner: false,
+                  theme: ThemeData.light().copyWith(
+                    appBarTheme: AppBarTheme(
+                      centerTitle: true,
+                      elevation: 0,
+                      color: Color(0xFFF4F4F4),
+                      iconTheme: IconThemeData(color: Colors.black),
+                      actionsIconTheme: IconThemeData(color: Colors.black),
+                      textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
+                      brightness: Brightness.light,
+                    ),
+                    scaffoldBackgroundColor: Color(0xFFF4F4F4),
+                  ),
+                  darkTheme: ThemeData.dark().copyWith(
+                    scaffoldBackgroundColor: Colors.black,
+                    appBarTheme: AppBarTheme(
+                      centerTitle: true,
+                      elevation: 0,
+                      color: Colors.black,
+                      iconTheme: IconThemeData(color: Colors.white),
+                      actionsIconTheme: IconThemeData(color: Colors.white),
+                      textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)),
+                      brightness: Brightness.dark,
+                    ),
+                  ),
+                  home: widget.needLogin ? Login() : Home(),
+                  routes: {
+                    "/login": (BuildContext context) => Login(),
+                    "/home": (BuildContext context) => Home(),
+                  },
+                )
+              : MaterialApp(
+                  title: '群辉助手',
+                  debugShowCheckedModeBanner: false,
+                  theme: darkModeProvider.darkMode == 0
+                      ? ThemeData.light().copyWith(
+                          appBarTheme: AppBarTheme(
+                            centerTitle: true,
+                            elevation: 0,
+                            color: Color(0xFFF4F4F4),
+                            iconTheme: IconThemeData(color: Colors.black),
+                            actionsIconTheme: IconThemeData(color: Colors.black),
+                            textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
+                            brightness: Brightness.light,
+                          ),
+                          scaffoldBackgroundColor: Color(0xFFF4F4F4),
+                        )
+                      : ThemeData.dark().copyWith(
+                          scaffoldBackgroundColor: Colors.black,
+                          appBarTheme: AppBarTheme(
+                            centerTitle: true,
+                            elevation: 0,
+                            color: Colors.black,
+                            iconTheme: IconThemeData(color: Colors.white),
+                            actionsIconTheme: IconThemeData(color: Colors.white),
+                            textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)),
+                            brightness: Brightness.dark,
+                          ),
+                        ),
+                  home: widget.needLogin ? Login() : Home(),
+                  routes: {
+                    "/login": (BuildContext context) => Login(),
+                    "/home": (BuildContext context) => Home(),
+                  },
+                );
+        },
       ),
-      darkTheme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.black,
-      ),
-      home: needLogin ? Login() : Home(),
-      routes: {
-        "/login": (BuildContext context) => Login(),
-        "/home": (BuildContext context) => Home(),
-      },
     );
   }
 }

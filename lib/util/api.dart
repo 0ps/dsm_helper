@@ -166,7 +166,7 @@ class Api {
   //   });
   // }
 
-  static Future<Map> fileList(String path) async {
+  static Future<Map> fileList(String path, {String sortBy = "name", String sortDirection = "asc"}) async {
     return await Util.post("entry.cgi", data: {
       "api": '"SYNO.FileStation.List"',
       "method": '"list"',
@@ -176,9 +176,9 @@ class Api {
       "folder_path": path,
       "filetype": '"all"',
       "limit": 1000,
-      "sort_by": '"name"',
-      "sort_direction": '"asc"',
-      "additional": '["perm", "time", "size"]',
+      "sort_by": '"$sortBy"',
+      "sort_direction": '"$sortDirection"',
+      "additional": '["perm", "time", "size","real_path"]',
     });
   }
 

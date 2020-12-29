@@ -1,8 +1,10 @@
+import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:provider/provider.dart';
 
 class Setting extends StatefulWidget {
   @override
@@ -460,6 +462,163 @@ class _SettingState extends State<Setting> {
                           ),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: NeuButton(
+                        onPressed: () async {
+                          showCupertinoModalPopup(
+                            context: context,
+                            builder: (context) {
+                              return Material(
+                                color: Colors.transparent,
+                                child: NeuCard(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(22),
+                                  bevel: 5,
+                                  curveType: CurveType.emboss,
+                                  decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        "主题颜色",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        height: 12,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: NeuButton(
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                Provider.of<DarkModeProvider>(context, listen: false).changeMode(0);
+                                              },
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(25),
+                                              ),
+                                              bevel: 5,
+                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              child: Text(
+                                                "亮色",
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 16,
+                                          ),
+                                          Expanded(
+                                            child: NeuButton(
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                Provider.of<DarkModeProvider>(context, listen: false).changeMode(1);
+                                              },
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(25),
+                                              ),
+                                              bevel: 5,
+                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              child: Text(
+                                                "暗色",
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 16,
+                                          ),
+                                          Expanded(
+                                            child: NeuButton(
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                                Provider.of<DarkModeProvider>(context, listen: false).changeMode(2);
+                                              },
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(25),
+                                              ),
+                                              bevel: 5,
+                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              child: Text(
+                                                "跟随系统",
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "取消",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        bevel: 20,
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/icons/theme.png",
+                              width: 40,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "主题颜色",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(),
+                    ),
+                    SizedBox(
+                      width: 20,
                     ),
                   ],
                 ),

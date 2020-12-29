@@ -51,6 +51,7 @@ dependencies:
   flutter_swiper: ^1.1.6
 #  html: ^0.14.0+4
   flutter_html: ^1.1.1
+  provider: ^4.3.2+3
 dev_dependencies:
   flutter_test:
     sdk: flutter

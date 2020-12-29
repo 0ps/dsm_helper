@@ -7,6 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:provider/provider.dart';
+
+import 'provider/dark_mode.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,10 +21,22 @@ class _HomeState extends State<Home> {
   DateTime lastPopTime;
   GlobalKey<FilesState> _filesStateKey = GlobalKey<FilesState>();
   GlobalKey<DashboardState> _dashboardStateKey = GlobalKey<DashboardState>();
-  @override
-  void initState() {
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getData();
+  //   super.initState();
+  // }
+  //
+  // getData() async {
+  //   String darkModeStr = await Util.getStorage("dark_mode");
+  //   print(darkModeStr);
+  //   int darkMode = 2;
+  //   if (darkModeStr.isNotBlank) {
+  //     darkMode = int.parse(darkModeStr);
+  //   }
+  //   print(darkMode);
+  //   Provider.of<DarkModeProvider>(context, listen: false).changeMode(darkMode);
+  // }
 
   Future<bool> onWillPop() {
     if (_dashboardStateKey.currentState.isDrawerOpen) {

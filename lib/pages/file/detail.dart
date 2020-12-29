@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 class FileDetail extends StatefulWidget {
@@ -84,23 +85,90 @@ class _FileDetailState extends State<FileDetail> {
           ),
           NeuCard(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: EdgeInsets.all(20),
             decoration: NeumorphicDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
             curveType: CurveType.flat,
             bevel: 20,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("位置："),
-                Expanded(
-                  child: Text(
-                    widget.file['path'],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Row(
+                children: [
+                  Text("位置："),
+                  Expanded(
+                    child: Text(
+                      widget.file['path'],
+                    ),
                   ),
-                )
-              ],
+                  NeuButton(
+                    onPressed: () async {
+                      ClipboardData data = new ClipboardData(text: widget.file['path']);
+                      Clipboard.setData(data);
+                      Util.toast("已复制到剪贴板");
+                    },
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.all(5),
+                    bevel: 5,
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Icon(
+                        Icons.copy,
+                        color: Color(0xffff9813),
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          NeuCard(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            curveType: CurveType.flat,
+            bevel: 20,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Row(
+                children: [
+                  Text("路径："),
+                  Expanded(
+                    child: Text(
+                      "${widget.file['additional']['real_path']}",
+                    ),
+                  ),
+                  NeuButton(
+                    onPressed: () async {
+                      ClipboardData data = new ClipboardData(text: widget.file['additional']['real_path']);
+                      Clipboard.setData(data);
+                      Util.toast("已复制到剪贴板");
+                    },
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.all(5),
+                    bevel: 5,
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Icon(
+                        Icons.copy,
+                        color: Color(0xffff9813),
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           NeuCard(

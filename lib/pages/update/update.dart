@@ -8,7 +8,8 @@ import 'package:dsm_helper/util/function.dart';
 
 class Update extends StatefulWidget {
   final Map data;
-  Update(this.data);
+  final bool direct;
+  Update(this.data, {this.direct: false});
   @override
   _UpdateState createState() => _UpdateState();
 }
@@ -25,7 +26,7 @@ class _UpdateState extends State<Update> {
   int totalSize = 0;
   @override
   void initState() {
-    fileName = "zhiliao-${widget.data['build']}.apk";
+    fileName = "dsm_helper-${widget.data['build']}.apk";
     Util.fileExist(fileName).then((res) {
       setState(() {
         if (res != null) {
@@ -36,6 +37,9 @@ class _UpdateState extends State<Update> {
         loading = false;
       });
     });
+    if (widget.direct) {
+      download();
+    }
     super.initState();
   }
 

@@ -182,6 +182,41 @@ class Api {
     });
   }
 
+  static Future<Map> favoriteList() async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Favorite"',
+      "method": '"list"',
+      "version": 2,
+      "_sid": Util.sid,
+      "offset": 0,
+      "limit": 1000,
+      // "status_filter": '"all"',
+      "additional": '["perm", "time", "size","real_path"]',
+    });
+  }
+
+  static Future<Map> favoriteAdd(String name, String path) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Favorite"',
+      "method": '"add"',
+      "version": 2,
+      "_sid": Util.sid,
+      "name": name,
+      "path": path,
+      "index": -1,
+    });
+  }
+
+  static Future<Map> favoriteDelete(String path) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Favorite"',
+      "method": '"delete"',
+      "version": 2,
+      "_sid": Util.sid,
+      "path": path,
+    });
+  }
+
   ///webapi/FileStation/file_delete.cgi?api=SYNO.FileStation.Delete&version=1&method=start&path=%2Fvideo%2Fdel_folder
   static Future<Map> deleteTask(List<String> path) async {
     var data = {

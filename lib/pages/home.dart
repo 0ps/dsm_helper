@@ -3,10 +3,12 @@ import 'package:dsm_helper/pages/download/download.dart';
 import 'package:dsm_helper/pages/file/file.dart';
 import 'package:dsm_helper/pages/setting/setting.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/update_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/dark_mode.dart';
@@ -19,36 +21,42 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   DateTime lastPopTime;
+  PackageInfo packageInfo;
   GlobalKey<FilesState> _filesStateKey = GlobalKey<FilesState>();
   GlobalKey<DashboardState> _dashboardStateKey = GlobalKey<DashboardState>();
-  // @override
-  // void initState() {
-  //   getData();
-  //   super.initState();
-  // }
-  //
-  // getData() async {
-  //   String darkModeStr = await Util.getStorage("dark_mode");
-  //   print(darkModeStr);
-  //   int darkMode = 2;
-  //   if (darkModeStr.isNotBlank) {
-  //     darkMode = int.parse(darkModeStr);
-  //   }
-  //   print(darkMode);
-  //   Provider.of<DarkModeProvider>(context, listen: false).changeMode(darkMode);
-  // }
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  getData() async {
+    packageInfo = await PackageInfo.fromPlatform();
+    var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
+    if (res['code'] == 1) {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return UpdateDialog(res['data'], packageInfo);
+        },
+      );
+    }
+  }
 
   Future<bool> onWillPop() {
-    if (_dashboardStateKey.currentState.isDrawerOpen) {
-      print("open");
-      _dashboardStateKey.currentState.closeDrawer();
-      return Future.value(false);
-    }
     Future<bool> value = Future.value(true);
-    if (_currentIndex == 1) {
+    if (_currentIndex == 0) {
+      if (_dashboardStateKey.currentState.isDrawerOpen) {
+        _dashboardStateKey.currentState.closeDrawer();
+        return Future.value(false);
+      }
+    } else if (_currentIndex == 1) {
+      if (_filesStateKey.currentState.isDrawerOpen) {
+        _filesStateKey.currentState.closeDrawer();
+        return Future.value(false);
+      }
       value = _filesStateKey.currentState.onWillPop();
-    }
-    if (_currentIndex == 2) {
+    } else if (_currentIndex == 2) {
       value = Util.downloadKey.currentState.onWillPop();
     }
     value.then((v) {

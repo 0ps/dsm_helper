@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="群辉助手"
+        android:label="群晖助手"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity

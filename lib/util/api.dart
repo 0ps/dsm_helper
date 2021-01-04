@@ -754,6 +754,58 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
+  static Future<Map> installPackageTask(String name, String path) async {
+    var data = {
+      "name": name,
+      "blqinst": true,
+      "volume_path": path,
+      "is_syno": true,
+      "beta": false,
+      "installrunpackage": true,
+      "api": "SYNO.Core.Package.Installation",
+      "version": 1,
+      "method": "install",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> installPackageStatus(String taskId) async {
+    var data = {
+      "task_id": taskId,
+      "api": "SYNO.Core.Package.Installation",
+      "version": 1,
+      "method": "status",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> uninstallPackageInfo(String id) async {
+    var data = {
+      "id": id,
+      "additional": jsonEncode(["uninstall_pages"]),
+      "api": "SYNO.Core.Package",
+      "version": 1,
+      "method": "get",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> uninstallPackageTask(String id, Map extra) async {
+    String extraStr = jsonEncode(jsonEncode(extra));
+    var data = {
+      "id": id,
+      "extra_values": extraStr,
+      "api": "SYNO.Core.Package.Uninstallation",
+      "version": 1,
+      "method": "uninstall",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
   static Future<Map> taskScheduler() async {
     var data = {
       "api": "SYNO.Core.TaskScheduler",
@@ -783,6 +835,8 @@ class Api {
     var data = {
       "api": "SYNO.Core.TaskScheduler",
       "version": 1,
+      "offset": 0,
+      "limit": 2,
       "method": "view",
       "id": task,
       "_sid": Util.sid,

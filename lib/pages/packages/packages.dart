@@ -20,6 +20,10 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   List installedPackages = [];
   List canUpdatePackages = [];
   List launchedPackages = [];
+
+  List installedPackagesInfo = [];
+
+  List volumes = [];
   bool loading = false;
   bool loadingAll = true;
   bool loadingInstalled = true;
@@ -47,90 +51,112 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       Navigator.of(context).pop();
       return;
     }
-    await getOthers();
-    await getLaunchedPackages();
-    await getInstalledPackages();
+    getOthers();
+    getLaunchedPackages();
+    getInstalledPackages();
+    getVolumes();
+  }
+
+  getVolumes() async {
+    var res = await Api.volumes();
+    if (res['success']) {
+      setState(() {
+        volumes = res['data']['volumes'];
+      });
+    }
   }
 
   getOthers() async {
+    print("获取第三方套件");
     var res = await Api.packages(others: true);
+    print("获取第三方套件end");
     if (res['success']) {
       setState(() {
         others = res['data']['packages'];
         loadingOthers = false;
       });
+      calcInstalledPackage();
     }
   }
 
   getLaunchedPackages() async {
     launchedPackages = [];
+    print("获取运行中套件");
     var res = await Api.launchedPackages();
+    print("获取运行中套件end");
     if (res['success']) {
       Map packages = res['data']['packages'];
       packages.forEach((key, value) {
         launchedPackages.add(key);
         setState(() {});
       });
+      calcInstalledPackage();
     }
   }
 
   getInstalledPackages() async {
     installedPackages = [];
     canUpdatePackages = [];
+    print("获取已安装套件");
     var res = await Api.installedPackages();
+    print("获取已安装套件end");
     if (res['success']) {
-      List installedPackagesInfo = res['data']['packages'];
       setState(() {
+        installedPackagesInfo = res['data']['packages'];
         loadingInstalled = false;
       });
-      installedPackagesInfo.forEach((installedPackageInfo) {
-        packages.forEach((package) {
-          package['installed'] = package['installed'] ?? false;
-          package['installed_version'] = package['installed_version'] ?? "";
-          package['can_update'] = package['can_update'] ?? false;
-          package['launched'] = package['launched'] ?? false;
-          if (installedPackageInfo['id'] == package['id']) {
-            package['installed'] = true;
-            package['installed_version'] = installedPackageInfo['version'];
-            package['can_update'] = Util.versionCompare(package['installed_version'], package['version']) > 0;
-            package['additional'] = installedPackageInfo['additional'];
-            if (package['installed']) {
-              installedPackages.add(package);
-            }
-            if (package['can_update']) {
-              canUpdatePackages.add(package);
-            }
-            if (launchedPackages.contains(package['id'])) {
-              package['launched'] = true;
-            }
-          }
-          setState(() {});
-        });
-        others.forEach((package) {
-          package['installed'] = package['installed'] ?? false;
-          package['installed_version'] = package['installed_version'] ?? "";
-          package['can_update'] = package['can_update'] ?? false;
-          package['launched'] = package['launched'] ?? false;
-          if (installedPackageInfo['id'] == package['id']) {
-            package['installed'] = true;
-            package['installed_version'] = installedPackageInfo['version'];
-            package['can_update'] = Util.versionCompare(package['version'], package['installed_version']) > 0;
-            package['additional'] = installedPackageInfo['additional'];
-            if (package['installed']) {
-              installedPackages.add(package);
-            }
-            if (package['can_update']) {
-              canUpdatePackages.add(package);
-            }
-            if (launchedPackages.contains(package['id'])) {
-              package['launched'] = true;
-            }
-          }
-
-          setState(() {});
-        });
-      });
+      calcInstalledPackage();
     } else {}
+  }
+
+  calcInstalledPackage() {
+    installedPackagesInfo.forEach((installedPackageInfo) {
+      packages.forEach((package) {
+        package['installed'] = package['installed'] ?? false;
+        package['installed_version'] = package['installed_version'] ?? "";
+        package['can_update'] = package['can_update'] ?? false;
+        package['launched'] = package['launched'] ?? false;
+        if (installedPackageInfo['id'] == package['id']) {
+          package['installed'] = true;
+          package['installed_version'] = installedPackageInfo['version'];
+          package['can_update'] = Util.versionCompare(package['installed_version'], package['version']) > 0;
+          package['additional'] = installedPackageInfo['additional'];
+          if (package['installed']) {
+            installedPackages.add(package);
+          }
+          if (package['can_update']) {
+            canUpdatePackages.add(package);
+          }
+          if (launchedPackages.contains(package['id'])) {
+            package['launched'] = true;
+          }
+        }
+        setState(() {});
+      });
+      others.forEach((package) {
+        package['installed'] = package['installed'] ?? false;
+        package['installed_version'] = package['installed_version'] ?? "";
+        package['can_update'] = package['can_update'] ?? false;
+        package['launched'] = package['launched'] ?? false;
+        if (installedPackageInfo['id'] == package['id']) {
+          package['installed'] = true;
+          package['installed_version'] = installedPackageInfo['version'];
+          package['can_update'] = Util.versionCompare(package['version'], package['installed_version']) > 0;
+          package['additional'] = installedPackageInfo['additional'];
+          if (package['installed']) {
+            installedPackages.add(package);
+          }
+          if (package['can_update']) {
+            canUpdatePackages.add(package);
+          }
+          if (launchedPackages.contains(package['id'])) {
+            package['launched'] = true;
+          }
+        }
+
+        setState(() {});
+      });
+    });
   }
 
   List<String> getCategoryName(List categoryIds) {
@@ -340,9 +366,12 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                   SizedBox(
                     height: 20,
                   ),
-                  CupertinoExtendedImage(
-                    thumbnailUrl,
-                    width: 80,
+                  SizedBox(
+                    height: 80,
+                    child: CupertinoExtendedImage(
+                      thumbnailUrl,
+                      width: 80,
+                    ),
                   ),
                   SizedBox(
                     height: 10,

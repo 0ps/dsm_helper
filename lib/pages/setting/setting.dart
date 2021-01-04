@@ -614,39 +614,39 @@ class _SettingState extends State<Setting> {
                     SizedBox(
                       width: 20,
                     ),
+                    // Expanded(
+                    //   child: NeuButton(
+                    //     onPressed: () {
+                    //       Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    //         return Ssh();
+                    //       }));
+                    //     },
+                    //     // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    //     padding: EdgeInsets.symmetric(vertical: 20),
+                    //     decoration: NeumorphicDecoration(
+                    //       color: Theme.of(context).scaffoldBackgroundColor,
+                    //       borderRadius: BorderRadius.circular(20),
+                    //     ),
+                    //     bevel: 20,
+                    //     child: Column(
+                    //       children: [
+                    //         Image.asset(
+                    //           "assets/icons/ssh.png",
+                    //           width: 40,
+                    //         ),
+                    //         SizedBox(
+                    //           height: 8,
+                    //         ),
+                    //         Text(
+                    //           "终端",
+                    //           style: TextStyle(fontSize: 16),
+                    //         )
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     Expanded(
-                      child: NeuButton(
-                        onPressed: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                            return Ssh();
-                          }));
-                        },
-                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "assets/icons/ssh.png",
-                              width: 40,
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              "终端",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Container(),
                     ),
                     SizedBox(
@@ -657,31 +657,6 @@ class _SettingState extends State<Setting> {
               ],
             ),
           ),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 20),
-          //   child: NeuButton(
-          //     onPressed: () async {
-          //       String plainText = '我是shyandsy，never give up man';
-          //       String key = '__cIpHeRtExT';
-          //       String iv = '__cIpHeRtOkEn';
-          //       String nonce = await Cipher2.generateNonce();
-          //       String encryptedString = "U2FsdGVkX1/MEbBRiWWAahV1AgWEwAl9rtnz1hgMakjembP6jtsdnpxV1vxMREdOpEBNMx9SXTJT7IGRJu802p2s3VDs5+8yxkF5rdC1C3aBDA/bGWF0oZL/gg44Dmg3KKHmJBMvQqbNXnyO1jWvSpifcP0hA8t7mlp82bgNdXyHh0IYQh+9QVawyuxO84V+4IkO7yC1GbCJt7tcsHxFBihRj0CxRVTbZv/Lww3Xq3cdbW6dy9qjjx1dZkc9gvDwG5YIpE2VnJcPiLf7tsO23/y4Ekr+D00OPddcIvEuEFYY0s7++Ok9y7f6QRDmkAQIQu5NrPZhCP2m3c0yUfDYamfOeOt8TYeTonCHuDZs6+3v/lj4B+kHpjk8YnFfVOZ2EkHo3aTxodyQKddpUpw4GDbOpgm1zDL2V8rOZnbON06P6PSB7GEArWPcmjkALbzEt3Vvo65jByMu29xcnaDDz2wkft0MfLugNdhuCoBosJI=";
-          //       String decryptedString = await Cipher2.decryptAesCbc128Padding7(encryptedString, key, iv);
-          //       print(decryptedString);
-          //     },
-          //     // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          //     padding: EdgeInsets.symmetric(vertical: 20),
-          //     decoration: NeumorphicDecoration(
-          //       color: Theme.of(context).scaffoldBackgroundColor,
-          //       borderRadius: BorderRadius.circular(20),
-          //     ),
-          //     bevel: 20,
-          //     child: Text(
-          //       "测试",
-          //       style: TextStyle(fontSize: 18),
-          //     ),
-          //   ),
-          // ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: NeuButton(

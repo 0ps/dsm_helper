@@ -36,7 +36,7 @@ class _SshState extends State<Ssh> {
   }
 
   void connect() {
-    terminal.write('connecting $host...');
+    terminal.write('连接中 $host...');
     client = SSHClient(
       hostport: Uri.parse(host),
       login: username,
@@ -49,10 +49,10 @@ class _SshState extends State<Ssh> {
         terminal.write(data);
       },
       success: () {
-        terminal.write('connected.\n');
+        terminal.write('连接成功.\n');
       },
       disconnected: () {
-        terminal.write('disconnected.');
+        terminal.write('断开连接.');
       },
     );
   }

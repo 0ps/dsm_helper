@@ -277,7 +277,13 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       onTap: () {
         Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
           return PackageDetail(update);
-        }));
+        })).then((_) async {
+          await getLaunchedPackages();
+          await getInstalledPackages();
+          setState(() {
+            loading = false;
+          });
+        });
       },
       child: NeuCard(
         width: (MediaQuery.of(context).size.width - 60) / 2,
@@ -346,7 +352,13 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       onTap: () {
         Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
           return PackageDetail(package);
-        }));
+        })).then((_) async {
+          await getLaunchedPackages();
+          await getInstalledPackages();
+          setState(() {
+            loading = false;
+          });
+        });
       },
       child: NeuCard(
         width: (MediaQuery.of(context).size.width - 60) / 2,

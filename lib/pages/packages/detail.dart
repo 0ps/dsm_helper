@@ -26,6 +26,8 @@ class _PackageDetailState extends State<PackageDetail> {
   double installProgress = 0;
   bool installing = false;
   Timer timer;
+  String taskId = "";
+  String installButtonText = "安装";
   @override
   void initState() {
     if (widget.package['installed'] && widget.package['additional'] != null) {
@@ -61,6 +63,22 @@ class _PackageDetailState extends State<PackageDetail> {
       height: 210,
       fit: BoxFit.contain,
     );
+  }
+
+  getLaunchedPackages() async {
+    print("获取运行中套件");
+    var res = await Api.launchedPackages();
+    print("获取运行中套件end");
+    if (res['success']) {
+      Map packages = res['data']['packages'];
+      packages.forEach((key, value) {
+        if (key == widget.package['id']) {
+          setState(() {
+            widget.package['launched'] = true;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -450,8 +468,14 @@ class _PackageDetailState extends State<PackageDetail> {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: widget.package['launched']
                           ? NeuButton(
-                              onPressed: () {
-                                Util.toast("暂不支持安装套件，敬请期待");
+                              onPressed: () async {
+                                var res = await Api.launchPackage(widget.package['id'], widget.package['dsm_apps'], "stop");
+                                if (res['success']) {
+                                  Util.toast("已停用");
+                                  setState(() {
+                                    widget.package['launched'] = false;
+                                  });
+                                }
                               },
                               padding: EdgeInsets.symmetric(vertical: 15),
                               decoration: NeumorphicDecoration(
@@ -461,15 +485,23 @@ class _PackageDetailState extends State<PackageDetail> {
                               child: Text("停用"),
                             )
                           : NeuButton(
-                              onPressed: () {
-                                Util.toast("暂不支持安装套件，敬请期待");
+                              onPressed: () async {
+                                var res = await Api.launchPackage(widget.package['id'], widget.package['dsm_apps'], "start");
+                                if (res['success']) {
+                                  Util.toast("已启动");
+                                  setState(() {
+                                    widget.package['launched'] = true;
+                                  });
+                                } else {
+                                  Util.toast("套件启动失败，代码${res['error']['code']}");
+                                }
                               },
                               padding: EdgeInsets.symmetric(vertical: 15),
                               decoration: NeumorphicDecoration(
                                 color: Theme.of(context).scaffoldBackgroundColor,
                                 borderRadius: BorderRadius.circular(50),
                               ),
-                              child: Text("启用"),
+                              child: Text("启动"),
                             ),
                     ),
                   ),
@@ -479,6 +511,10 @@ class _PackageDetailState extends State<PackageDetail> {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: NeuButton(
                         onPressed: () {
+                          if (installing) {
+                            Util.toast("套件安装中，请稍后");
+                            return;
+                          }
                           showCupertinoModalPopup(
                             context: context,
                             builder: (context) {
@@ -507,29 +543,33 @@ class _PackageDetailState extends State<PackageDetail> {
                                             child: NeuButton(
                                               onPressed: () async {
                                                 var res = await Api.installPackageTask(widget.package['id'], volume['volume_path']);
-                                                print(res);
                                                 if (res['success']) {
                                                   Util.toast("已开始安装");
+
                                                   setState(() {
                                                     installing = true;
                                                     installProgress = double.parse(res['data']['progress']);
+                                                    taskId = res['data']['taskid'];
+                                                    installButtonText = "下载中:${installProgress.toStringAsFixed(2)}%";
                                                   });
-                                                  //进度
                                                   timer = Timer.periodic(Duration(seconds: 5), (timer) {
                                                     Api.installPackageStatus(res['data']['taskid']).then((value) {
-                                                      print(value);
                                                       setState(() {
                                                         installing = !value['data']['finished'];
                                                         if (value['data']['finished']) {
+                                                          widget.package['installed'] = true;
+                                                          getLaunchedPackages();
                                                           timer.cancel();
-                                                        } else {
+                                                        } else if (value['data']['progress'] != null) {
                                                           if (value['data']['progress'] is double) {
                                                             installProgress = value['data']['progress'];
                                                           } else {
                                                             installProgress = double.parse(value['data']['progress']);
                                                           }
+                                                          installButtonText = "下载中:${installProgress.toStringAsFixed(2)}%";
+                                                        } else if (value['data']['status'] == "installing") {
+                                                          installButtonText = "安装中……";
                                                         }
-                                                        print(installProgress);
                                                       });
                                                     });
                                                   });
@@ -595,7 +635,7 @@ class _PackageDetailState extends State<PackageDetail> {
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        child: Text("安装"),
+                        child: Text("$installButtonText"),
                       ),
                     ),
                   ),

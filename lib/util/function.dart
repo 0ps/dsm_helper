@@ -11,7 +11,7 @@ import 'package:dsm_helper/pages/download/download.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,10 +49,10 @@ class Util {
   static Map strings = {};
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
-    Fluttertoast.showToast(
-      msg: text,
-      gravity: ToastGravity.CENTER,
-    );
+    // Fluttertoast.showToast(
+    //   msg: text,
+    //   gravity: ToastGravity.CENTER,
+    // );
   }
 
   static int versionCompare(String v1, String v2) {

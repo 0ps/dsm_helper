@@ -29,7 +29,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   neumorphic: ^0.4.0
-  fluttertoast: ^7.1.1
+#  fluttertoast: ^7.1.6
   package_info: ^0.4.3+2
   dio: ^3.0.10
   flutter_screenutil: ^3.2.0

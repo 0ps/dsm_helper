@@ -223,18 +223,96 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
               });
             }
           } else if (text == "停用") {
-            setState(() {
-              loading = true;
-            });
-            var res = await Api.launchPackage(package['id'], package['dsm_apps'], "stop");
-            if (res['success']) {
-              Util.toast("已停用");
-              await getLaunchedPackages();
-              await getInstalledPackages();
-              setState(() {
-                loading = false;
-              });
-            }
+            showCupertinoModalPopup(
+              context: context,
+              builder: (context) {
+                return Material(
+                  color: Colors.transparent,
+                  child: NeuCard(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(22),
+                    bevel: 5,
+                    curveType: CurveType.emboss,
+                    decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          "停用套件",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          "确认要停用此套件？",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(
+                          height: 22,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: NeuButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  var res = await Api.launchPackage(package['id'], package['dsm_apps'], "stop");
+                                  if (res['success']) {
+                                    Util.toast("已停用");
+                                    await getLaunchedPackages();
+                                    await getInstalledPackages();
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }
+                                },
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                bevel: 5,
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  "停用",
+                                  style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: NeuButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                bevel: 5,
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  "取消",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
           }
         },
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -255,14 +333,14 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     } else {
       button = NeuButton(
         onPressed: () {
-          Util.toast("暂不支持安装套件，敬请期待");
+          Util.toast("请进入套件详情页安装套件");
         },
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: NeumorphicDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text("立即安装"),
+        child: Text("安装套件"),
       );
     }
     return button;

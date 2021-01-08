@@ -6,6 +6,7 @@ import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dar
 import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
+import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -514,7 +515,7 @@ class DashboardState extends State<Dashboard> {
                         changeColorValue: 90,
                         changeProgressColor: Colors.red,
                         progressColor: Colors.blue,
-                        currentValue: utilization['cpu']['user_load'] + utilization['cpu']['system_load'] + utilization['cpu']['other_load'],
+                        currentValue: utilization['cpu']['user_load'] + utilization['cpu']['system_load'],
                         displayText: '%',
                       ),
                     ),
@@ -1705,6 +1706,7 @@ class DashboardState extends State<Dashboard> {
                         if (applications.contains("SYNO.SDS.PkgManApp.Instance"))
                           GestureDetector(
                             onTap: () {
+                              Navigator.of(context).pop();
                               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                                 return Packages();
                               }));
@@ -1750,28 +1752,36 @@ class DashboardState extends State<Dashboard> {
                             ),
                           ),
                         if (applications.contains("SYNO.SDS.ResourceMonitor.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/resource_monitor.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("资源监控"),
-                              ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                return ResourceMonitor();
+                              }));
+                            },
+                            child: NeuCard(
+                              width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+                              curveType: CurveType.flat,
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/applications/resource_monitor.png",
+                                    height: 45,
+                                    width: 45,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text("资源监控"),
+                                ],
+                              ),
                             ),
                           ),
                         if (applications.contains("SYNO.SDS.StorageManager.Instance"))

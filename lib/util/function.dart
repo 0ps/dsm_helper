@@ -11,7 +11,7 @@ import 'package:dsm_helper/pages/download/download.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,10 +49,10 @@ class Util {
   static Map strings = {};
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
-    // Fluttertoast.showToast(
-    //   msg: text,
-    //   gravity: ToastGravity.CENTER,
-    // );
+    Fluttertoast.showToast(
+      msg: text,
+      gravity: ToastGravity.CENTER,
+    );
   }
 
   static int versionCompare(String v1, String v2) {
@@ -348,17 +348,17 @@ class Util {
     return taskId;
   }
 
-  static String formatSize(num size, {int format = 1024}) {
+  static String formatSize(num size, {int format = 1024, int fixed = 2}) {
     if (size < format) {
       return "${size}B";
     } else if (size < pow(format, 2)) {
-      return "${(size / format).toStringAsFixed(2)} KB";
+      return "${(size / format).toStringAsFixed(fixed)} KB";
     } else if (size < pow(format, 3)) {
-      return "${(size / pow(format, 2)).toStringAsFixed(2)} MB";
+      return "${(size / pow(format, 2)).toStringAsFixed(fixed)} MB";
     } else if (size < pow(format, 4)) {
-      return "${(size / pow(format, 3)).toStringAsFixed(2)} GB";
+      return "${(size / pow(format, 3)).toStringAsFixed(fixed)} GB";
     } else {
-      return "${(size / pow(format, 4)).toStringAsFixed(2)} TB";
+      return "${(size / pow(format, 4)).toStringAsFixed(fixed)} TB";
     }
   }
 

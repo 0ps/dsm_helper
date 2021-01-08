@@ -183,11 +183,10 @@ class _UninstallPackageState extends State<UninstallPackage> {
                               }
                             }
                           }
-                          print(extra);
                           setState(() {
                             uninstalling = true;
                           });
-                          var res = await Api.uninstallPackageTask(widget.package['id'], extra);
+                          var res = await Api.uninstallPackageTask(widget.package['id'],extra: extra);
                           Util.toast("卸载成功");
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();

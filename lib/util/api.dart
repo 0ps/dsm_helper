@@ -793,16 +793,19 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> uninstallPackageTask(String id, Map extra) async {
-    String extraStr = jsonEncode(jsonEncode(extra));
+  static Future<Map> uninstallPackageTask(String id, {Map extra}) async {
     var data = {
       "id": id,
-      "extra_values": extraStr,
       "api": "SYNO.Core.Package.Uninstallation",
       "version": 1,
       "method": "uninstall",
       "_sid": Util.sid,
     };
+    if (extra != null) {
+      String extraStr = jsonEncode(jsonEncode(extra));
+      data['extra_values'] = extraStr;
+    }
+
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -898,6 +901,23 @@ class Api {
     };
     print(dataStr);
     print(data['data']);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> mediaConverter() async {
+    var data = {"api": "SYNO.Core.MediaIndexing.MediaConverter", "method": "status", "version": 1};
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> utilization() async {
+    var data = {
+      "api": "SYNO.Core.System.Utilization",
+      "method": "get",
+      "version": 1,
+      "type": "current",
+      "resource": ["cpu", "memory", "network", "lun", "disk", "space"],
+      "_sid": Util.sid,
+    };
     return await Util.post("entry.cgi", data: data);
   }
 }

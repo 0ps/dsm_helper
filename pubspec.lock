@@ -527,6 +527,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.5"
+  rich_code_editor:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "82f72208acea1bc933619a1f40dbf0b376f44704"
+      url: "https://github.com/redsolver/rich_code_editor.git"
+    source: git
+    version: "1.0.0"
   shared_preferences:
     dependency: "direct main"
     description:

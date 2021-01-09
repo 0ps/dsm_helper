@@ -1,6 +1,6 @@
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
-import 'package:dsm_helper/pages/terminal/terminal.dart';
+import 'package:dsm_helper/pages/terminal/select_server.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -456,7 +456,7 @@ class _SettingState extends State<Setting> {
                                 height: 8,
                               ),
                               Text(
-                                "SSH",
+                                "SSH开关",
                                 style: TextStyle(fontSize: 16),
                               )
                             ],
@@ -614,39 +614,39 @@ class _SettingState extends State<Setting> {
                     SizedBox(
                       width: 20,
                     ),
-                    // Expanded(
-                    //   child: NeuButton(
-                    //     onPressed: () {
-                    //       Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    //         return Ssh();
-                    //       }));
-                    //     },
-                    //     // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    //     padding: EdgeInsets.symmetric(vertical: 20),
-                    //     decoration: NeumorphicDecoration(
-                    //       color: Theme.of(context).scaffoldBackgroundColor,
-                    //       borderRadius: BorderRadius.circular(20),
-                    //     ),
-                    //     bevel: 20,
-                    //     child: Column(
-                    //       children: [
-                    //         Image.asset(
-                    //           "assets/icons/ssh.png",
-                    //           width: 40,
-                    //         ),
-                    //         SizedBox(
-                    //           height: 8,
-                    //         ),
-                    //         Text(
-                    //           "终端",
-                    //           style: TextStyle(fontSize: 16),
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                     Expanded(
-                      flex: 2,
+                      child: NeuButton(
+                        onPressed: () {
+                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return SelectServer();
+                          }));
+                        },
+                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        bevel: 20,
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/icons/ssh.png",
+                              width: 40,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              "终端",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
                       child: Container(),
                     ),
                     SizedBox(

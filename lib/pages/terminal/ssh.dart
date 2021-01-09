@@ -8,6 +8,11 @@ import 'package:xterm/xterm.dart';
 import 'package:dartssh/client.dart';
 
 class Ssh extends StatefulWidget {
+  final String host;
+  final String port;
+  final String username;
+  final String password;
+  Ssh(this.host, this.port, this.username, this.password);
   @override
   _SshState createState() => _SshState();
 }
@@ -15,9 +20,6 @@ class Ssh extends StatefulWidget {
 class _SshState extends State<Ssh> {
   Terminal terminal;
   SSHClient client;
-  String host = "http://192.168.0.233:22";
-  String username = "root";
-  String password = "yaoshuwei123";
   @override
   void initState() {
     terminal = Terminal(onInput: onInput, theme: TerminalThemes.whiteOnBlack);
@@ -36,15 +38,15 @@ class _SshState extends State<Ssh> {
   }
 
   void connect() {
-    terminal.write('连接中 $host...');
+    terminal.write('连接中 ${widget.host}:${widget.port}...');
     client = SSHClient(
-      hostport: Uri.parse(host),
-      login: username,
+      hostport: Uri.parse("http://${widget.host}:${widget.port}"),
+      login: widget.username,
       print: print,
       termWidth: 80,
       termHeight: 25,
       termvar: 'xterm-256color',
-      getPassword: () => utf8.encode(password),
+      getPassword: () => utf8.encode(widget.password),
       response: (transport, data) {
         terminal.write(data);
       },
@@ -61,7 +63,19 @@ class _SshState extends State<Ssh> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("终端"),
+        leading: BackButton(
+          color: Colors.white,
+          onPressed: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Text(
+          "终端",
+          style: TextStyle(color: Colors.white),
+        ),
+        brightness: Brightness.dark,
+        backgroundColor: Colors.black,
       ),
       body: TerminalView(
         terminal: terminal,

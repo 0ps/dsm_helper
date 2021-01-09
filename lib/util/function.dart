@@ -136,7 +136,7 @@ class Util {
     List<String> excel = ["xls", "xlsx"];
     List<String> text = ["txt"];
     List<String> zip = ["zip", "gz", "tar", "tgz", "tbz", "bz2", "rar", "7z"];
-    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css", "sql"];
+    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css", "sql", "nfo"];
     List<String> pdf = ["pdf"];
     List<String> apk = ["apk"];
     List<String> iso = ["iso"];

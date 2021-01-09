@@ -44,10 +44,11 @@ class Api {
 //    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
   }
 
-  static Future<Map> login({String host, String account, String password}) async {
+  static Future<Map> login({String host, String account, String password, String otpCode}) async {
     var data = {
       "account": account,
       "passwd": password,
+      "otp_code": otpCode,
       "version": 6,
       "api": "SYNO.API.Auth",
       "method": "login",

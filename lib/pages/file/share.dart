@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:neumorphic/neumorphic.dart';
 
@@ -133,9 +134,53 @@ class _ShareState extends State<Share> {
             link['path'],
           ),
           SizedBox(
-            height: 10,
+            height: 20,
           ),
-          Text(link['url']),
+          NeuCard(
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            curveType: CurveType.flat,
+            bevel: 20,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "${link['url']}",
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  NeuButton(
+                    onPressed: () async {
+                      ClipboardData data = new ClipboardData(text: link['url']);
+                      Clipboard.setData(data);
+                      Util.toast("已复制到剪贴板");
+                    },
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.all(5),
+                    bevel: 5,
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Icon(
+                        Icons.copy,
+                        color: Color(0xffff9813),
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           SizedBox(
             height: 20,
           ),

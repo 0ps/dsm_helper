@@ -7,6 +7,7 @@ import 'package:dsm_helper/pages/file/share_manager.dart';
 import 'package:dsm_helper/pages/file/upload.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
+import 'package:dsm_helper/pages/editor/editor.dart';
 import 'package:dsm_helper/pages/file/detail.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/file_icon.dart';
@@ -891,6 +892,11 @@ class FilesState extends State<Files> {
                   );
                   await intent.launch();
                   break;
+                case FileType.code:
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return Editor();
+                  }));
+                  break;
                 default:
                   Util.toast("暂不支持打开此类型文件");
               }
@@ -1132,6 +1138,7 @@ class FilesState extends State<Files> {
                                             width: (MediaQuery.of(context).size.width - 100) / 4,
                                             child: NeuButton(
                                               onPressed: () async {
+                                                Navigator.of(context).pop();
                                                 Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                                                   return Share(paths: [file['path']]);
                                                 }));
@@ -1161,6 +1168,7 @@ class FilesState extends State<Files> {
                                               width: (MediaQuery.of(context).size.width - 100) / 4,
                                               child: NeuButton(
                                                 onPressed: () async {
+                                                  Navigator.of(context).pop();
                                                   Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                                                     return Share(
                                                       paths: [file['path']],
@@ -1193,6 +1201,7 @@ class FilesState extends State<Files> {
                                             width: (MediaQuery.of(context).size.width - 100) / 4,
                                             child: NeuButton(
                                               onPressed: () async {
+                                                Navigator.of(context).pop();
                                                 TextEditingController nameController = TextEditingController.fromValue(TextEditingValue(text: file['name']));
                                                 Navigator.of(context).pop();
                                                 String name = "";
@@ -1335,6 +1344,7 @@ class FilesState extends State<Files> {
                                             width: (MediaQuery.of(context).size.width - 100) / 4,
                                             child: NeuButton(
                                               onPressed: () async {
+                                                Navigator.of(context).pop();
                                                 var res = await Api.favoriteAdd("${file['name']} - ${paths[1]}", file['path']);
                                                 if (res['success']) {
                                                   Util.toast("收藏成功");
@@ -1687,7 +1697,7 @@ class FilesState extends State<Files> {
                 ),
               ),
             )
-          else ...[
+          else if (paths.length > 1)
             Padding(
               padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
               child: NeuButton(
@@ -1716,7 +1726,6 @@ class FilesState extends State<Files> {
                 ),
               ),
             ),
-          ],
           Padding(
             padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
             child: NeuButton(

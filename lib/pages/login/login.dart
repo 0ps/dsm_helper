@@ -16,6 +16,8 @@ class _LoginState extends State<Login> {
   String account = "";
   String password = "";
   String port = "5000";
+  bool needOtp = false;
+  String otpCode = "";
   bool https = false;
   bool login = false;
   bool rememberPassword = true;
@@ -24,6 +26,7 @@ class _LoginState extends State<Login> {
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _portController = TextEditingController();
+  TextEditingController _otpController = TextEditingController();
   List servers = [];
   @override
   initState() {
@@ -99,10 +102,11 @@ class _LoginState extends State<Login> {
       login = true;
     });
     Util.cookie = "";
-    var res = await Api.login(host: baseUri, account: account, password: password);
+    var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode);
     setState(() {
       login = false;
     });
+    print(res);
     if (res['success'] == true) {
       //记住登录信息
 
@@ -162,6 +166,14 @@ class _LoginState extends State<Login> {
     } else {
       if (res['error']['code'] == 400) {
         Util.toast("用户名/密码有误");
+      } else if (res['error']['code'] == 404) {
+        _otpController.clear();
+        Util.toast("错误的验证代码。请再试一次。");
+      } else if (res['error']['code'] == 403) {
+        Util.toast("请输入二次验证代码");
+        setState(() {
+          needOtp = true;
+        });
       } else {
         Util.toast("登录失败，code:${res['error']['code']}");
       }
@@ -451,6 +463,28 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 20,
             ),
+            if (needOtp) ...[
+              NeuCard(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                bevel: 12,
+                curveType: CurveType.flat,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: NeuTextField(
+                  controller: _otpController,
+                  onChanged: (v) => otpCode = v,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    labelText: '二步验证代码',
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
             Row(
               children: [
                 Expanded(

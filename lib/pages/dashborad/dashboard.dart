@@ -459,234 +459,277 @@ class DashboardState extends State<Dashboard> {
         ),
       );
     } else if (widget == "SYNO.SDS.ResourceMonitor.Widget" && utilization != null) {
-      return NeuCard(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        bevel: 20,
-        curveType: CurveType.flat,
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/icons/resources.png",
-                    width: 26,
-                    height: 26,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "资源监控",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ],
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return ResourceMonitor();
+          }));
+        },
+        child: NeuCard(
+          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          bevel: 20,
+          curveType: CurveType.flat,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
               ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 50,
-                    child: Text("CPU："),
-                  ),
-                  Expanded(
-                    child: NeuCard(
-                      curveType: CurveType.flat,
-                      bevel: 10,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: FAProgressBar(
-                        backgroundColor: Colors.transparent,
-                        changeColorValue: 90,
-                        changeProgressColor: Colors.red,
-                        progressColor: Colors.blue,
-                        currentValue: utilization['cpu']['user_load'] + utilization['cpu']['system_load'],
-                        displayText: '%',
-                      ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "assets/icons/resources.png",
+                      width: 26,
+                      height: 26,
                     ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  SizedBox(width: 50, child: Text("RAM：")),
-                  Expanded(
-                    child: NeuCard(
-                      curveType: CurveType.flat,
-                      bevel: 10,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: FAProgressBar(
-                        backgroundColor: Colors.transparent,
-                        changeColorValue: 90,
-                        changeProgressColor: Colors.red,
-                        progressColor: Colors.blue,
-                        currentValue: utilization['memory']['real_usage'],
-                        displayText: '%',
-                      ),
+                    SizedBox(
+                      width: 10,
                     ),
-                  ),
-                ],
+                    Text(
+                      "资源监控",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  SizedBox(width: 50, child: Text("网络：")),
-                  Icon(
-                    Icons.upload_sharp,
-                    color: Colors.blue,
-                  ),
-                  Text(
-                    Util.formatSize(utilization['network'][0]['tx']) + "/S",
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Icon(
-                    Icons.download_sharp,
-                    color: Colors.green,
-                  ),
-                  Text(
-                    Util.formatSize(utilization['network'][0]['rx']) + "/S",
-                    style: TextStyle(color: Colors.green),
-                  ),
-                ],
+              SizedBox(
+                height: 10,
               ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            AspectRatio(
-              aspectRatio: 1.70,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: NeuCard(
-                  curveType: CurveType.flat,
-                  bevel: 20,
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 1,
+                    );
+                  }));
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 50,
+                        child: Text("CPU："),
+                      ),
+                      Expanded(
+                        child: NeuCard(
+                          curveType: CurveType.flat,
+                          bevel: 10,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: FAProgressBar(
+                            backgroundColor: Colors.transparent,
+                            changeColorValue: 90,
+                            changeProgressColor: Colors.red,
+                            progressColor: Colors.blue,
+                            currentValue: utilization['cpu']['user_load'] + utilization['cpu']['system_load'],
+                            displayText: '%',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 2,
+                    );
+                  }));
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 50, child: Text("RAM：")),
+                      Expanded(
+                        child: NeuCard(
+                          curveType: CurveType.flat,
+                          bevel: 10,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: FAProgressBar(
+                            backgroundColor: Colors.transparent,
+                            changeColorValue: 90,
+                            changeProgressColor: Colors.red,
+                            progressColor: Colors.blue,
+                            currentValue: utilization['memory']['real_usage'],
+                            displayText: '%',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 3,
+                    );
+                  }));
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 50, child: Text("网络：")),
+                      Icon(
+                        Icons.upload_sharp,
+                        color: Colors.blue,
+                      ),
+                      Text(
+                        Util.formatSize(utilization['network'][0]['tx']) + "/S",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Icon(
+                        Icons.download_sharp,
+                        color: Colors.green,
+                      ),
+                      Text(
+                        Util.formatSize(utilization['network'][0]['rx']) + "/S",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 3,
+                    );
+                  }));
+                },
+                child: AspectRatio(
+                  aspectRatio: 1.70,
                   child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: LineChart(
-                      LineChartData(
-                        lineTouchData: LineTouchData(
-                          touchTooltipData: LineTouchTooltipData(
-                              tooltipBgColor: Colors.white.withOpacity(0.6),
-                              tooltipRoundedRadius: 20,
-                              fitInsideHorizontally: true,
-                              fitInsideVertically: true,
-                              getTooltipItems: (items) {
-                                return [
-                                  LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
-                                  LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
-                                ];
-                              }),
-                        ),
-                        gridData: FlGridData(
-                          show: false,
-                        ),
-                        titlesData: FlTitlesData(
-                          show: true,
-                          bottomTitles: SideTitles(
-                            showTitles: false,
-                            reservedSize: 22,
-                          ),
-                          leftTitles: SideTitles(
-                            showTitles: true,
-                            getTextStyles: (value) => const TextStyle(
-                              color: Color(0xff67727d),
-                              fontSize: 12,
+                    padding: const EdgeInsets.all(20),
+                    child: NeuCard(
+                      curveType: CurveType.flat,
+                      bevel: 20,
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: LineChart(
+                          LineChartData(
+                            lineTouchData: LineTouchData(
+                              touchTooltipData: LineTouchTooltipData(
+                                  tooltipBgColor: Colors.white.withOpacity(0.6),
+                                  tooltipRoundedRadius: 20,
+                                  fitInsideHorizontally: true,
+                                  fitInsideVertically: true,
+                                  getTooltipItems: (items) {
+                                    return [
+                                      LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
+                                      LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
+                                    ];
+                                  }),
                             ),
-                            getTitles: chartTitle,
-                            // getTitles: (value) {
-                            //   value = value / 1000 / 1000;
-                            //   return (value.floor() * 1000).toString();
-                            // },
-                            reservedSize: 28,
-                            interval: chartInterval,
-                          ),
-                        ),
-                        // maxY: 20,
-                        borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: networks.map((network) {
-                              return FlSpot(networks.indexOf(network).toDouble(), network[0]['tx'].toDouble());
-                            }).toList(),
-                            isCurved: true,
-                            colors: [
-                              Colors.blue,
-                            ],
-                            barWidth: 2,
-                            isStrokeCapRound: true,
-                            dotData: FlDotData(
+                            gridData: FlGridData(
                               show: false,
                             ),
-                            belowBarData: BarAreaData(
+                            titlesData: FlTitlesData(
                               show: true,
-                              colors: [Colors.blue.withOpacity(0.2)],
+                              bottomTitles: SideTitles(
+                                showTitles: false,
+                                reservedSize: 22,
+                              ),
+                              leftTitles: SideTitles(
+                                showTitles: true,
+                                getTextStyles: (value) => const TextStyle(
+                                  color: Color(0xff67727d),
+                                  fontSize: 12,
+                                ),
+                                getTitles: chartTitle,
+                                // getTitles: (value) {
+                                //   value = value / 1000 / 1000;
+                                //   return (value.floor() * 1000).toString();
+                                // },
+                                reservedSize: 28,
+                                interval: chartInterval,
+                              ),
                             ),
-                          ),
-                          LineChartBarData(
-                            spots: networks.map((network) {
-                              return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
-                            }).toList(),
-                            isCurved: true,
-                            colors: [
-                              Colors.green,
+                            // maxY: 20,
+                            borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots: networks.map((network) {
+                                  return FlSpot(networks.indexOf(network).toDouble(), network[0]['tx'].toDouble());
+                                }).toList(),
+                                isCurved: true,
+                                colors: [
+                                  Colors.blue,
+                                ],
+                                barWidth: 2,
+                                isStrokeCapRound: true,
+                                dotData: FlDotData(
+                                  show: false,
+                                ),
+                                belowBarData: BarAreaData(
+                                  show: true,
+                                  colors: [Colors.blue.withOpacity(0.2)],
+                                ),
+                              ),
+                              LineChartBarData(
+                                spots: networks.map((network) {
+                                  return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
+                                }).toList(),
+                                isCurved: true,
+                                colors: [
+                                  Colors.green,
+                                ],
+                                barWidth: 2,
+                                isStrokeCapRound: true,
+                                dotData: FlDotData(
+                                  show: false,
+                                ),
+                                belowBarData: BarAreaData(
+                                  show: true,
+                                  colors: [
+                                    Colors.green.withOpacity(0.2),
+                                  ],
+                                ),
+                              ),
                             ],
-                            barWidth: 2,
-                            isStrokeCapRound: true,
-                            dotData: FlDotData(
-                              show: false,
-                            ),
-                            belowBarData: BarAreaData(
-                              show: true,
-                              colors: [
-                                Colors.green.withOpacity(0.2),
-                              ],
-                            ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {

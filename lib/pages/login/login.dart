@@ -166,14 +166,14 @@ class _LoginState extends State<Login> {
     } else {
       if (res['error']['code'] == 400) {
         Util.toast("用户名/密码有误");
-      } else if (res['error']['code'] == 404) {
-        _otpController.clear();
-        Util.toast("错误的验证代码。请再试一次。");
       } else if (res['error']['code'] == 403) {
         Util.toast("请输入二次验证代码");
         setState(() {
           needOtp = true;
         });
+      } else if (res['error']['code'] == 404) {
+        _otpController.clear();
+        Util.toast("错误的验证代码。请再试一次。");
       } else {
         Util.toast("登录失败，code:${res['error']['code']}");
       }

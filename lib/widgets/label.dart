@@ -6,19 +6,22 @@
 import 'package:flutter/material.dart';
 
 class Label extends StatelessWidget {
-  Label(this.name, this.color, {this.fill: false, this.fontSize});
+  Label(this.name, this.color, {this.fill: false, this.fontSize, this.height});
   final String name;
   final Color color;
   final bool fill;
   final double fontSize;
+  final double height;
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
       decoration: BoxDecoration(
         border: Border.all(color: color),
         color: fill ? color : Colors.transparent,
         borderRadius: BorderRadius.circular(5),
       ),
+      // alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       child: Text(
         name,

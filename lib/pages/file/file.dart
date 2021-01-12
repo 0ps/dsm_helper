@@ -7,7 +7,7 @@ import 'package:dsm_helper/pages/file/share_manager.dart';
 import 'package:dsm_helper/pages/file/upload.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
-import 'package:dsm_helper/pages/editor/editor.dart';
+// import 'package:dsm_helper/pages/editor/editor.dart';
 import 'package:dsm_helper/pages/file/detail.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/file_icon.dart';
@@ -893,10 +893,10 @@ class FilesState extends State<Files> {
                   await intent.launch();
                   break;
                 case FileType.code:
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return Editor();
-                  }));
-                  break;
+                // Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                //   return Editor();
+                // }));
+                // break;
                 default:
                   Util.toast("暂不支持打开此类型文件");
               }
@@ -1100,9 +1100,17 @@ class FilesState extends State<Files> {
                                                 ),
                                                 bevel: 20,
                                                 padding: EdgeInsets.symmetric(vertical: 10),
-                                                child: Text(
-                                                  "解压",
-                                                  style: TextStyle(fontSize: 12),
+                                                child: Column(
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/icons/unzip.png",
+                                                      width: 30,
+                                                    ),
+                                                    Text(
+                                                      "解压",
+                                                      style: TextStyle(fontSize: 12),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),

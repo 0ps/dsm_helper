@@ -35,11 +35,15 @@ class _ShareManagerState extends State<ShareManager> {
       padding: EdgeInsets.symmetric(vertical: 10),
       child: NeuButton(
         onPressed: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return Share(
-              link: link,
-            );
-          })).then((res) {
+          Navigator.of(context)
+              .push(CupertinoPageRoute(
+                  builder: (context) {
+                    return Share(
+                      link: link,
+                    );
+                  },
+                  settings: RouteSettings(name: "share")))
+              .then((res) {
             setState(() {
               loading = true;
             });

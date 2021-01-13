@@ -27,9 +27,7 @@ class _FileDetailState extends State<FileDetail> {
 
   @override
   dispose() {
-    if (timer != null) {
-      timer.cancel();
-    }
+    timer?.cancel();
     super.dispose();
   }
 

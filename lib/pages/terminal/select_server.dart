@@ -39,9 +39,11 @@ class _SelectServerState extends State<SelectServer> {
       padding: EdgeInsets.only(bottom: 20),
       child: NeuButton(
         onPressed: () async {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return Ssh(server['host'], server['port'], server['account'], server['password']);
-          }));
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return Ssh(server['host'], server['port'], server['account'], server['password']);
+              },
+              settings: RouteSettings(name: "ssh_client")));
         },
         decoration: NeumorphicDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -115,9 +117,13 @@ class _SelectServerState extends State<SelectServer> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return AddServer();
-                })).then((value) {
+                Navigator.of(context)
+                    .push(CupertinoPageRoute(
+                        builder: (context) {
+                          return AddServer();
+                        },
+                        settings: RouteSettings(name: "add_ssh_server")))
+                    .then((value) {
                   getData();
                 });
               },
@@ -169,9 +175,13 @@ class _SelectServerState extends State<SelectServer> {
                           ),
                           bevel: 5,
                           onPressed: () {
-                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                              return AddServer();
-                            })).then((value) {
+                            Navigator.of(context)
+                                .push(CupertinoPageRoute(
+                                    builder: (context) {
+                                      return AddServer();
+                                    },
+                                    settings: RouteSettings(name: "add_ssh_server")))
+                                .then((value) {
                               getData();
                             });
                           },

@@ -353,9 +353,13 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return PackageDetail(update);
-        })).then((_) async {
+        Navigator.of(context)
+            .push(CupertinoPageRoute(
+                builder: (context) {
+                  return PackageDetail(update);
+                },
+                settings: RouteSettings(name: "package_detail")))
+            .then((_) async {
           await getLaunchedPackages();
           await getInstalledPackages();
           setState(() {
@@ -428,9 +432,13 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     }
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return PackageDetail(package);
-        })).then((_) async {
+        Navigator.of(context)
+            .push(CupertinoPageRoute(
+                builder: (context) {
+                  return PackageDetail(package);
+                },
+                settings: RouteSettings(name: "package_detail")))
+            .then((_) async {
           await getLaunchedPackages();
           await getInstalledPackages();
           setState(() {

@@ -432,9 +432,13 @@ class _SharedFoldersState extends State<SharedFolders> {
                     padding: EdgeInsets.all(10),
                     bevel: 5,
                     onPressed: () async {
-                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                        return AddSharedFolders(volumes);
-                      })).then((res) {
+                      Navigator.of(context)
+                          .push(CupertinoPageRoute(
+                              builder: (context) {
+                                return AddSharedFolders(volumes);
+                              },
+                              settings: RouteSettings(name: "add_shared_folders")))
+                          .then((res) {
                         if (res != null && res) {
                           getData();
                         }

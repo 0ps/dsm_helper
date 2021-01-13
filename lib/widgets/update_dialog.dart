@@ -120,9 +120,11 @@ class UpdateDialog extends StatelessWidget {
                   child: CupertinoButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                        return Update(updateInfo, direct: true);
-                      }));
+                      Navigator.of(context).push(CupertinoPageRoute(
+                          builder: (context) {
+                            return Update(updateInfo, direct: true);
+                          },
+                          settings: RouteSettings(name: "update")));
                     },
                     color: CupertinoTheme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(50),

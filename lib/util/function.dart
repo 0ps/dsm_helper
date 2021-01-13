@@ -41,6 +41,13 @@ enum FileType {
   apk,
   iso,
 }
+enum UploadStatus {
+  running,
+  complete,
+  failed,
+  canceled,
+  wait,
+}
 
 class Util {
   static String sid = "";
@@ -448,9 +455,11 @@ class Util {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
     if (res['code'] == 1) {
-      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-        return Update(res['data']);
-      }));
+      Navigator.of(context).push(CupertinoPageRoute(
+          builder: (context) {
+            return Update(res['data']);
+          },
+          settings: RouteSettings(name: "update")));
       // showCupertinoModalPopup(
       //   context: context,
       //   builder: (context) {

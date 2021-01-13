@@ -6,6 +6,7 @@ import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dar
 import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
+import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/badge.dart';
@@ -134,10 +135,7 @@ class DashboardState extends State<Dashboard> {
 
   getData() async {
     if (!mounted) {
-      if (timer != null) {
-        timer.cancel();
-        timer = null;
-      }
+      timer?.cancel();
       return;
     }
     var res = await Api.systemInfo();
@@ -226,10 +224,7 @@ class DashboardState extends State<Dashboard> {
         loading = false;
         msg = res['msg'] ?? "加载失败，code:${res['error']['code']}";
       });
-      if (timer != null) {
-        timer.cancel();
-        timer = null;
-      }
+      timer?.cancel();
     }
   }
 
@@ -237,9 +232,11 @@ class DashboardState extends State<Dashboard> {
     if (widget == "SYNO.SDS.SystemInfoApp.SystemHealthWidget") {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return SystemInfo(0, system, volumes, disks);
-          }));
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return SystemInfo(0, system, volumes, disks);
+              },
+              settings: RouteSettings(name: "system_info_all")));
         },
         child: NeuCard(
           padding: EdgeInsets.all(20),
@@ -361,9 +358,11 @@ class DashboardState extends State<Dashboard> {
     } else if (widget == "SYNO.SDS.TaskScheduler.TaskSchedulerWidget" && tasks.length > 0) {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return TaskScheduler();
-          }));
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return TaskScheduler();
+              },
+              settings: RouteSettings(name: "task_scheduler")));
         },
         child: NeuCard(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -461,9 +460,11 @@ class DashboardState extends State<Dashboard> {
     } else if (widget == "SYNO.SDS.ResourceMonitor.Widget" && utilization != null) {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return ResourceMonitor();
-          }));
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return Performance();
+              },
+              settings: RouteSettings(name: "performance")));
         },
         child: NeuCard(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -502,11 +503,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 1,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 1,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance_cpu")));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -543,11 +546,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 2,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 2,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance_ram")));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -581,11 +586,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 3,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 3,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance_network")));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -620,11 +627,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 3,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 3,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance_network")));
                 },
                 child: AspectRatio(
                   aspectRatio: 1.70,
@@ -735,9 +744,11 @@ class DashboardState extends State<Dashboard> {
     } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return SystemInfo(2, system, volumes, disks);
-          }));
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return SystemInfo(2, system, volumes, disks);
+              },
+              settings: RouteSettings(name: "system_info_storage")));
         },
         child: NeuCard(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -1396,9 +1407,11 @@ class DashboardState extends State<Dashboard> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return Packages();
-        }));
+        Navigator.of(context).push(CupertinoPageRoute(
+            builder: (context) {
+              return Packages();
+            },
+            settings: RouteSettings(name: "packages")));
       },
       child: NeuCard(
         width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
@@ -1479,9 +1492,13 @@ class DashboardState extends State<Dashboard> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return WidgetSetting(widgets, restoreSizePos);
-                })).then((res) {
+                Navigator.of(context)
+                    .push(CupertinoPageRoute(
+                        builder: (context) {
+                          return WidgetSetting(widgets, restoreSizePos);
+                        },
+                        settings: RouteSettings(name: "widget_setting")))
+                    .then((res) {
                   if (res != null) {
                     setState(() {
                       widgets = res;
@@ -1506,9 +1523,11 @@ class DashboardState extends State<Dashboard> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return Notify(notifies);
-                }));
+                Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) {
+                      return Notify(notifies);
+                    },
+                    settings: RouteSettings(name: "notify")));
               },
               child: Stack(
                 alignment: Alignment.topRight,
@@ -1577,9 +1596,11 @@ class DashboardState extends State<Dashboard> {
                               ),
                               bevel: 5,
                               onPressed: () {
-                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                  return WidgetSetting(widgets, restoreSizePos);
-                                }));
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (context) {
+                                      return WidgetSetting(widgets, restoreSizePos);
+                                    },
+                                    settings: RouteSettings(name: "widget_setting")));
                               },
                               child: Text(
                                 ' 添加 ',
@@ -1635,9 +1656,11 @@ class DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return ControlPanel(system, volumes, disks);
-                              }));
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) {
+                                    return ControlPanel(system, volumes, disks);
+                                  },
+                                  settings: RouteSettings(name: "control_panel")));
                             },
                             child: NeuCard(
                               width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
@@ -1750,9 +1773,11 @@ class DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return Packages();
-                              }));
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) {
+                                    return Packages();
+                                  },
+                                  settings: RouteSettings(name: "packages")));
                             },
                             child: NeuCard(
                               width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
@@ -1798,9 +1823,11 @@ class DashboardState extends State<Dashboard> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return ResourceMonitor();
-                              }));
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) {
+                                    return ResourceMonitor();
+                                  },
+                                  settings: RouteSettings(name: "resource_monitor")));
                             },
                             child: NeuCard(
                               width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,

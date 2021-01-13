@@ -38,10 +38,7 @@ class DownloadState extends State<Download> {
         });
       }
     } else {
-      if (timer != null) {
-        timer.cancel();
-        timer = null;
-      }
+      timer?.cancel();
     }
   }
 
@@ -180,13 +177,15 @@ class DownloadState extends State<Download> {
                 }
               }
             }
-            Navigator.of(context).push(TransparentMaterialPageRoute(builder: (context) {
-              return PreviewPage(
-                images,
-                index,
-                network: false,
-              );
-            }));
+            Navigator.of(context).push(TransparentMaterialPageRoute(
+                builder: (context) {
+                  return PreviewPage(
+                    images,
+                    index,
+                    network: false,
+                  );
+                },
+                settings: RouteSettings(name: "preview_image")));
           } else {
             FlutterDownloader.open(taskId: task.taskId);
           }

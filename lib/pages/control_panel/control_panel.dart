@@ -59,9 +59,11 @@ class _ControlPanelState extends State<ControlPanel> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (content) {
-                            return SharedFolders();
-                          }));
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (content) {
+                                return SharedFolders();
+                              },
+                              settings: RouteSettings(name: "share_folders")));
                         },
                         child: NeuCard(
                           width: (MediaQuery.of(context).size.width - 120) / 3,
@@ -122,9 +124,11 @@ class _ControlPanelState extends State<ControlPanel> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                            return Users();
-                          }));
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return Users();
+                              },
+                              settings: RouteSettings(name: "users")));
                         },
                         child: NeuCard(
                           width: (MediaQuery.of(context).size.width - 120) / 3,
@@ -157,9 +161,11 @@ class _ControlPanelState extends State<ControlPanel> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                            return UserGroups();
-                          }));
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return UserGroups();
+                              },
+                              settings: RouteSettings(name: "user_groups")));
                         },
                         child: NeuCard(
                           width: (MediaQuery.of(context).size.width - 120) / 3,
@@ -454,9 +460,11 @@ class _ControlPanelState extends State<ControlPanel> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (content) {
-                            return SystemInfo(0, widget.system, widget.volumes, widget.disks);
-                          }));
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (content) {
+                                return SystemInfo(0, widget.system, widget.volumes, widget.disks);
+                              },
+                              settings: RouteSettings(name: "system_info_all")));
                         },
                         child: NeuCard(
                           width: (MediaQuery.of(context).size.width - 120) / 3,
@@ -573,9 +581,11 @@ class _ControlPanelState extends State<ControlPanel> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                            return TaskScheduler();
-                          }));
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return TaskScheduler();
+                              },
+                              settings: RouteSettings(name: "task_scheduler")));
                         },
                         child: NeuCard(
                           width: (MediaQuery.of(context).size.width - 120) / 3,

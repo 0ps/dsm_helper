@@ -131,9 +131,11 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                 if (task['type'] == 'script')
                   NeuButton(
                     onPressed: () async {
-                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                        return TaskRecord(task['id']);
-                      }));
+                      Navigator.of(context).push(CupertinoPageRoute(
+                          builder: (context) {
+                            return TaskRecord(task['id']);
+                          },
+                          settings: RouteSettings(name: "task_record")));
                     },
                     decoration: NeumorphicDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor,

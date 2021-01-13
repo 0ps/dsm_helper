@@ -13,14 +13,6 @@ class Upload extends StatefulWidget {
   _UploadState createState() => _UploadState();
 }
 
-enum UploadStatus {
-  running,
-  complete,
-  failed,
-  canceled,
-  wait,
-}
-
 class UploadItem {
   PlatformFile file;
   int fileSize;

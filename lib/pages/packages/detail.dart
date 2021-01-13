@@ -93,9 +93,7 @@ class _PackageDetailState extends State<PackageDetail> {
 
   @override
   void dispose() {
-    if (timer != null) {
-      timer.cancel();
-    }
+    timer?.cancel();
     super.dispose();
   }
 
@@ -454,9 +452,11 @@ class _PackageDetailState extends State<PackageDetail> {
                       child: NeuButton(
                         onPressed: () async {
                           if (widget.package['additional']['is_uninstall_pages']) {
-                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                              return UninstallPackage(widget.package);
-                            }));
+                            Navigator.of(context).push(CupertinoPageRoute(
+                                builder: (context) {
+                                  return UninstallPackage(widget.package);
+                                },
+                                settings: RouteSettings(name: "uninstall_package")));
                           } else {
                             showCupertinoModalPopup(
                               context: context,

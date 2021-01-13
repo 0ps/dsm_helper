@@ -921,4 +921,25 @@ class Api {
     };
     return await Util.post("entry.cgi", data: data);
   }
+
+  //SYNO.Core.System.Process
+  static Future<Map> process() async {
+    var data = {
+      "api": "SYNO.Core.System.Process",
+      "method": "list",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> processGroup() async {
+    var data = {
+      "api": "SYNO.Core.System.ProcessGroup",
+      "method": "service_info",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
 }

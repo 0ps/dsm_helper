@@ -1,3 +1,4 @@
+import 'package:dsm_helper/pages/backup/backup.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/pages/terminal/select_server.dart';
@@ -456,7 +457,7 @@ class _SettingState extends State<Setting> {
                                 height: 8,
                               ),
                               Text(
-                                "SSH开关",
+                                "SSH${ssh == null ? "开关" : ssh ? "已开启" : "已关闭"}",
                                 style: TextStyle(fontSize: 16),
                               )
                             ],
@@ -617,9 +618,11 @@ class _SettingState extends State<Setting> {
                     Expanded(
                       child: NeuButton(
                         onPressed: () {
-                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                            return SelectServer();
-                          }));
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return SelectServer();
+                              },
+                              settings: RouteSettings(name: "select_server")));
                         },
                         // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         padding: EdgeInsets.symmetric(vertical: 20),
@@ -645,12 +648,41 @@ class _SettingState extends State<Setting> {
                         ),
                       ),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(),
-                    ),
                     SizedBox(
                       width: 20,
+                    ),
+                    Expanded(
+                      child: NeuButton(
+                        onPressed: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return Backup();
+                              },
+                              settings: RouteSettings(name: "backup")));
+                        },
+                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        bevel: 20,
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/icons/upload.png",
+                              width: 40,
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              "相册备份",
+                              style: TextStyle(fontSize: 16),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -661,9 +693,11 @@ class _SettingState extends State<Setting> {
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: NeuButton(
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return About();
-                }));
+                Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (context) {
+                      return About();
+                    },
+                    settings: RouteSettings(name: "about")));
               },
               // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               padding: EdgeInsets.symmetric(vertical: 20),

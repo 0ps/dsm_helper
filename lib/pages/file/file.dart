@@ -850,11 +850,11 @@ class FilesState extends State<Files> {
                     }
                   }
                   Navigator.of(context).push(TransparentMaterialPageRoute(
-                    builder: (context) {
-                      return PreviewPage(images, index);
-                    },
-                    fullscreenDialog: true,
-                  ));
+                      builder: (context) {
+                        return PreviewPage(images, index);
+                      },
+                      fullscreenDialog: true,
+                      settings: RouteSettings(name: "preview_image")));
                   break;
                 case FileType.movie:
                   AndroidIntent intent = AndroidIntent(
@@ -1002,9 +1002,11 @@ class FilesState extends State<Files> {
                                             child: NeuButton(
                                               onPressed: () async {
                                                 Navigator.of(context).pop();
-                                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                                  return FileDetail(file);
-                                                }));
+                                                Navigator.of(context).push(CupertinoPageRoute(
+                                                    builder: (context) {
+                                                      return FileDetail(file);
+                                                    },
+                                                    settings: RouteSettings(name: "file_detail")));
                                               },
                                               decoration: NeumorphicDecoration(
                                                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -1147,9 +1149,11 @@ class FilesState extends State<Files> {
                                             child: NeuButton(
                                               onPressed: () async {
                                                 Navigator.of(context).pop();
-                                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                                  return Share(paths: [file['path']]);
-                                                }));
+                                                Navigator.of(context).push(CupertinoPageRoute(
+                                                    builder: (context) {
+                                                      return Share(paths: [file['path']]);
+                                                    },
+                                                    settings: RouteSettings(name: "share")));
                                               },
                                               decoration: NeumorphicDecoration(
                                                 color: Theme.of(context).scaffoldBackgroundColor,
@@ -1177,12 +1181,14 @@ class FilesState extends State<Files> {
                                               child: NeuButton(
                                                 onPressed: () async {
                                                   Navigator.of(context).pop();
-                                                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                                    return Share(
-                                                      paths: [file['path']],
-                                                      fileRequest: true,
-                                                    );
-                                                  }));
+                                                  Navigator.of(context).push(CupertinoPageRoute(
+                                                      builder: (context) {
+                                                        return Share(
+                                                          paths: [file['path']],
+                                                          fileRequest: true,
+                                                        );
+                                                      },
+                                                      settings: RouteSettings(name: "share")));
                                                 },
                                                 decoration: NeumorphicDecoration(
                                                   color: Theme.of(context).scaffoldBackgroundColor,
@@ -1902,12 +1908,14 @@ class FilesState extends State<Files> {
                                 NeuButton(
                                   onPressed: () async {
                                     Navigator.of(context).pop();
-                                    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                      return Share(
-                                        paths: [paths.join("/").substring(1)],
-                                        fileRequest: true,
-                                      );
-                                    }));
+                                    Navigator.of(context).push(CupertinoPageRoute(
+                                        builder: (context) {
+                                          return Share(
+                                            paths: [paths.join("/").substring(1)],
+                                            fileRequest: true,
+                                          );
+                                        },
+                                        settings: RouteSettings(name: "share")));
                                   },
                                   decoration: NeumorphicDecoration(
                                     color: Theme.of(context).scaffoldBackgroundColor,
@@ -1927,9 +1935,11 @@ class FilesState extends State<Files> {
                               NeuButton(
                                 onPressed: () async {
                                   Navigator.of(context).pop();
-                                  Navigator.of(context).push(CupertinoPageRoute(builder: (content) {
-                                    return ShareManager();
-                                  }));
+                                  Navigator.of(context).push(CupertinoPageRoute(
+                                      builder: (content) {
+                                        return ShareManager();
+                                      },
+                                      settings: RouteSettings(name: "share_manager")));
                                 },
                                 decoration: NeumorphicDecoration(
                                   color: Theme.of(context).scaffoldBackgroundColor,
@@ -2295,9 +2305,13 @@ class FilesState extends State<Files> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 onPressed: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return Upload(paths.join("/").substring(1));
-                  })).then((value) {
+                  Navigator.of(context)
+                      .push(CupertinoPageRoute(
+                          builder: (context) {
+                            return Upload(paths.join("/").substring(1));
+                          },
+                          settings: RouteSettings(name: "upload")))
+                      .then((value) {
                     refresh();
                   });
                 },

@@ -312,9 +312,11 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                              return OpenSource();
-                            }));
+                            Navigator.of(context).push(CupertinoPageRoute(
+                                builder: (context) {
+                                  return OpenSource();
+                                },
+                                settings: RouteSettings(name: "open_source")));
                           },
                           child: Text("详情"),
                         ),

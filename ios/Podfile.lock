@@ -61,6 +61,10 @@ PODS:
     - Flutter
     - UMengAnalytics-NO-IDFA
   - UMengAnalytics-NO-IDFA (4.2.5)
+  - url_launcher (0.0.1):
+    - Flutter
+  - vibrate (0.0.1):
+    - Flutter
   - video_player (0.0.1):
     - Flutter
   - wakelock (0.0.1):
@@ -80,6 +84,8 @@ DEPENDENCIES:
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - umeng_analytics_plugin (from `.symlinks/plugins/umeng_analytics_plugin/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - vibrate (from `.symlinks/plugins/vibrate/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
@@ -116,6 +122,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
   umeng_analytics_plugin:
     :path: ".symlinks/plugins/umeng_analytics_plugin/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
+  vibrate:
+    :path: ".symlinks/plugins/vibrate/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
@@ -141,6 +151,8 @@ SPEC CHECKSUMS:
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   umeng_analytics_plugin: 7035dfb8c5636e50429ab935125e5a3f0d23e72e
   UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  vibrate: 967ba16b8bd87d2fa3646472bb10429f1927c32f
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96

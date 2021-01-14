@@ -4,6 +4,8 @@ import 'package:dsm_helper/widgets/label.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:dsm_helper/widgets/file_icon.dart';
+import 'package:dsm_helper/util/function.dart';
 
 class ShareManager extends StatefulWidget {
   @override
@@ -31,6 +33,7 @@ class _ShareManagerState extends State<ShareManager> {
   }
 
   Widget _buildLinkItem(link) {
+    FileType fileType = Util.fileType(link['path']);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: NeuButton(
@@ -66,7 +69,10 @@ class _ShareManagerState extends State<ShareManager> {
                         "assets/icons/folder.png",
                         width: 20,
                       )
-                    : ImageIcon(link['path']),
+                    : FileIcon(
+                        fileType,
+                        thumb: link['path'],
+                      ),
                 SizedBox(
                   width: 5,
                 ),

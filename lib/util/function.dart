@@ -17,6 +17,7 @@ import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vibrate/vibrate.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:dsm_helper/util/api.dart';
 export 'package:dsm_helper/extensions/datetime.dart';
@@ -57,6 +58,14 @@ class Util {
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
     showToast(text ?? "");
+  }
+
+  static vibrate(FeedbackType type) async {
+    // Check if the device can vibrate
+    bool canVibrate = await Vibrate.canVibrate;
+    if (canVibrate) {
+      Vibrate.feedback(type);
+    }
   }
 
   static int versionCompare(String v1, String v2) {
@@ -417,7 +426,7 @@ class Util {
       }
       File image = await getCachedImageFile(url);
       File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
-      bool result = await GallerySaver.saveImage(save.path, albumName: "FileStation");
+      bool result = await GallerySaver.saveImage(save.path, albumName: "群辉助手");
       if (showLoading) {
         hide();
       }

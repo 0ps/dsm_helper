@@ -187,7 +187,10 @@ class DownloadState extends State<Download> {
                 },
                 settings: RouteSettings(name: "preview_image")));
           } else {
-            FlutterDownloader.open(taskId: task.taskId);
+            var result = await FlutterDownloader.open(taskId: task.taskId);
+            if (!result) {
+              Util.toast("不支持打开此文件");
+            }
           }
         },
         // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

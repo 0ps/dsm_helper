@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:android_intent/android_intent.dart';
 import 'package:dsm_helper/pages/setting/open_source.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -119,7 +122,8 @@ class _AboutState extends State<About> {
                           onPressed: () {
                             AndroidIntent intent = AndroidIntent(
                               action: 'action_view',
-                              data: 'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
+                              data:
+                                  'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
                               arguments: {},
                               // data: 'https://qm.qq.com/cgi-bin/qm/qr?k=Gf20e3f1FXrlIUfgp9IwzMnqPuFKRwVK&jump_from=webapi',
                               // type: "video/*",
@@ -330,40 +334,41 @@ class _AboutState extends State<About> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: NeuButton(
-              onPressed: () async {
-                if (checking) {
-                  return;
-                }
-                setState(() {
-                  checking = true;
-                });
-                await Util.checkUpdate(true, context);
-                setState(() {
-                  checking = false;
-                });
-              },
-              // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              padding: EdgeInsets.symmetric(vertical: 20),
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 20,
-              child: checking
-                  ? Center(
-                      child: CupertinoActivityIndicator(
-                        radius: 13,
+          if (Platform.isAndroid)
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: NeuButton(
+                onPressed: () async {
+                  if (checking) {
+                    return;
+                  }
+                  setState(() {
+                    checking = true;
+                  });
+                  await Util.checkUpdate(true, context);
+                  setState(() {
+                    checking = false;
+                  });
+                },
+                // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 20),
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                bevel: 20,
+                child: checking
+                    ? Center(
+                        child: CupertinoActivityIndicator(
+                          radius: 13,
+                        ),
+                      )
+                    : Text(
+                        "检查更新",
+                        style: TextStyle(fontSize: 18),
                       ),
-                    )
-                  : Text(
-                      "检查更新",
-                      style: TextStyle(fontSize: 18),
-                    ),
+              ),
             ),
-          ),
         ],
       ),
     );

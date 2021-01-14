@@ -9,7 +9,7 @@ import 'function.dart';
 class Api {
   static Future<Map> update(String buildNumber) async {
     if (Platform.isAndroid) {
-      var res = await Util.get("http://api.fir.im/apps/latest/5fcf8485b2eb465f9ccc279a?api_token=80aa8eeb47ff77e2d713c17b8aff25f8");
+      var res = await Util.get(utf8.decode(base64Decode("aHR0cDovL2FwaS5maXIuaW0vYXBwcy9sYXRlc3QvNWZjZjg0ODViMmViNDY1ZjljY2MyNzlhP2FwaV90b2tlbj04MGFhOGVlYjQ3ZmY3N2UyZDcxM2MxN2I4YWZmMjVmOA==")));
       if (res != null) {
         if (int.parse(buildNumber) < int.parse(res['build'])) {
           return {
@@ -895,7 +895,8 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data":
+          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,

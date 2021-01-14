@@ -72,6 +72,7 @@ class _TaskManagerState extends State<TaskManager> with SingleTickerProviderStat
       ),
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(20),
+      curveType: CurveType.flat,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -96,6 +97,7 @@ class _TaskManagerState extends State<TaskManager> with SingleTickerProviderStat
       ),
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(20),
+      curveType: CurveType.flat,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

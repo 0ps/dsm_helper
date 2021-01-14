@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dsm_helper/pages/dashborad/dashboard.dart';
 import 'package:dsm_helper/pages/download/download.dart';
 import 'package:dsm_helper/pages/file/file.dart';
@@ -31,15 +33,17 @@ class _HomeState extends State<Home> {
   }
 
   getData() async {
-    packageInfo = await PackageInfo.fromPlatform();
-    var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
-    if (res['code'] == 1) {
-      showCupertinoDialog(
-        context: context,
-        builder: (context) {
-          return UpdateDialog(res['data'], packageInfo);
-        },
-      );
+    if (Platform.isAndroid) {
+      packageInfo = await PackageInfo.fromPlatform();
+      var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
+      if (res['code'] == 1) {
+        showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            return UpdateDialog(res['data'], packageInfo);
+          },
+        );
+      }
     }
   }
 
@@ -99,6 +103,7 @@ class _HomeState extends State<Home> {
             });
           },
           groupValue: _currentIndex,
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
           children: {
             0: Padding(
               padding: EdgeInsets.symmetric(vertical: 6),

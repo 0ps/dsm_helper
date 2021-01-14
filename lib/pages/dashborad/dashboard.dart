@@ -6,7 +6,6 @@ import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dar
 import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
-import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/system/info.dart';
 import 'package:dsm_helper/util/badge.dart';
@@ -135,7 +134,10 @@ class DashboardState extends State<Dashboard> {
 
   getData() async {
     if (!mounted) {
-      timer?.cancel();
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
       return;
     }
     var res = await Api.systemInfo();
@@ -224,7 +226,10 @@ class DashboardState extends State<Dashboard> {
         loading = false;
         msg = res['msg'] ?? "加载失败，code:${res['error']['code']}";
       });
-      timer?.cancel();
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
     }
   }
 
@@ -232,11 +237,9 @@ class DashboardState extends State<Dashboard> {
     if (widget == "SYNO.SDS.SystemInfoApp.SystemHealthWidget") {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) {
-                return SystemInfo(0, system, volumes, disks);
-              },
-              settings: RouteSettings(name: "system_info_all")));
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return SystemInfo(0, system, volumes, disks);
+          }));
         },
         child: NeuCard(
           padding: EdgeInsets.all(20),
@@ -295,7 +298,8 @@ class DashboardState extends State<Dashboard> {
                       Text("散热状态："),
                       Text(
                         "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                        style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                        style: TextStyle(
+                            color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -358,11 +362,9 @@ class DashboardState extends State<Dashboard> {
     } else if (widget == "SYNO.SDS.TaskScheduler.TaskSchedulerWidget" && tasks.length > 0) {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) {
-                return TaskScheduler();
-              },
-              settings: RouteSettings(name: "task_scheduler")));
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return TaskScheduler();
+          }));
         },
         child: NeuCard(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -460,11 +462,9 @@ class DashboardState extends State<Dashboard> {
     } else if (widget == "SYNO.SDS.ResourceMonitor.Widget" && utilization != null) {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) {
-                return Performance();
-              },
-              settings: RouteSettings(name: "performance")));
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return ResourceMonitor();
+          }));
         },
         child: NeuCard(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -503,13 +503,11 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) {
-                        return Performance(
-                          tabIndex: 1,
-                        );
-                      },
-                      settings: RouteSettings(name: "performance_cpu")));
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 1,
+                    );
+                  }));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -546,13 +544,11 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) {
-                        return Performance(
-                          tabIndex: 2,
-                        );
-                      },
-                      settings: RouteSettings(name: "performance_ram")));
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 2,
+                    );
+                  }));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -586,13 +582,11 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) {
-                        return Performance(
-                          tabIndex: 3,
-                        );
-                      },
-                      settings: RouteSettings(name: "performance_network")));
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 3,
+                    );
+                  }));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -627,13 +621,11 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) {
-                        return Performance(
-                          tabIndex: 3,
-                        );
-                      },
-                      settings: RouteSettings(name: "performance_network")));
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return ResourceMonitor(
+                      tabIndex: 3,
+                    );
+                  }));
                 },
                 child: AspectRatio(
                   aspectRatio: 1.70,
@@ -744,11 +736,9 @@ class DashboardState extends State<Dashboard> {
     } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {
       return GestureDetector(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(
-              builder: (context) {
-                return SystemInfo(2, system, volumes, disks);
-              },
-              settings: RouteSettings(name: "system_info_storage")));
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return SystemInfo(2, system, volumes, disks);
+          }));
         },
         child: NeuCard(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -1283,16 +1273,419 @@ class DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget _buildInterfaceItem(interface) {
-    return Padding(
-      padding: EdgeInsets.only(top: 5),
-      child: Row(
-        children: [
-          Text("${interface['id']}："),
-          Text("${interface['ipaddr']}"),
-        ],
-      ),
-    );
+  List<Widget> _buildApplicationList() {
+    List<Widget> apps = [];
+    if (applications.contains("SYNO.SDS.AdminCenter.Application")) {
+      apps.add(GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return ControlPanel(system, volumes, disks);
+              },
+              settings: RouteSettings(name: "control_panel")));
+        },
+        child: NeuCard(
+          width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+          height: 110,
+          padding: EdgeInsets.symmetric(vertical: 20),
+          curveType: CurveType.flat,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          bevel: 20,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/applications/control_panel.png",
+                      height: 45,
+                      width: 45,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text("控制面板"),
+                  ],
+                ),
+              ),
+              if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null)
+                Positioned(
+                  right: 30,
+                  child: Badge(
+                    appNotify['SYNO.SDS.AdminCenter.Application']['unread'],
+                    size: 20,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.SDS.EzInternet.Instance")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        height: 110,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/ez_internet.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("EZ-Internet"),
+          ],
+        ),
+      ));
+    }
+    // if (applications.contains("SYNO.SDS.HelpBrowser.Application"))
+    //   NeuCard(
+    //     width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+    //     curveType: CurveType.flat,
+    //     decoration: NeumorphicDecoration(
+    //       color: Theme.of(context).scaffoldBackgroundColor,
+    //       borderRadius: BorderRadius.circular(20),
+    //     ),
+    //     bevel: 20,
+    //     padding: EdgeInsets.symmetric(vertical: 20),
+    //     child: Stack(
+    //       children: [
+    //         Align(
+    //           alignment: Alignment.center,
+    //           child: Column(
+    //             children: [
+    //               Image.asset(
+    //                 "assets/applications/help.png",
+    //                 height: 45,
+    //                 width: 45,
+    //                 fit: BoxFit.contain,
+    //               ),
+    //               SizedBox(
+    //                 height: 5,
+    //               ),
+    //               Text("DSM 说明"),
+    //             ],
+    //           ),
+    //         ),
+    //         if (appNotify != null && appNotify['SYNO.SDS.HelpBrowser.Application'] != null)
+    //           Positioned(
+    //             right: 30,
+    //             child: Badge(
+    //               appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
+    //               size: 20,
+    //             ),
+    //           ),
+    //       ],
+    //     ),
+    //   ),
+    if (applications.contains("SYNO.SDS.PkgManApp.Instance")) {
+      apps.add(GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return Packages();
+              },
+              settings: RouteSettings(name: "packages")));
+        },
+        child: NeuCard(
+          width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+          curveType: CurveType.flat,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          bevel: 20,
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/applications/package_center.png",
+                      height: 45,
+                      width: 45,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text("套件中心"),
+                  ],
+                ),
+              ),
+              if (appNotify != null && appNotify['SYNO.SDS.PkgManApp.Instance'] != null)
+                Positioned(
+                  right: 30,
+                  child: Badge(
+                    appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
+                    size: 20,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.SDS.ResourceMonitor.Instance")) {
+      apps.add(GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return ResourceMonitor();
+              },
+              settings: RouteSettings(name: "resource_monitor")));
+        },
+        child: NeuCard(
+          width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+          curveType: CurveType.flat,
+          decoration: NeumorphicDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          bevel: 20,
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Column(
+            children: [
+              Image.asset(
+                "assets/applications/resource_monitor.png",
+                height: 45,
+                width: 45,
+                fit: BoxFit.contain,
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text("资源监控"),
+            ],
+          ),
+        ),
+      ));
+    }
+    if (applications.contains("SYNO.SDS.StorageManager.Instance")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/storage_manager.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("存储空间管理员"),
+          ],
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.SDS.LogCenter.Instance")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/log_center.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("日志中心"),
+          ],
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.SDS.SecurityScan.Instance")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Image.asset(
+                    "assets/applications/security_scan.png",
+                    height: 45,
+                    width: 45,
+                    fit: BoxFit.contain,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text("安全顾问"),
+                ],
+              ),
+            ),
+            if (appNotify != null && appNotify['SYNO.SDS.SecurityScan.Instance'] != null)
+              Positioned(
+                right: 30,
+                child: Badge(
+                  appNotify['SYNO.SDS.SecurityScan.Instance']['unread'],
+                  size: 20,
+                ),
+              ),
+          ],
+        ),
+      ));
+    }
+    if (applications.contains("SYNO.SDS.SupportForm.Application")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/support_center.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("技术支持中心"),
+          ],
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.SDS.iSCSI.Application")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/iSCSI_manager.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("iSCSI Manager"),
+          ],
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.SDS.App.FileStation3.Instance")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/file_browser.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("File Station"),
+          ],
+        ),
+      ));
+    }
+
+    if (applications.contains("SYNO.Finder.Application")) {
+      apps.add(NeuCard(
+        width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+        curveType: CurveType.flat,
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        bevel: 20,
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Column(
+          children: [
+            Image.asset(
+              "assets/applications/search.png",
+              height: 45,
+              width: 45,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Text("Universal Search"),
+          ],
+        ),
+      ));
+    }
+    return apps;
   }
 
   Widget _buildApplicationItem(application) {
@@ -1407,11 +1800,9 @@ class DashboardState extends State<Dashboard> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(CupertinoPageRoute(
-            builder: (context) {
-              return Packages();
-            },
-            settings: RouteSettings(name: "packages")));
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+          return Packages();
+        }));
       },
       child: NeuCard(
         width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
@@ -1492,13 +1883,9 @@ class DashboardState extends State<Dashboard> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Navigator.of(context)
-                    .push(CupertinoPageRoute(
-                        builder: (context) {
-                          return WidgetSetting(widgets, restoreSizePos);
-                        },
-                        settings: RouteSettings(name: "widget_setting")))
-                    .then((res) {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return WidgetSetting(widgets, restoreSizePos);
+                })).then((res) {
                   if (res != null) {
                     setState(() {
                       widgets = res;
@@ -1523,11 +1910,9 @@ class DashboardState extends State<Dashboard> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) {
-                      return Notify(notifies);
-                    },
-                    settings: RouteSettings(name: "notify")));
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return Notify(notifies);
+                }));
               },
               child: Stack(
                 alignment: Alignment.topRight,
@@ -1596,11 +1981,9 @@ class DashboardState extends State<Dashboard> {
                               ),
                               bevel: 5,
                               onPressed: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) {
-                                      return WidgetSetting(widgets, restoreSizePos);
-                                    },
-                                    settings: RouteSettings(name: "widget_setting")));
+                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                  return WidgetSetting(widgets, restoreSizePos);
+                                }));
                               },
                               child: Text(
                                 ' 添加 ',
@@ -1651,400 +2034,7 @@ class DashboardState extends State<Dashboard> {
                     Wrap(
                       spacing: 20,
                       runSpacing: 20,
-                      children: [
-                        if (applications.contains("SYNO.SDS.AdminCenter.Application"))
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) {
-                                    return ControlPanel(system, volumes, disks);
-                                  },
-                                  settings: RouteSettings(name: "control_panel")));
-                            },
-                            child: NeuCard(
-                              width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                              height: 110,
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              curveType: CurveType.flat,
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              bevel: 20,
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Column(
-                                      children: [
-                                        Image.asset(
-                                          "assets/applications/control_panel.png",
-                                          height: 45,
-                                          width: 45,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text("控制面板"),
-                                      ],
-                                    ),
-                                  ),
-                                  if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null)
-                                    Positioned(
-                                      right: 30,
-                                      child: Badge(
-                                        appNotify['SYNO.SDS.AdminCenter.Application']['unread'],
-                                        size: 20,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.EzInternet.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            height: 110,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/ez_internet.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("EZ-Internet"),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.HelpBrowser.Application"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      Image.asset(
-                                        "assets/applications/help.png",
-                                        height: 45,
-                                        width: 45,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text("DSM 说明"),
-                                    ],
-                                  ),
-                                ),
-                                if (appNotify != null && appNotify['SYNO.SDS.HelpBrowser.Application'] != null)
-                                  Positioned(
-                                    right: 30,
-                                    child: Badge(
-                                      appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
-                                      size: 20,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.PkgManApp.Instance"))
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) {
-                                    return Packages();
-                                  },
-                                  settings: RouteSettings(name: "packages")));
-                            },
-                            child: NeuCard(
-                              width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                              curveType: CurveType.flat,
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              bevel: 20,
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Column(
-                                      children: [
-                                        Image.asset(
-                                          "assets/applications/package_center.png",
-                                          height: 45,
-                                          width: 45,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text("套件中心"),
-                                      ],
-                                    ),
-                                  ),
-                                  if (appNotify != null && appNotify['SYNO.SDS.PkgManApp.Instance'] != null)
-                                    Positioned(
-                                      right: 30,
-                                      child: Badge(
-                                        appNotify['SYNO.SDS.PkgManApp.Instance']['unread'],
-                                        size: 20,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.ResourceMonitor.Instance"))
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) {
-                                    return ResourceMonitor();
-                                  },
-                                  settings: RouteSettings(name: "resource_monitor")));
-                            },
-                            child: NeuCard(
-                              width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                              curveType: CurveType.flat,
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              bevel: 20,
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    "assets/applications/resource_monitor.png",
-                                    height: 45,
-                                    width: 45,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text("资源监控"),
-                                ],
-                              ),
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.StorageManager.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/storage_manager.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("存储空间管理员"),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.LogCenter.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/log_center.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("日志中心"),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.SecurityScan.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Column(
-                                    children: [
-                                      Image.asset(
-                                        "assets/applications/security_scan.png",
-                                        height: 45,
-                                        width: 45,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text("安全顾问"),
-                                    ],
-                                  ),
-                                ),
-                                if (appNotify != null && appNotify['SYNO.SDS.SecurityScan.Instance'] != null)
-                                  Positioned(
-                                    right: 30,
-                                    child: Badge(
-                                      appNotify['SYNO.SDS.SecurityScan.Instance']['unread'],
-                                      size: 20,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.SupportForm.Application"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/support_center.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("技术支持中心"),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.iSCSI.Application"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/iSCSI_manager.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("iSCSI Manager"),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.SDS.App.FileStation3.Instance"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/file_browser.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("File Station"),
-                              ],
-                            ),
-                          ),
-                        if (applications.contains("SYNO.Finder.Application"))
-                          NeuCard(
-                            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/applications/search.png",
-                                  height: 45,
-                                  width: 45,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text("Universal Search"),
-                              ],
-                            ),
-                          ),
-                      ],
+                      children: _buildApplicationList(),
                     ),
                   ],
                 ),

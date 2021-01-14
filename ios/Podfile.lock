@@ -39,8 +39,6 @@ PODS:
     - Flutter
   - gallery_saver (0.0.1):
     - Flutter
-  - image_picker (0.0.1):
-    - Flutter
   - open_file (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -59,6 +57,10 @@ PODS:
     - SDWebImage/Core (~> 5.6)
   - shared_preferences (0.0.1):
     - Flutter
+  - umeng_analytics_plugin (0.0.1):
+    - Flutter
+    - UMengAnalytics-NO-IDFA
+  - UMengAnalytics-NO-IDFA (4.2.5)
   - video_player (0.0.1):
     - Flutter
   - wakelock (0.0.1):
@@ -71,13 +73,13 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - gallery_saver (from `.symlinks/plugins/gallery_saver/ios`)
-  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - umeng_analytics_plugin (from `.symlinks/plugins/umeng_analytics_plugin/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
@@ -89,6 +91,7 @@ SPEC REPOS:
     - FLAnimatedImage
     - SDWebImage
     - SDWebImageFLPlugin
+    - UMengAnalytics-NO-IDFA
 
 EXTERNAL SOURCES:
   file_picker:
@@ -99,8 +102,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_downloader/ios"
   gallery_saver:
     :path: ".symlinks/plugins/gallery_saver/ios"
-  image_picker:
-    :path: ".symlinks/plugins/image_picker/ios"
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
   package_info:
@@ -113,6 +114,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/photo_manager/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  umeng_analytics_plugin:
+    :path: ".symlinks/plugins/umeng_analytics_plugin/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
@@ -128,7 +131,6 @@ SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
-  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
@@ -137,6 +139,8 @@ SPEC CHECKSUMS:
   SDWebImage: 0b2ba0d56479bf6a45ecddbfd5558bea93150d25
   SDWebImageFLPlugin: 6c2295fb1242d44467c6c87dc5db6b0a13228fd8
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  umeng_analytics_plugin: 7035dfb8c5636e50429ab935125e5a3f0d23e72e
+  UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96

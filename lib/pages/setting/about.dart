@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatefulWidget {
   @override
@@ -120,16 +121,21 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            AndroidIntent intent = AndroidIntent(
-                              action: 'action_view',
-                              data:
-                                  'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
-                              arguments: {},
-                              // data: 'https://qm.qq.com/cgi-bin/qm/qr?k=Gf20e3f1FXrlIUfgp9IwzMnqPuFKRwVK&jump_from=webapi',
-                              // type: "video/*",
-                            );
+                            if (Platform.isAndroid) {
+                              AndroidIntent intent = AndroidIntent(
+                                action: 'action_view',
+                                data:
+                                    'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
+                                arguments: {},
+                                // data: 'https://qm.qq.com/cgi-bin/qm/qr?k=Gf20e3f1FXrlIUfgp9IwzMnqPuFKRwVK&jump_from=webapi',
+                                // type: "video/*",
+                              );
 
-                            intent.launch();
+                              intent.launch();
+                            } else {
+                              launch(
+                                  'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
+                            }
                           },
                           child: Text("加群"),
                         ),
@@ -223,13 +229,17 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            AndroidIntent intent = AndroidIntent(
-                              action: 'action_view',
-                              data: 'https://gitee.com/challengerV/dsm_helper',
-                              arguments: {},
-                            );
+                            if (Platform.isAndroid) {
+                              AndroidIntent intent = AndroidIntent(
+                                action: 'action_view',
+                                data: 'https://gitee.com/challengerV/dsm_helper',
+                                arguments: {},
+                              );
 
-                            intent.launch();
+                              intent.launch();
+                            } else {
+                              launch('https://gitee.com/challengerV/dsm_helper');
+                            }
                           },
                           child: Text("查看"),
                         ),
@@ -269,13 +279,17 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            AndroidIntent intent = AndroidIntent(
-                              action: 'action_view',
-                              data: 'https://flutter.dev',
-                              arguments: {},
-                            );
+                            if (Platform.isAndroid) {
+                              AndroidIntent intent = AndroidIntent(
+                                action: 'action_view',
+                                data: 'https://flutter.dev',
+                                arguments: {},
+                              );
 
-                            intent.launch();
+                              intent.launch();
+                            } else {
+                              launch('https://flutter.dev');
+                            }
                           },
                           child: Text("官网"),
                         ),

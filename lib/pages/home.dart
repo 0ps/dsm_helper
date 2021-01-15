@@ -69,7 +69,7 @@ class _HomeState extends State<Home> {
       if (v) {
         if (lastPopTime == null || DateTime.now().difference(lastPopTime) > Duration(seconds: 2)) {
           lastPopTime = DateTime.now();
-          Util.toast('再按一次退出群辉助手');
+          Util.toast('再按一次退出群晖助手');
         } else {
           lastPopTime = DateTime.now();
           // 退出app

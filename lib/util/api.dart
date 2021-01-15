@@ -895,8 +895,7 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data":
-          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -941,6 +940,41 @@ class Api {
       "version": 1,
       "_sid": Util.sid,
     };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> cluster(String method) async {
+    var data = {
+      "api": "SYNO.Virtualization.Cluster",
+      "method": method,
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> checkPowerOn(String guestId) async {
+    var data = {
+      "api": '"SYNO.Virtualization.Guest.Action"',
+      "method": '"check_poweron"',
+      "guest_id": '"$guestId"',
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> vmmPower(String guestId, String action) async {
+    var data = {
+      "api": '"SYNO.Virtualization.Guest.Action"',
+      "method": '"pwr_ctl"',
+      "guest_id": '"$guestId"',
+      "action": action,
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 }

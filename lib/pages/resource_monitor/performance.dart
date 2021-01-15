@@ -25,7 +25,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
   List disks = [];
   List spaces = [];
   List luns = [];
-  List colors = [Colors.red, Colors.redAccent, Colors.purpleAccent, Colors.green, Colors.amber, Colors.orange, Colors.teal];
+  List colors = [Colors.red, Colors.redAccent, Colors.purpleAccent, Colors.green, Colors.amber, Colors.orange, Colors.teal, Colors.indigoAccent, Colors.cyanAccent, Colors.yellow, Colors.black, Colors.lightGreenAccent, Colors.pinkAccent];
   Timer timer;
   int maxNetworkSpeed = 0;
   int maxDiskReadSpeed = 0;
@@ -97,8 +97,10 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
   }
 
   double chartInterval(maxVal) {
-    if (maxVal < pow(1024, 2)) {
-      return 100 * 1024.0;
+    if (maxVal < 1024) {
+      return 102.4;
+    } else if (maxVal < pow(1024, 2)) {
+      return 1024.0 * 200;
     } else if (maxVal < pow(1024, 2) * 5) {
       return 1.0 * pow(1024, 2);
     } else if (maxVal < pow(1024, 2) * 10) {
@@ -117,9 +119,15 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
   }
 
   String chartTitle(double v, int maxVal) {
-    if (maxVal < pow(1024, 2)) {
+    if (maxVal < 1024) {
       v = v / 1024;
       return (v.floor() * 100).toString();
+    } else if (maxVal < pow(1024, 2)) {
+      String s = (v / 1024).floor().toString() + "K";
+      if (s == "1000K") {
+        return "1M";
+      }
+      return s;
     } else {
       v = v / pow(1024, 2);
       return (v.floor()).toString() + "M";
@@ -529,6 +537,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: chartInterval(maxNetworkSpeed),
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [
@@ -1584,6 +1593,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                   interval: chartInterval(maxNetworkSpeed),
                                                 ),
                                               ),
+                                              minY: 0,
                                               // maxY: 20,
                                               borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                               lineBarsData: [
@@ -1889,6 +1899,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: chartInterval(maxDiskReadSpeed),
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [
@@ -2010,6 +2021,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: chartInterval(maxDiskWriteSpeed),
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [
@@ -2131,6 +2143,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: 20,
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [
@@ -2521,6 +2534,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: chartInterval(maxVolumeReadSpeed),
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [
@@ -2642,6 +2656,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: chartInterval(maxVolumeWriteSpeed),
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [
@@ -2763,6 +2778,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 interval: 20,
                                               ),
                                             ),
+                                            minY: 0,
                                             // maxY: 20,
                                             borderData: FlBorderData(show: true, border: Border.all(color: Colors.black12, width: 1)),
                                             lineBarsData: [

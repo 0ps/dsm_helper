@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dsm_helper/pages/backup/backup.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
+import 'package:dsm_helper/pages/setting/helper_setting.dart';
 import 'package:dsm_helper/pages/terminal/select_server.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
@@ -166,12 +167,35 @@ class _SettingState extends State<Setting> {
       appBar: AppBar(
         title: Text(
           "设置",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) {
+                      return HelperSetting();
+                    },
+                    settings: RouteSettings(name: "helper_setting"),
+                  ),
+                );
+              },
+              child: Image.asset(
+                "assets/icons/setting.png",
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

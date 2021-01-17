@@ -1339,7 +1339,7 @@ class FilesState extends State<Files> {
       child: NeuButton(
         onLongPress: () {
           if (paths.length > 1) {
-            Util.vibrate(FeedbackType.selection);
+            Util.vibrate(FeedbackType.light);
             setState(() {
               multiSelect = true;
               selectedFiles.add(file['path']);

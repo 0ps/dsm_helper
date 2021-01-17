@@ -26,9 +26,27 @@ void main() async {
   String port = await Util.getStorage("port");
   String smid = await Util.getStorage("smid");
   String darkModeStr = await Util.getStorage("dark_mode");
+  String vibrateOn = await Util.getStorage("vibrate_on");
+  String vibrateNormal = await Util.getStorage("vibrate_normal");
+  String vibrateWarning = await Util.getStorage("vibrate_warning");
   int darkMode = 2;
   if (darkModeStr.isNotBlank) {
     darkMode = int.parse(darkModeStr);
+  }
+  if (vibrateOn.isNotBlank) {
+    Util.vibrateOn = vibrateOn == "1";
+  } else {
+    Util.vibrateOn = true;
+  }
+  if (vibrateNormal.isNotBlank) {
+    Util.vibrateNormal = vibrateNormal == "1";
+  } else {
+    Util.vibrateNormal = true;
+  }
+  if (vibrateWarning.isNotBlank) {
+    Util.vibrateWarning = vibrateWarning == "1";
+  } else {
+    Util.vibrateWarning = true;
   }
   if (https.isNotBlank && sid.isNotBlank && host.isNotBlank) {
     Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";

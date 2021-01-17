@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cool_ui/cool_ui.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:dsm_helper/pages/update/update.dart';
 import 'package:dsm_helper/util/api.dart';
@@ -53,6 +54,10 @@ enum UploadStatus {
 class Util {
   static String sid = "";
   static String baseUrl = "";
+  static bool checkSsl = true;
+  static bool vibrateOn = true;
+  static bool vibrateWarning = true;
+  static bool vibrateNormal = true;
   static String cookie = "";
   static Map strings = {};
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
@@ -61,10 +66,19 @@ class Util {
   }
 
   static vibrate(FeedbackType type) async {
-    // Check if the device can vibrate
-    bool canVibrate = await Vibrate.canVibrate;
-    if (canVibrate) {
-      Vibrate.feedback(type);
+    if (vibrateOn) {
+      bool canVibrate = await Vibrate.canVibrate;
+      if (canVibrate) {
+        if (type == FeedbackType.warning) {
+          if (vibrateWarning) {
+            Vibrate.feedback(type);
+          }
+        } else {
+          if (vibrateNormal) {
+            Vibrate.feedback(type);
+          }
+        }
+      }
     }
   }
 
@@ -203,6 +217,16 @@ class Util {
         headers: headers,
       ),
     );
+    //忽略Https校验
+    if (!checkSsl) {
+      print("忽略HTTPS校验");
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+        client.badCertificateCallback = (cert, host, port) {
+          return true;
+        };
+      };
+    }
+
     Response response;
     try {
       response = await dio.get(url, queryParameters: data);
@@ -222,10 +246,16 @@ class Util {
         return response.data;
       }
     } on DioError catch (error) {
+      String code = "";
+      if (error.message.contains("CERTIFICATE_VERIFY_FAILED")) {
+        code = "SSL/HTTPS证书有误";
+      } else {
+        code = error.message;
+      }
       print("请求出错:$url");
       return {
         "success": false,
-        "error": {"code": error.message},
+        "error": {"code": code},
         "data": null
       };
     }
@@ -244,6 +274,14 @@ class Util {
     //     return "PROXY 192.168.1.159:8888";
     //   };
     // };
+    //忽略Https校验
+    if (!checkSsl) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+        client.badCertificateCallback = (cert, host, port) {
+          return true;
+        };
+      };
+    }
     Response response;
     try {
       response = await dio.post(

@@ -96,12 +96,7 @@ class _OpenSourceState extends State<OpenSource> {
       appBar: AppBar(
         title: Text(
           "开源插件",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: ListView.separated(
         padding: EdgeInsets.symmetric(vertical: 20),

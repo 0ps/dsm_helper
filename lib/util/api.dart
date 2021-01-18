@@ -243,6 +243,47 @@ class Api {
     });
   }
 
+//searchType: simple,dir,file,advance
+  //doc:docx,wri,rtf,xla,xlb,xlc,xld,xlk,xll,xlm,xlt,xlv,xlw,xlsx,xlsm,xlsb,xltm,xlam,pptx,pps,ppsx,pdf,txt,doc,xls,ppt,odt,ods,odp,odg,odc,odf,odb,odi,odm,ott,ots,otp,otg,otc,otf,oti,oth,potx,pptm,ppsm,potm,dotx,dot,pot,ppa,xltx,docm,dotm,eml,msgc,c,cc,cpp,cs,cxx,ada,coffee,cs,css,js,json,lisp,markdown,ocaml,pl,py,rb,sass,scala,r,tex,conf,csv,sub,srt,md,log
+  //video: 3gp,3g2,asf,dat,divx,dvr-ms,m2t,m2ts,m4v,mkv,mp4,mts,mov,qt,tp,trp,ts,vob,wmv,xvid,ac3,amr,rm,rmvb,ifo,mpeg,mpg,mpe,m1v,m2v,mpeg1,mpeg2,mpeg4,ogv,webm,flv,avi,swf,f4v,
+  //image:ico,tif,tiff,ufo,raw,arw,srf,sr2,dcr,k25,kdc,cr2,crw,nef,mrw,ptx,pef,raf,3fr,erf,mef,mos,orf,rw2,dng,x3f,jpg,jpg,jpeg,png,gif,bmp,psd,
+  //audio:aac,flac,m4a,m4b,aif,ogg,pcm,wav,cda,mid,mp2,mka,mpc,ape,ra,ac3,dts,wma,mp3,mp1,mp2,mpa,ram,m4p,aiff,dsf,dff,m3u,wpl,aiff,
+  //web:html,htm,css,actproj,ad,akp,applescript,as,asax,asc,ascx,asm,asmx,asp,aspx,asr,jsx,xml,xhtml,mhtml,cs,js
+  //exe,
+  //iso:bin,img,mds,nrg,daa,iso,
+  //zip:7z,bz2,gz,zip,tgz,tbz,rar,tar
+  static Future<Map> searchTask(List<String> paths, String pattern, {bool recursive: true, bool searchContent: false, String searchType: "simple"}) async {
+    var data = {
+      "folder_path": json.encode(paths),
+      "api": "SYNO.FileStation.Search",
+      "method": '"start"',
+      "pattern": pattern,
+      "recursive": recursive,
+      "search_content": searchContent,
+      "search_type": '"$searchType"',
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> searchResult(String taskId) async {
+    var data = {
+      "additional": json.encode(["real_path", "size", "owner", "time", "perm", "type"]),
+      "taskid": taskId,
+      "offset": 0,
+      "limit": 1000,
+      "filetype": "all",
+      "api": '"SYNO.FileStation.Search"',
+      "method": '"list"',
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
   static Future<Map> compressTask(
     List<String> path,
     String destPath, {
@@ -895,7 +936,8 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data":
+          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -974,7 +1016,40 @@ class Api {
       "version": 1,
       "_sid": Util.sid,
     };
-    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> dockerInfo() async {
+    List apis = [
+      {"api": "SYNO.Docker.Container", "method": "list", "version": 1, "limit": -1, "offset": 0, "type": "all"},
+      {"api": "SYNO.Docker.Container.Resource", "method": "get", "version": 1},
+      {"api": "SYNO.Core.System.Utilization", "method": "get", "version": 1},
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"parallel"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> dockerPower(String name, String action, {bool preserveProfile}) async {
+    var data = {
+      "api": 'SYNO.Docker.Container',
+      "method": action,
+      "name": '"$name"',
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    if (action == "signal") {
+      data['signal'] = 9;
+    }
+    if (action == "delete") {
+      data['preserve_profile'] = preserveProfile;
+    }
     return await Util.post("entry.cgi", data: data);
   }
 }

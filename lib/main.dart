@@ -29,6 +29,12 @@ void main() async {
   String vibrateOn = await Util.getStorage("vibrate_on");
   String vibrateNormal = await Util.getStorage("vibrate_normal");
   String vibrateWarning = await Util.getStorage("vibrate_warning");
+  String checkSsl = await Util.getStorage("check_ssl");
+  if (checkSsl.isNotBlank) {
+    Util.checkSsl = checkSsl == "1";
+  } else {
+    Util.checkSsl = true;
+  }
   int darkMode = 2;
   if (darkModeStr.isNotBlank) {
     darkMode = int.parse(darkModeStr);
@@ -53,7 +59,6 @@ void main() async {
     Util.sid = sid;
     Util.cookie = smid;
     //如果开启了自动登录，则判断当前登录状态
-
     String autoLogin = await Util.getStorage("auto_login");
     if (autoLogin == "1") {
       var checkLogin = await Api.shareList();

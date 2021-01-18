@@ -5,6 +5,7 @@ import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/dashborad/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
+import 'package:dsm_helper/pages/docker/docker.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/system/info.dart';
@@ -306,7 +307,8 @@ class DashboardState extends State<Dashboard> {
                       Text("散热状态："),
                       Text(
                         "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                        style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                        style: TextStyle(
+                            color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -1719,7 +1721,51 @@ class DashboardState extends State<Dashboard> {
         ),
       );
     }
-    //SYNO.SDS.DownloadStation.Application,SYNO.Photo.AppInstance,SYNO.SDS.Docker.Application
+    if (applications.contains("SYNO.SDS.Docker.Application")) {
+      apps.add(
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return Docker();
+              },
+              settings: RouteSettings(name: "docker"),
+            ));
+          },
+          child: NeuCard(
+            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+            curveType: CurveType.flat,
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            bevel: 20,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                Image.asset(
+                  "assets/applications/docker.png",
+                  height: 45,
+                  width: 45,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "Docker",
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    //SYNO.SDS.DownloadStation.Application,SYNO.Photo.AppInstance,
     return apps;
   }
 
@@ -1730,12 +1776,7 @@ class DashboardState extends State<Dashboard> {
       appBar: AppBar(
         title: Text(
           "控制台",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
         leading: Padding(
           padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
           child: NeuButton(

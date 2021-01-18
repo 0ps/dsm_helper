@@ -1,4 +1,4 @@
-Map WebManagerStrings = {
+Map webManagerStrings = {
   "Country": {
     "A1": "系统保留（匿名代理服务器）",
     "A2": "系统保留（卫星提供商）",
@@ -447,7 +447,14 @@ Map WebManagerStrings = {
     "no_external_ip": "运行 Aviary 失败。请进入“控制面板”并为 DiskStation 设置外部 IP 地址、DDNS 主机名或 QuickConnect 服务。",
     "openctxmenu": "使用 Aviary 编辑"
   },
-  "background_task": {"background_task": "后台任务", "background_task_all": "全部", "remote_local_file_operation": "正在运行的任务", "task_processing": "进行中", "task_waiting": "等待中", "tasks_still_in_process": "修复存储空间"},
+  "background_task": {
+    "background_task": "后台任务",
+    "background_task_all": "全部",
+    "remote_local_file_operation": "正在运行的任务",
+    "task_processing": "进行中",
+    "task_waiting": "等待中",
+    "tasks_still_in_process": "修复存储空间"
+  },
   "backup": {
     "addon_update": "更新",
     "all_shares_in_repo_list": "所有可用的共享文件夹已在备份目的地列表中。",
@@ -594,8 +601,10 @@ Map WebManagerStrings = {
     "error_invalid_user_or_group": "请指定一个有效的用户或群组。",
     "error_not_owner_backup": "只有此备份任务的所有者才可执行备份。",
     "error_rm_def": "您无法删除默认用户或群组。",
-    "ext3issue_fullbackup_hint": "We've fixed the issue where changed files on ext3 file system may not be backed up. Do you want to make all the related task's next run as full backup to make sure all the files be backed up?",
-    "ext3issue_fullbackup_notify": "We've fixed the issue where changed files on ext3 file system may not be backed up in Hyper Backup/Backup & Replication. It's recommended to run the related backup task as full backup after upgrading.",
+    "ext3issue_fullbackup_hint":
+        "We've fixed the issue where changed files on ext3 file system may not be backed up. Do you want to make all the related task's next run as full backup to make sure all the files be backed up?",
+    "ext3issue_fullbackup_notify":
+        "We've fixed the issue where changed files on ext3 file system may not be backed up in Hyper Backup/Backup & Replication. It's recommended to run the related backup task as full backup after upgrading.",
     "ext3issue_fullbackup_title": "系统事件",
     "fb_copy_failed": "无法复制数据。",
     "fb_copy_success": "复制数据成功。",
@@ -608,7 +617,8 @@ Map WebManagerStrings = {
     "fullsync_bkp_warn": "由于备份文件设置为可删除，系统将在用户运行下一次备份时，先运行完整备份，以确保来源端与目地端资料一致。",
     "general_backup": "一般备份",
     "general_backup_desc": "利用本地备份将数据备份到外接硬盘或内部共享文件夹，或利用网络备份将数据备份到另一台 {0} 服务器或 rsync 兼容服务器。",
-    "general_backup_destination_connect_fail": "无法连接到目标服务器。请确认：<BR>1. 服务器名称或 IP 地址正确。<BR>2. 网络备份卷目的地或网络备份服务已经在备份和复制摂 > 备份服务摂的目标服务器中启用。<BR>3. 目标服务器上的网络连接正常。<BR>4. 您有访问网络备份卷目的地或网络备份服务的权限。(您可在控制面板 > 权限中查看您的权限)。",
+    "general_backup_destination_connect_fail":
+        "无法连接到目标服务器。请确认：<BR>1. 服务器名称或 IP 地址正确。<BR>2. 网络备份卷目的地或网络备份服务已经在备份和复制摂 > 备份服务摂的目标服务器中启用。<BR>3. 目标服务器上的网络连接正常。<BR>4. 您有访问网络备份卷目的地或网络备份服务的权限。(您可在控制面板 > 权限中查看您的权限)。",
     "general_backup_destination_disconnect": "无法访问备份目的地。",
     "general_backup_destination_no_response": "目标服务器无响应。请稍后再试。",
     "getting_dest_status": "取得状态中",
@@ -622,7 +632,8 @@ Map WebManagerStrings = {
     "img_server_ver_old": "备份源和目的地之间有 DSM 版本兼容性问题。请将备份目的地的 DSM 更新到最新版本。",
     "imgbkp_account_not_allowed": "您指定的帐户没有创建备份目的地的权限。请指定另一个属于 administrators 群组的用户并重试。",
     "imgbkp_account_pass_fail": "无效的用户名或密码。",
-    "imgbkp_connect_fail": "无法连接到目标 DiskStation。请确认：<BR>1. 服务器名称或 IP 地址正确。<BR>2. 已在目标 DiskStation (DSM 6.0 和以上版本) 上安装并启用了 Hyper Backup Vault，或已在目标 DiskStation (DSM 5.0-5.2) 上的“备份和复制”上启用了网络备份卷目的地。<BR>3. 目标 DiskStation 上的网络连接正常。",
+    "imgbkp_connect_fail":
+        "无法连接到目标 DiskStation。请确认：<BR>1. 服务器名称或 IP 地址正确。<BR>2. 已在目标 DiskStation (DSM 6.0 和以上版本) 上安装并启用了 Hyper Backup Vault，或已在目标 DiskStation (DSM 5.0-5.2) 上的“备份和复制”上启用了网络备份卷目的地。<BR>3. 目标 DiskStation 上的网络连接正常。",
     "imgbkp_no_app_privilege": "此用户的网络备份目的地已在目标服务器上被禁用（在控制面板 > 应用程序权限 > 网络备份目的地）。",
     "imgbkp_service_no_run": "目的地服务器未启用网络备份卷目的地（在 备份和复制 > 备份服务）。",
     "include_blog": "包含博客",
@@ -674,9 +685,11 @@ Map WebManagerStrings = {
     "no_avail_version": "无版本可供还原。",
     "no_available_target": "无可用目录。",
     "no_folder": "无可用文件夹。",
-    "no_image_volume_reason": "可能的原因为：<br>- 您指定的帐户没有在尚无备份目的地的卷上创建新备份目的地的权限。请指定另一个属于 administrators 群组的用户并重试。<br>- 您指定的帐户没有访问已有备份目的地的权限。请以 admin（或属于 administrators 群组用户）的身份登录目的地，然后编辑权限（在备份和复制 > 备份目的地 > 编辑 > 允许名单）。<br>- 所有的卷已在备份目的地列表中。",
+    "no_image_volume_reason":
+        "可能的原因为：<br>- 您指定的帐户没有在尚无备份目的地的卷上创建新备份目的地的权限。请指定另一个属于 administrators 群组的用户并重试。<br>- 您指定的帐户没有访问已有备份目的地的权限。请以 admin（或属于 administrators 群组用户）的身份登录目的地，然后编辑权限（在备份和复制 > 备份目的地 > 编辑 > 允许名单）。<br>- 所有的卷已在备份目的地列表中。",
     "no_permission_edit_target": "无法在远程 DiskStation 中编辑备份任务。请以属于 administrators 群组的身份登录远程 DiskStation 以进行编辑。",
-    "no_restore_volume_reason": "可能的原因为：<br>- 您指定的帐户没有访问服务器上卷的权限。请以 admin（或属于 administrators 群组用户）的身份登录目的地，然后编辑权限（在备份和复制 > 备份目的地 > 编辑 > 允许名单）。<br>- 您指定的帐户没有从存储的备份数据中还原数据的权限。请以 admin（或属于 administrators 群组用户）的身份登录目的地，然后编辑权限（在备份和复制 > 备份目的地 > 扩展备份目的地 > 备份任务 > 属性 > 允许名单）。<br>- 在卷上没有备份数据。",
+    "no_restore_volume_reason":
+        "可能的原因为：<br>- 您指定的帐户没有访问服务器上卷的权限。请以 admin（或属于 administrators 群组用户）的身份登录目的地，然后编辑权限（在备份和复制 > 备份目的地 > 编辑 > 允许名单）。<br>- 您指定的帐户没有从存储的备份数据中还原数据的权限。请以 admin（或属于 administrators 群组用户）的身份登录目的地，然后编辑权限（在备份和复制 > 备份目的地 > 扩展备份目的地 > 备份任务 > 属性 > 允许名单）。<br>- 在卷上没有备份数据。",
     "no_task_desc": "没有备份任务",
     "not_available": "无法取得。",
     "not_show_again": "不要再显示此警告。",
@@ -1699,7 +1712,14 @@ Map WebManagerStrings = {
     "task_scheduler": "任务计划"
   },
   "convert_progress": {"desc": "转换照片或视频需占用更多的 CPU 资源。您可以推迟这一进程，并稍后再继续。", "title": "转换进程"},
-  "convert_setting": {"progress": "查看进程", "title": "转换设置", "video_conversion_desc": "若要在移动设备上查看 Photo Station 中“photo”共享文件夹内的视频，您可以为移动设备启用视频格式转换的功能。", "video_conversion_note": "启用此选项将耗用较多的时间和 CPU 资源。", "video_convert_enable_mobile_support": "启用移动设备视频转换", "video_setting_title": "视频设置"},
+  "convert_setting": {
+    "progress": "查看进程",
+    "title": "转换设置",
+    "video_conversion_desc": "若要在移动设备上查看 Photo Station 中“photo”共享文件夹内的视频，您可以为移动设备启用视频格式转换的功能。",
+    "video_conversion_note": "启用此选项将耗用较多的时间和 CPU 资源。",
+    "video_convert_enable_mobile_support": "启用移动设备视频转换",
+    "video_setting_title": "视频设置"
+  },
   "copyright": {
     "copyright": "Copyright © {0} Synology Inc. All rights reserved",
     "copyright_mark_desc":
@@ -1787,7 +1807,15 @@ Map WebManagerStrings = {
     "wait_to_set_up_schedule_setting": "请先设置计划",
     "will_start_on": "Will Start on {0}"
   },
-  "dcoutput": {"dcoutput_desc": "启用直流电供电并设置直流电输出在指定的时间开启或关闭。", "dcoutput_schedule_title": "设置直流电输出排程", "dcoutput_status_off": "未供电", "dcoutput_status_on": "供电中", "dcoutput_status_title": "直流电输出状态", "enable_dcoutput": "启用直流电输出", "schedule_dcoutput": "添加计划"},
+  "dcoutput": {
+    "dcoutput_desc": "启用直流电供电并设置直流电输出在指定的时间开启或关闭。",
+    "dcoutput_schedule_title": "设置直流电输出排程",
+    "dcoutput_status_off": "未供电",
+    "dcoutput_status_on": "供电中",
+    "dcoutput_status_title": "直流电输出状态",
+    "enable_dcoutput": "启用直流电输出",
+    "schedule_dcoutput": "添加计划"
+  },
   "ddns": {"ddns_type_synology": "Synology DDNS 服务"},
   "ddsm": {
     "ddsm_is_running": "DDSM 正在运行",
@@ -1988,7 +2016,8 @@ Map WebManagerStrings = {
     "disk_adv_test_title": "支持高级健康状况测试的硬盘列表",
     "disk_allocation_status": "硬盘分配状态",
     "disk_bad_sector_ct": "坏扇区数量",
-    "disk_bad_sector_desc": "硬盘检测有 {0} 个坏扇区并已自动将其修复。{1}显示 S.M.A.R.T. 属性为“Reallocated Sectors Count”、“Current Pending Sector Count”和“Uncorrectable Sector Count”的总数。此数值可能表示硬盘表面有损坏。由于数据能够转移至硬盘上的备用区域，所以此问题是可修复的。",
+    "disk_bad_sector_desc":
+        "硬盘检测有 {0} 个坏扇区并已自动将其修复。{1}显示 S.M.A.R.T. 属性为“Reallocated Sectors Count”、“Current Pending Sector Count”和“Uncorrectable Sector Count”的总数。此数值可能表示硬盘表面有损坏。由于数据能够转移至硬盘上的备用区域，所以此问题是可修复的。",
     "disk_bad_sector_range_error": "数值必须介于 {0} 和 {1} 之间。",
     "disk_bad_sector_thr_desc": "坏扇区数量达到以下指定值后，硬盘的状态将被更改为警告。",
     "disk_bad_sector_thr_enable": "启用坏扇区警告",
@@ -2002,7 +2031,8 @@ Map WebManagerStrings = {
     "disk_cant_erase_last_system": "您无法在系统分区的仅有硬盘上执行 Secure Erase。",
     "disk_cant_erase_not_support": "此硬盘不支持 Secure Erase。",
     "disk_cant_erase_on_volume": "此硬盘目前正在使用。请删除其中的所有存储空间，然后再试一次。",
-    "disk_config_warn_notification": "硬盘警告设置未启用。请进入<a style=\"font-size:12px;text-decoration:underline;\" data-syno-app=\"SYNO.SDS.StorageManager.Instance\" data-syno-fn=\"SYNO.SDS.StorageManager.Disk.Main\" data-syno-tab=\"general\">设置页面</a>以启用坏扇区警告和硬盘寿命警告。",
+    "disk_config_warn_notification":
+        "硬盘警告设置未启用。请进入<a style=\"font-size:12px;text-decoration:underline;\" data-syno-app=\"SYNO.SDS.StorageManager.Instance\" data-syno-fn=\"SYNO.SDS.StorageManager.Disk.Main\" data-syno-tab=\"general\">设置页面</a>以启用坏扇区警告和硬盘寿命警告。",
     "disk_disable_info_num_esata": "eSATA 端口 {0} 被禁用",
     "disk_disable_info_num_eunit": "扩充设备 {1} 上的硬盘插槽 {0} 被禁用",
     "disk_disable_info_num_int": "硬盘插槽 {0} 被禁用",
@@ -2146,7 +2176,8 @@ Map WebManagerStrings = {
     "disk_schedule_smart_test_btn": "计划 S.M.A.R.T. 测试",
     "disk_secure_erase": "Secure Erase",
     "disk_secure_erase_confirm": "我了解所选硬盘中的所有数据将被永久删除且无法还原。",
-    "disk_secure_erase_desc": "Secure Erase 将完全清除硬盘上的所有数据，您将无法在今后使用数据恢复服务来还原这些数据，且硬盘上的系统分区将同时被删除。</br></br>此操作可能需要 {0} 分钟。</br></br><font class=red-status\">警告：Secure Erase 不可中断。请不要在整个程序完成之前关闭系统。</font>",
+    "disk_secure_erase_desc":
+        "Secure Erase 将完全清除硬盘上的所有数据，您将无法在今后使用数据恢复服务来还原这些数据，且硬盘上的系统分区将同时被删除。</br></br>此操作可能需要 {0} 分钟。</br></br><font class=red-status\">警告：Secure Erase 不可中断。请不要在整个程序完成之前关闭系统。</font>",
     "disk_secure_erase_warn": "所有的数据将被永久删除且无法还原，是否确定继续？",
     "disk_secure_erasing": "清除",
     "disk_smart_extend_desc": "将扫描整个硬盘以确保更准确的结果。",
@@ -2164,7 +2195,8 @@ Map WebManagerStrings = {
     "disk_smart_test_perform": "S.M.A.R.T. 测试",
     "disk_smart_test_quick_all": "对所有支持快速检测功能的硬盘执行此检测",
     "disk_smart_test_warn": "此硬盘的健康状态已降级。是否确定继续？",
-    "disk_ssd_unc_note": "不同的固态硬盘（SSD）有不同的 S.M.A.R.T.信息和错误报告机制。硬盘（HDD）上的坏扇区可能表示磁盘机和/或记录磁头处于降级状态或已损坏，而在 SSD 上发现的坏扇区总体而言是正常的，且将随着硬盘的不断使用而增加。许多 SSD 为大空间区域设计，用于缓解坏扇区问题。但坏扇区数的快速增加可能表示硬盘有缺陷和/或达到总写入容量。请注意，不同制造商的 SSD 型号可能有不同的报告机制和加权數值。",
+    "disk_ssd_unc_note":
+        "不同的固态硬盘（SSD）有不同的 S.M.A.R.T.信息和错误报告机制。硬盘（HDD）上的坏扇区可能表示磁盘机和/或记录磁头处于降级状态或已损坏，而在 SSD 上发现的坏扇区总体而言是正常的，且将随着硬盘的不断使用而增加。许多 SSD 为大空间区域设计，用于缓解坏扇区问题。但坏扇区数的快速增加可能表示硬盘有缺陷和/或达到总写入容量。请注意，不同制造商的 SSD 型号可能有不同的报告机制和加权數值。",
     "disk_status_access_err": "访问错误",
     "disk_status_access_err_desc": "访问此硬盘时出现错误。此可能表示硬盘和/或硬盘与 DiskStation 之间的连接出现问题。",
     "disk_status_critical": "严重",
@@ -2186,7 +2218,8 @@ Map WebManagerStrings = {
     "disk_status_failing_severe_desc": "此硬盘不再工作。请确认您的数据已备份，然后立即更换此硬盘。",
     "disk_status_normal": "正常",
     "disk_status_normal_past_desc": "此硬盘以前曾发生问题。硬盘目前工作正常。",
-    "disk_status_normal_past_detail": "当硬盘监控硬盘参数时，将实时监控部分 S.M.A.R.T. 属性。如果硬盘出现问题，这些 S.M.A.R.T. 属性可能超出内建限制。但如果问题仅临时出现或已通过硬盘上的恢复机制修复，这些属性便会返回到正常值，并且 S.M.A.R.T. 属性的状态会标记为 IN_THE_PAST。此恢复机制在硬盘本身上实施。如果对于硬盘有任何疑问，请咨询硬盘制造商。",
+    "disk_status_normal_past_detail":
+        "当硬盘监控硬盘参数时，将实时监控部分 S.M.A.R.T. 属性。如果硬盘出现问题，这些 S.M.A.R.T. 属性可能超出内建限制。但如果问题仅临时出现或已通过硬盘上的恢复机制修复，这些属性便会返回到正常值，并且 S.M.A.R.T. 属性的状态会标记为 IN_THE_PAST。此恢复机制在硬盘本身上实施。如果对于硬盘有任何疑问，请咨询硬盘制造商。",
     "disk_status_normal_smart_disable_desc": "此硬盘的健康状态正常。但部分 S.M.A.R.T. 栏已被禁用。",
     "disk_status_normal_smart_disable_detail": "此硬盘有一个故障的 S.M.A.R.T. 栏，目前已禁用对此栏的监控。仅在另一个 S.M.A.R.T. 栏和/或 S.M.A.R.T. 测试失败时，DSM 才会再次向您警告硬盘问题。",
     "disk_status_normal_suppress_detail": "此硬盘有一个故障的 S.M.A.R.T. 栏，目前已被抑制。在所有其它值保持不变的情况下，仅在该栏继续处于降级状态，DSM 才会再次向您提出警告。",
@@ -2275,7 +2308,11 @@ Map WebManagerStrings = {
     "mode_device": "Devices",
     "mode_ip": "IP"
   },
-  "docker": {"docker_share_delete_feasibility_check": "Docker 需要此共享文件夹。若要删除此共享文件夹，您必须先卸载此套件。", "docker_share_move_feasibility_check": "Docker 需要此共享文件夹。若要移动此共享文件夹，您必须先禁用此套件。", "docker_share_rename_feasibility_check": "Docker 需要此共享文件夹。若要重命名此共享文件夹，您必须先卸载此套件。"},
+  "docker": {
+    "docker_share_delete_feasibility_check": "Docker 需要此共享文件夹。若要删除此共享文件夹，您必须先卸载此套件。",
+    "docker_share_move_feasibility_check": "Docker 需要此共享文件夹。若要移动此共享文件夹，您必须先禁用此套件。",
+    "docker_share_rename_feasibility_check": "Docker 需要此共享文件夹。若要重命名此共享文件夹，您必须先卸载此套件。"
+  },
   "domain": {
     "all_interface": "所有网络接口",
     "check_dc": "检查 Synology NAS 和 Active Directory 服务器之间是否正确连接",
@@ -2719,8 +2756,10 @@ Map WebManagerStrings = {
     "ezinternet_summary_routerconf": "路由器配置",
     "ezinternet_summary_static_ip_conf": "固定 IP 设置",
     "ezinternet_summary_title": "确认您的设置",
-    "ezinternet_welcome": "EZ-Internet 可帮助您配置网络，让您能够通过 Internet 访问 DiskStation。我们将进行以下设置：<p><ul><li>Internet 连接</li> <li>路由器端口转发</li> <li>DiskStation 防火墙</li> <li>DiskStation DDNS 服务（如 myname.synology.me）</li></ul>",
-    "ezinternet_welcome_air": "Synology EZ-Internet 向导将帮助您设置远程 Internet 接入到 DiskStation。将引导您完成以下设置：<p><ul><li>设置 Internet 连接</li> <li>设置界面转送</li> <li>设置防火墙</li> <li>设置 DDNS 服务</li> <li>设置无线 LAN</li></ul>",
+    "ezinternet_welcome":
+        "EZ-Internet 可帮助您配置网络，让您能够通过 Internet 访问 DiskStation。我们将进行以下设置：<p><ul><li>Internet 连接</li> <li>路由器端口转发</li> <li>DiskStation 防火墙</li> <li>DiskStation DDNS 服务（如 myname.synology.me）</li></ul>",
+    "ezinternet_welcome_air":
+        "Synology EZ-Internet 向导将帮助您设置远程 Internet 接入到 DiskStation。将引导您完成以下设置：<p><ul><li>设置 Internet 连接</li> <li>设置界面转送</li> <li>设置防火墙</li> <li>设置 DDNS 服务</li> <li>设置无线 LAN</li></ul>",
     "ezinternet_welcome_title": "欢迎使用 Synology EZ-Internet 向导",
     "ezinternet_wizard_title": "EZ-Internet 向导",
     "manual_warn_public_IP": "请输入公共 IP 地址。",
@@ -2732,7 +2771,12 @@ Map WebManagerStrings = {
   },
   "favorite": {"my_favorite": "收藏夹", "over_limit": "“收藏夹”快捷方式数量已达上限 (256)。请删除部分快捷方式，并再试一次。", "same_favorite_name": "无法添加到“收藏夹”。已存在另一个名为“{0}”的收藏。", "same_favorite_path": "“{0}”已经被添加至“收藏夹”并命名为“{1}”。"},
   "fbbrower": {"open_folder": "打开包含的文件夹"},
-  "feedback": {"feedback_form_idle_long_time": "您已闲置 60 分钟以上。请刷新此页面并重试。", "feedback_form_need_cookie_enable": "接收反馈时出现错误。请启用浏览器 cookie（包括第三方 cookie）并刷新此页面，然后重试。", "feedback_form_session_error": "接收反馈时出现错误。请刷新此页面并重试。", "feedback_form_too_much_feedback": "该服务器正忙。请在 30 分钟后再试。"},
+  "feedback": {
+    "feedback_form_idle_long_time": "您已闲置 60 分钟以上。请刷新此页面并重试。",
+    "feedback_form_need_cookie_enable": "接收反馈时出现错误。请启用浏览器 cookie（包括第三方 cookie）并刷新此页面，然后重试。",
+    "feedback_form_session_error": "接收反馈时出现错误。请刷新此页面并重试。",
+    "feedback_form_too_much_feedback": "该服务器正忙。请在 30 分钟后再试。"
+  },
   "file": {"error_bad_file_content": "文件传输过程中出现错误。请重新打开文本文件来显示完整内容。"},
   "fileaction": {"add_to_download_station": "添加至 Download Station"},
   "filebrowser": {
@@ -3352,7 +3396,8 @@ Map WebManagerStrings = {
     "accessibility": "辅助功能",
     "admin_usage": "发送使用情况反馈至 Synology",
     "ahamanager": "High Availability Manager（用于 RC 系列）",
-    "ahamanager_description": "您需要两台 Synology 服务器创建 high-availability 集群来实施 Synology High Availability。一台服务器作为“活动服务器”，另一台则作为“无源服务器”。High-availability 集群中的活动服务器和无源服务器连接到同一扩充设备，并在两者中共享相同的存储器。为确保数据完整性，只有活动服务器可处理工作量。在活动服务器出现故障的情况下，无法服务器将接管所有的服务。因此，high-availability 集群将继续正常提供服务，最小化服务器宕机。",
+    "ahamanager_description":
+        "您需要两台 Synology 服务器创建 high-availability 集群来实施 Synology High Availability。一台服务器作为“活动服务器”，另一台则作为“无源服务器”。High-availability 集群中的活动服务器和无源服务器连接到同一扩充设备，并在两者中共享相同的存储器。为确保数据完整性，只有活动服务器可处理工作量。在活动服务器出现故障的情况下，无法服务器将接管所有的服务。因此，high-availability 集群将继续正常提供服务，最小化服务器宕机。",
     "ahamanager_limitation": "限制和系统要求",
     "ahamanager_monitor": "监控",
     "ahamanager_network": "网络",
@@ -3432,7 +3477,8 @@ Map WebManagerStrings = {
     "group_member": "新增/删除群组成员",
     "group_new": "创建群组",
     "hamanager": "High Availability Manager",
-    "hamanager_description": "High Availability Manager 使用两个 Synology 服务器组成一个 high-availability 集群（HA 集群），其中一个服务器作为活动服务器，另一个作为无源服务器（用于故障移转）。活动服务器将处理所有的服务，并将数据复制到无源服务器。如果活动服务器发生故障，无源服务器将提升为新的活动服务器，并接管原活动服务器所处理的服务。",
+    "hamanager_description":
+        "High Availability Manager 使用两个 Synology 服务器组成一个 high-availability 集群（HA 集群），其中一个服务器作为活动服务器，另一个作为无源服务器（用于故障移转）。活动服务器将处理所有的服务，并将数据复制到无源服务器。如果活动服务器发生故障，无源服务器将提升为新的活动服务器，并接管原活动服务器所处理的服务。",
     "hamanager_disk_status": "硬盘信息",
     "hamanager_limitation": "限制和要求",
     "hamanager_network_setting": "网络设置",
@@ -3670,7 +3716,14 @@ Map WebManagerStrings = {
     "wireless": "加入无线网络"
   },
   "hibernation": {"hibernation_ignore_netbios_broadcast": "忽略 Windows 资源管理器广播包", "hibernation_system_deepsleep_statement": "硬盘进入休眠 60 秒后开始系统休眠", "hibernation_title": "休眠"},
-  "home": {"feasibility_share_transform": "在 [homes] 共享文件夹更改为加密或常规共享文件夹时，主目录服务将暂停。", "feasibility_share_umount": "在 [homes] 共享文件夹卸载时，主目录服务将停止。", "home_info_title": "基本信息", "home_sitemap_title": "项目总览", "home_subject": "系统信息", "personal_home_subject": "个人信息"},
+  "home": {
+    "feasibility_share_transform": "在 [homes] 共享文件夹更改为加密或常规共享文件夹时，主目录服务将暂停。",
+    "feasibility_share_umount": "在 [homes] 共享文件夹卸载时，主目录服务将停止。",
+    "home_info_title": "基本信息",
+    "home_sitemap_title": "项目总览",
+    "home_subject": "系统信息",
+    "personal_home_subject": "个人信息"
+  },
   "hotkey_manager": {
     "app_title": "键盘快捷方式指南",
     "arrow": "箭头键",
@@ -3738,7 +3791,16 @@ Map WebManagerStrings = {
     "up_down_shift": "上或下箭头 + Shift"
   },
   "http_compression": {"description": "启用 HTTP 压缩可在通过 HTTP 连接时节省带宽并加快网页服务器和浏览器之间的传输速度。 ", "enable": "启用 HTTP 压缩", "title": "HTTP 压缩"},
-  "image_selector": {"clean_history_confirm": "Are you sure to clean history images?", "default_wallpaper": "默认壁纸", "error_not_an_image": "请选择一个图像", "folder_empty": "此文件夹中没有图像。", "history": "我以前的图像", "my_image": "我的图像", "source_upload": "上传文件", "title_upload_local": "使用我的图像"},
+  "image_selector": {
+    "clean_history_confirm": "Are you sure to clean history images?",
+    "default_wallpaper": "默认壁纸",
+    "error_not_an_image": "请选择一个图像",
+    "folder_empty": "此文件夹中没有图像。",
+    "history": "我以前的图像",
+    "my_image": "我的图像",
+    "source_upload": "上传文件",
+    "title_upload_local": "使用我的图像"
+  },
   "inetwizard": {
     "apply_ddns": "应用DDNS 设置中...",
     "apply_pppoe": "应用PPPoE 设置中...",
@@ -3779,7 +3841,8 @@ Map WebManagerStrings = {
   },
   "iscsilun": {
     "clone": "克隆",
-    "clone_snapshot_inconsistent_warning": "警告：至少连接了一个与 LUN（\"{0}\"）相关联的 iSCSI 会话。如果此 LUN 为 Windows Server 或 VMware ESXi Server 所用，您可安装 Synology Snapshot Manager 来避免数据不一致的情况，或者您必须在继续前从启动器注销，并停止所有的应用程序。请参阅帮助来了解更多信息。",
+    "clone_snapshot_inconsistent_warning":
+        "警告：至少连接了一个与 LUN（\"{0}\"）相关联的 iSCSI 会话。如果此 LUN 为 Windows Server 或 VMware ESXi Server 所用，您可安装 Synology Snapshot Manager 来避免数据不一致的情况，或者您必须在继续前从启动器注销，并停止所有的应用程序。请参阅帮助来了解更多信息。",
     "cloning": "正在克隆",
     "converting": "正在转换",
     "data_consistent_snapshot": "应用程序一致快照",
@@ -3868,12 +3931,14 @@ Map WebManagerStrings = {
     "btrfs_lun": "高阶",
     "btrfs_lun_desc": "借助 Btrfs 文件系统的功能，此类型的 LUN 支持 Thin Provisioning、即时 LUN 快照和克隆，以及存储加速命令。同时为 VMware VAAI 和 Windows ODX 提供更好的兼容性。",
     "btrfs_lun_subtitle": "在 Btrfs 卷上",
-    "btrfs_recmd_description": "We highly recommend using the brand new Advanced LUN on Btrfs volume. LUNs created on Btrfs volumes not only support VAAI & ODX storage acceleration features, but also ultra-fast snapshot & cloning capabilities.",
+    "btrfs_recmd_description":
+        "We highly recommend using the brand new Advanced LUN on Btrfs volume. LUNs created on Btrfs volumes not only support VAAI & ODX storage acceleration features, but also ultra-fast snapshot & cloning capabilities.",
     "btrfs_recmd_title": "How to choose between Advanced LUN and Standard LUN?",
     "buffered_mode": "buffered mode",
     "call_resource_monitor_desc": "您可以在{0}资源监视器{1}中配置性能警报，在资源利用率或性能指标达到 iSCSI LUN 的预定义阈值时通知系统管理员。",
     "choose_lun_type_alert": "请选择 LUN 类型以继续。",
-    "clone_snapshot_inconsistent_warning_multiple": "目前至少一个 iSCSI 会话与所选的 iSCSI LUN 相关联。如果所选的 iSCSI LUN 被 Windows Server/VMware ESXi Server 使用，您可安装 <b>Synology Snapshot Manager</b> 以避免潜在的数据不一致性。否则，您必须在继续之前停止所有的应用程序，并取消这些会话与 iSCSI 启动器的连接。请参见“帮助”以获得更多的信息。<br><br>以下 iSCSI LUN 目前映射到连接的 iSCSI Target：",
+    "clone_snapshot_inconsistent_warning_multiple":
+        "目前至少一个 iSCSI 会话与所选的 iSCSI LUN 相关联。如果所选的 iSCSI LUN 被 Windows Server/VMware ESXi Server 使用，您可安装 <b>Synology Snapshot Manager</b> 以避免潜在的数据不一致性。否则，您必须在继续之前停止所有的应用程序，并取消这些会话与 iSCSI 启动器的连接。请参见“帮助”以获得更多的信息。<br><br>以下 iSCSI LUN 目前映射到连接的 iSCSI Target：",
     "convert_btrfs_no_available_capacity": "没有容量足够的 Btrfs 存储空间。",
     "convert_no_btrfs_volume": "没有可用的 Btrfs 存储空间。",
     "ep_buf_unmap_mode_desc": "删除旧版高级 LUN 之后，空间回收会在后台运行。可以通过选择不同模式来调整回收速度。",
@@ -4325,7 +4390,16 @@ Map WebManagerStrings = {
     "ldap_uid_already_exists": "UID 已存在。",
     "ldap_username_already_exists": "此使用者的名称已存在，请输入其他名称。"
   },
-  "led_brightness": {"adjust_tip_desc": "拖动滑块可调整 LED 指示灯的亮度。", "led_brightness_desc": "LED 亮度控制", "schedule_led_adjust": "调整后亮度", "schedule_led_default": "默认亮度", "schedule_tip_desc": "选择具体时间框以应用调整后 LED 亮度。", "set_schedule": "设置计划", "slider_led_default": "默认", "slider_led_off": "关"},
+  "led_brightness": {
+    "adjust_tip_desc": "拖动滑块可调整 LED 指示灯的亮度。",
+    "led_brightness_desc": "LED 亮度控制",
+    "schedule_led_adjust": "调整后亮度",
+    "schedule_led_default": "默认亮度",
+    "schedule_tip_desc": "选择具体时间框以应用调整后 LED 亮度。",
+    "set_schedule": "设置计划",
+    "slider_led_default": "默认",
+    "slider_led_off": "关"
+  },
   "license": {
     "connection_retry_desc": "我要重试在 DiskStation 的激活",
     "default_app_name": "Synology 应用程序",
@@ -4532,7 +4606,8 @@ Map WebManagerStrings = {
     "abnormal_login_desc": "检测到异常登录活动。",
     "abnormal_login_detail": "有人从 __COUNTRY__ 通过 __IP__ 以 __USER__ 的身份登录到您的 DSM。",
     "abnormal_login_purpose": "攻击者可能使用未经识别的 IP 地址登录到现有用户帐户并执行恶意攻击。",
-    "abnormal_login_recommand": "如果 __IP__ 不是您，帐户信息可能已被泄漏。请参阅以下选项以增强帐户安全性：<br><ul style='list-style:disc;list-style-position:inside;'><li>将当前密码更换为更强的密码（控制面板 > 用户 > 编辑）</li><li>启用两步验证（控制面板 > 用户 > 高级）</li><li>通过特定 IP 限制用户访问（控制面板 > 应用程序 > 权限）</li></ul>",
+    "abnormal_login_recommand":
+        "如果 __IP__ 不是您，帐户信息可能已被泄漏。请参阅以下选项以增强帐户安全性：<br><ul style='list-style:disc;list-style-position:inside;'><li>将当前密码更换为更强的密码（控制面板 > 用户 > 编辑）</li><li>启用两步验证（控制面板 > 用户 > 高级）</li><li>通过特定 IP 限制用户访问（控制面板 > 应用程序 > 权限）</li></ul>",
     "abnormal_login_symptom": "有人已通过 __IP__ 以 __USER__ 的身份登录。",
     "brute_force_attack_desc": "密码猜测在 {0} 分钟内出现了 {1} 次（暴力攻击）。",
     "brute_force_attack_detail": "有人试图通过尝试密码以 __USER__ 身份登录（暴力攻击）。在 __THRESH_MINUTES__ 分钟内检测到 __ATTEMPT_COUNT__ 次失败的登录，攻击者使用来自 __COUNTRY_LIST__ 的以下 IP：__SRC_IP_LIST__。受攻击的服务：__PROTOCOL_LIST__。",
@@ -5980,8 +6055,10 @@ Map WebManagerStrings = {
   "otp_enforcement": {
     "enforce_mail_notification_service": "电子邮件通知服务未启用。请先启用并设置电子邮件通知服务。",
     "enforce_option_desc": "强制以下用户进行两步骤验证",
-    "finish_step_desc": "太好了！ 两步骤验证设置完成。下次登录 DSM 时，系统将提示您输入移动设备上验证器应用程序生成的验证代码。<br><br>两步骤验证对于用某些移动应用程序进行登录有影响。为避免遇到任何难题，请确认您已安装任何需要登录 DSM 的移动应用程序的最新版本。<br><br>如要访问紧急验证码以在您无法用生成的代码登录的情况下登录，请在下方输入您的帐户电子邮件。",
-    "finish_step_desc_ldap": "两步骤验证设置现已完成。记得在移动设备上安装验证应用程序，在下次登录时输入生成的 6 位数验证码。<br><br>要进行更快速的两步骤验证，需登录到 DSM，更新到最新版本的 Synology 移动应用程序。<br><br>如果您的移动设备丢失，可在以下电子邮件地址找到 8 位数紧急验证码。要设置/更改电子邮件地址，请联系 LDAP 管理员以获得支持。",
+    "finish_step_desc":
+        "太好了！ 两步骤验证设置完成。下次登录 DSM 时，系统将提示您输入移动设备上验证器应用程序生成的验证代码。<br><br>两步骤验证对于用某些移动应用程序进行登录有影响。为避免遇到任何难题，请确认您已安装任何需要登录 DSM 的移动应用程序的最新版本。<br><br>如要访问紧急验证码以在您无法用生成的代码登录的情况下登录，请在下方输入您的帐户电子邮件。",
+    "finish_step_desc_ldap":
+        "两步骤验证设置现已完成。记得在移动设备上安装验证应用程序，在下次登录时输入生成的 6 位数验证码。<br><br>要进行更快速的两步骤验证，需登录到 DSM，更新到最新版本的 Synology 移动应用程序。<br><br>如果您的移动设备丢失，可在以下电子邮件地址找到 8 位数紧急验证码。要设置/更改电子邮件地址，请联系 LDAP 管理员以获得支持。",
     "welcome_step_desc": "管理员已为您的帐户开启强制性的两步骤验证保护。请按以下步骤为您的帐户设置两步骤验证。<br><br>两步骤验证为您的 DSM 帐户提供了一层额外的保护。一旦两步骤验证设置后，您除了需要一次性验证代码外，还需要密码来登录 DSM。请注意，您将需要移动设备来生成验证代码。"
   },
   "ovs": {
@@ -6150,7 +6227,10 @@ Map WebManagerStrings = {
     "warn_otp_with_ssh": "重要事项：启用两步骤验证后，您在登录 SSH 相关服务时皆需通过两步骤验证，包括 SSH 终端机、SFTP 和使用 SSH 传输加密的 rsync。其中，使用 Hyper Backup 或当共享文件夹同步使用 SSH 传输加密的 rsync 时，皆不支持两步骤验证，因此启用两步骤验证后，这两个服务将无法正常工作。是否确定继续？",
     "watch_current_login_status": "查看您的帐户活动，包括当前的连接、信任的设备和登录历史。"
   },
-  "petaspace": {"pkg_delete_warning_data_exist": "您无法删除此套件，因为 PetaSpace 正在此 DiskStation 上运行。请从 PetaSpace 删除所有的数据以继续。", "volume_delete_brick_exist": "您无法删除此存储空间，因为此存储空间正被 PetaSpace 使用。请从 PetaSpace 删除此存储空间以继续。"},
+  "petaspace": {
+    "pkg_delete_warning_data_exist": "您无法删除此套件，因为 PetaSpace 正在此 DiskStation 上运行。请从 PetaSpace 删除所有的数据以继续。",
+    "volume_delete_brick_exist": "您无法删除此存储空间，因为此存储空间正被 PetaSpace 使用。请从 PetaSpace 删除此存储空间以继续。"
+  },
   "photo_viewer": {
     "confirm_delete": "您确定要删除此相片？",
     "hd_mode": "以原始大小查看",
@@ -6332,7 +6412,8 @@ Map WebManagerStrings = {
     "payment_setting_desc": "特定区域还可选择其他<a href=\"https://www.synology.com/knowledgebase/DSM/tutorial/General/What_payment_methods_are_supported_by_Synology\" target=\"_blank\">付款方式</a>。",
     "payment_setting_title": "付款",
     "pgk_help_title": "帮助及基本知识",
-    "pkg_email_custom_set_err": "Please enable the email notification service and use custom email server on the \"Notification\" page. Please click \"OK\" to complete the settings before continuing.",
+    "pkg_email_custom_set_err":
+        "Please enable the email notification service and use custom email server on the \"Notification\" page. Please click \"OK\" to complete the settings before continuing.",
     "pkg_email_set_err": "您尚未在 [通知] 页面完成电子邮件通知设置。请单击 [确定] 来完成设置，然后再继续进行。",
     "pkg_incompatible": "{0} 与当前 DSM 版本不兼容。",
     "pkgmgr_cert_expired": "此套件的数字证书已到期。",
@@ -7117,7 +7198,16 @@ Map WebManagerStrings = {
     "url_blocking": "网页过滤器"
   },
   "router_pkgmgr": {"require_pgsql": "若要安装或启用此套件，请先连接外接存储设备，并在存储空间和打印机> 存储空间 > 高级设置> 系统数据库中启用系统数据库。"},
-  "router_port_trigger": {"add_pt_rule": "创建端口触发规则", "common_applications": "常见应用程序", "edit_pt_rule": "编辑端口触发规则", "err_apply_rule": "无法应用此规则", "match_port": "触发器端口", "port_trigger": "端口触发", "related_port": "入站端口", "service_name": "姓名"},
+  "router_port_trigger": {
+    "add_pt_rule": "创建端口触发规则",
+    "common_applications": "常见应用程序",
+    "edit_pt_rule": "编辑端口触发规则",
+    "err_apply_rule": "无法应用此规则",
+    "match_port": "触发器端口",
+    "port_trigger": "端口触发",
+    "related_port": "入站端口",
+    "service_name": "姓名"
+  },
   "router_spi": {"enable_spi": "允许外部访问 DSM", "setting_spi_rules": "设置防火墙规则", "spi_desc": "您的 DiskStation 允许仅通过 HTTP/HTTPS 端口（如 8000 和 8001）外部访问 DSM。如果出于安全原因此选项以后被禁用，DiskStation 将锁定所有的外部访问。"},
   "router_tc": {
     "action_active_app": "活动应用程序",
@@ -7259,7 +7349,8 @@ Map WebManagerStrings = {
     "network_topology_client": "无线客户端",
     "network_topology_client_tip": "客户端模式：连接到其它无线路由器/AP，使下级 LAN 设备接入到 Internet。",
     "network_topology_detail": "要了解更多信息，请参见 DSM 帮助。",
-    "network_topology_dn_no": "No, the system will try redirecting you to SRM until success.<br>But before clicking OK, please change the current IP address of your SynologyRouter to the static IP address first.",
+    "network_topology_dn_no":
+        "No, the system will try redirecting you to SRM until success.<br>But before clicking OK, please change the current IP address of your SynologyRouter to the static IP address first.",
     "network_topology_dn_yes": "Yes, the system will ensure you could login SRM via router.synology.com. ",
     "network_topology_router": "无线路由器",
     "network_topology_router_tip": "路由器模式：WAN 端口通过 DSL/Cable 调制解调器连接到 Internet。",
@@ -7472,7 +7563,8 @@ Map WebManagerStrings = {
     "routerconf_systemport_title": "内置应用程序",
     "routerconf_test_conn": "测试联机",
     "routerconf_test_connection": "测试端口转发规则 (21, 5000)",
-    "routerconf_test_failed": "您的路由器并未通过兼容性测试。您仍可在路由器上手动设置端口转发规则，以让互联网上的用户可以联机至 DiskStation。请参阅<a class=\"link-font\" href=\"http://www.synology.com/tutorials/how_to_internet.php?#t3.10\" target=\"_blank\">此处</a>以取得详细说明。",
+    "routerconf_test_failed":
+        "您的路由器并未通过兼容性测试。您仍可在路由器上手动设置端口转发规则，以让互联网上的用户可以联机至 DiskStation。请参阅<a class=\"link-font\" href=\"http://www.synology.com/tutorials/how_to_internet.php?#t3.10\" target=\"_blank\">此处</a>以取得详细说明。",
     "routerconf_test_max_count": "取得端口最大数量：{0}",
     "routerconf_test_pass": "您的 UPnP 路由器已通过兼容性测试。请单击 [应用] 来确认设置。",
     "routerconf_test_report": "将结果提交给 Synology 以促进 Synology 产品的发展",
@@ -8324,7 +8416,8 @@ Map WebManagerStrings = {
     "service_ddns_msg_host_in_used_by_yourhost": "是否要将“{0}”移至 DiskStation？",
     "service_ddns_msg_verification_mail_alert": "验证邮件已发送到 {0}。按邮件的说明激活您的电子邮件帐户和 DDNS 服务。",
     "service_ddns_next_refresh": "下次刷新时间",
-    "service_ddns_noip_tos": "请勾选确认您已同意遵守<a class=\"link-font\" target=\"_blank\" href=\"http://www.no-ip.com/legal/tos.php\">服务条款</a>和<a class=\"link-font\" target=\"_blank\" href=\"http://www.no-ip.com/legal/privacy.php\">隐私条款</a>。",
+    "service_ddns_noip_tos":
+        "请勾选确认您已同意遵守<a class=\"link-font\" target=\"_blank\" href=\"http://www.no-ip.com/legal/tos.php\">服务条款</a>和<a class=\"link-font\" target=\"_blank\" href=\"http://www.no-ip.com/legal/privacy.php\">隐私条款</a>。",
     "service_ddns_normal": "正常",
     "service_ddns_note": "注释",
     "service_ddns_operation_fail": "操作失败",
@@ -8356,9 +8449,11 @@ Map WebManagerStrings = {
     "service_ddns_status_param_error": "连接错误，请稍后再试。",
     "service_ddns_status_resolve_failed": "联机失败，无法解析服务器地址。",
     "service_ddns_status_server_broken": "DDNS 服务器临时无法使用，详情请洽服务提供商。",
-    "service_ddns_status_synology_auth_failed": "验证失败。如果您忘记密码，请进入 <a class=\"link-font\" target=\"_blank\" href=\"https://account.synology.com/support/register_password_remind.php\">Synology 帐户</a> 重设密码。",
+    "service_ddns_status_synology_auth_failed":
+        "验证失败。如果您忘记密码，请进入 <a class=\"link-font\" target=\"_blank\" href=\"https://account.synology.com/support/register_password_remind.php\">Synology 帐户</a> 重设密码。",
     "service_ddns_status_synology_email_not_verified": "您的电子邮件地址未验证。单击 {0} 可重新发送验证邮件。",
-    "service_ddns_syno_tos": "请勾选确认您已同意遵守<a class=\"link-font\" target=\"_blank\" href=\"http://www.synology.com/company/terms_of_services\">服务条款</a>和<a class=\"link-font\" target=\"_blank\" href=\"http://www.synology.com/company/privacy\">隐私条款</a>。",
+    "service_ddns_syno_tos":
+        "请勾选确认您已同意遵守<a class=\"link-font\" target=\"_blank\" href=\"http://www.synology.com/company/terms_of_services\">服务条款</a>和<a class=\"link-font\" target=\"_blank\" href=\"http://www.synology.com/company/privacy\">隐私条款</a>。",
     "service_ddns_synology_member_zone": "在 <a class=\"link-font\" target=\"_blank\" href=\"http://account.synology.com/support/register_ddns.php\">_MEMBERZONE_</a> 中在线检查 DiskStation 的 DDNS 状态。",
     "service_ddns_synology_membership": "Synology 帐户",
     "service_ddns_tip": "启用支持 DDNS 让用户以注册的主机名称连接服务器。",
@@ -8378,7 +8473,8 @@ Map WebManagerStrings = {
     "service_desc_mysql": "启动MySQL 以使用MySQL 数据库功能。",
     "service_desc_photo": "启动 Photo Station 来共享“photo”共享文件夹内的照片和影片，并发布您的博客。您也可通过移动设备上的 DS photo+ 使用 Photo Station。<br><br>若要管理 Photo Station 的用户帐号，请前往 Photo Station 的设置页面。",
     "service_desc_photo_personal_service": "启动个人 Photo Station 服务来让 DiskStation 用户可以拥有自己的 Photo Station。当此功能启动时，用户可以在 [{0}] 页面启动或停用自己的个人 Photo Station。",
-    "service_desc_photo_personal_setting": "启用 Photo Station – {0} 共享 \"home/photo\" 文件夹中的照片及视频，并发布您的博客 您還可以通过移动设备使用 Photo Station - {1}。<br><br>若要管理 Photo Station – {2} 的用戶帳戶，請進入 Photo Station - {3} 管理員區域。",
+    "service_desc_photo_personal_setting":
+        "启用 Photo Station – {0} 共享 \"home/photo\" 文件夹中的照片及视频，并发布您的博客 您還可以通过移动设备使用 Photo Station - {1}。<br><br>若要管理 Photo Station – {2} 的用戶帳戶，請進入 Photo Station - {3} 管理員區域。",
     "service_desc_secureui": "启动本选项后，HTTP 联机将会受到 SSL/TLS 安全联机的保护。",
     "service_desc_web": "启动Web Station 以创建网站。",
     "service_desc_web_secureui": "启动本选项后，Web 服务的 HTTP 联机将会受到 SSL/TLS 安全联机的保护。",
@@ -9019,7 +9115,8 @@ Map WebManagerStrings = {
     "smart_not_support": "此硬盘不支持 S.M.A.R.T.",
     "smart_quick_test": "快速检测",
     "smart_quick_test_log": "上次快速检测结果",
-    "smart_quick_test_scheduler_notification": "系统在默认情况下为硬盘计划了 S.M.A.R.T. 快速检测。如果要更改或删除计划，请进入<a style=\"font-size:12px;text-decoration:underline;\" data-syno-app=\"SYNO.SDS.StorageManager.Instance\" data-syno-fn=\"SYNO.SDS.StorageManager.Disk.Main\" data-syno-tab=\"scheduler\">设置页面</a>。",
+    "smart_quick_test_scheduler_notification":
+        "系统在默认情况下为硬盘计划了 S.M.A.R.T. 快速检测。如果要更改或删除计划，请进入<a style=\"font-size:12px;text-decoration:underline;\" data-syno-app=\"SYNO.SDS.StorageManager.Instance\" data-syno-fn=\"SYNO.SDS.StorageManager.Disk.Main\" data-syno-tab=\"scheduler\">设置页面</a>。",
     "smart_raw": "原始资料",
     "smart_schedule_conflict": "已对硬盘设置在特定时间进行 S.M.A.R.T 测试的计划。请另选一个时间并再试一次。",
     "smart_schedule_desc": "设置 S.M.A.R.T 测试计划以检测硬盘状况。",
@@ -9108,7 +9205,8 @@ Map WebManagerStrings = {
     "provider_param_descript": "选择以下网址参数所映射的类型",
     "provider_url": "测试网址",
     "provider_url_descript": "输入一个消息内容为 \"Hello world\" 的短信网址",
-    "provider_url_note": "此网址只供设置使用，并不会发出实际的短信。此网址的格式由服务提供商提供，必须包含用户帐号、密码、目标端号码及消息内容。以 Clickatell 为例，其可能网址为：https://api.clickatell.com/http/sendmsg?user=TestUser&password=TestPassword&api_id=3148203&to=886123456789&text=Hello+world。 请注意，消息内容里“Hello” 和 “world” 中的空格部份必须以提供商所规定的字符替换。",
+    "provider_url_note":
+        "此网址只供设置使用，并不会发出实际的短信。此网址的格式由服务提供商提供，必须包含用户帐号、密码、目标端号码及消息内容。以 Clickatell 为例，其可能网址为：https://api.clickatell.com/http/sendmsg?user=TestUser&password=TestPassword&api_id=3148203&to=886123456789&text=Hello+world。 请注意，消息内容里“Hello” 和 “world” 中的空格部份必须以提供商所规定的字符替换。",
     "request_parameter": "参数",
     "request_value": "值",
     "secondary_phone": "次要电话号码",
@@ -9200,7 +9298,8 @@ Map WebManagerStrings = {
   },
   "spectre_meltdown_mitigation": {
     "confirm_reboot": "若要使 KPTI 生效，请重启系统。是否要立即重启系统？",
-    "enable": "Meltdown 漏洞 (CVE-2017-5754) 增加了敏感信息暴露的风险。通过启用 KPTI，可以减轻信息暴露的威胁。但是在 KPTI 启用之后，会在一定程度上影响系统性能。请进入<a href=\"https://www.synology.com/support/security/Synology_SA_18_01\" target=\"_blank\">安全性咨询</a>以了解有关 KPTI 的更多详细信息。",
+    "enable":
+        "Meltdown 漏洞 (CVE-2017-5754) 增加了敏感信息暴露的风险。通过启用 KPTI，可以减轻信息暴露的威胁。但是在 KPTI 启用之后，会在一定程度上影响系统性能。请进入<a href=\"https://www.synology.com/support/security/Synology_SA_18_01\" target=\"_blank\">安全性咨询</a>以了解有关 KPTI 的更多详细信息。",
     "title": "内核页表隔离 "
   },
   "sso": {
@@ -9317,7 +9416,8 @@ Map WebManagerStrings = {
     "remote_desc": "启用远程访问来允许 Synology 技术支持工程师远程访问您的 DiskStation 以进行分析和修复。启用此选项后，请提供我们您的 admin 密码及技术支持识别密钥，以便 Synology 支持团队登录。",
     "send_attach": "正在处理您所附的文件或系统日志。Synology 支持团队会尽快联系您。",
     "sns_identifier_key": "技术支持识别密钥",
-    "success_send_form": "Your form has been successfully submitted. All responses and updates will be recorded in Synology Account, please go to your Synology Account to view the information. Synology Support Team will contact you as soon as possible.",
+    "success_send_form":
+        "Your form has been successfully submitted. All responses and updates will be recorded in Synology Account, please go to your Synology Account to view the information. Synology Support Team will contact you as soon as possible.",
     "support_channel_chkbox": "启用远程访问",
     "support_fan_debug_mode": "启用系统风扇调试模式",
     "support_form": "寻求帮助",
@@ -9769,7 +9869,8 @@ Map WebManagerStrings = {
     "leaf_bkp_restore_router": "配置备份和还原",
     "leaf_cloud_service": "QuickConnect",
     "leaf_cms": "CMS",
-    "leaf_cms_desc": "Synology CMS（Central Management System，中央管理系统）可让您高效便捷地管理多个 DiskStation 设备。它提供了一个界面，可监控多个服务器的状态、创建批量编辑服务器组设置的策略以及让每台服务器保持最新且运行流畅。群组或单个服务器的管理员权限可以授予具体用户或群组，以让各管理员能够控制和管理某些配置，进一步提高管理的效率和灵活性。",
+    "leaf_cms_desc":
+        "Synology CMS（Central Management System，中央管理系统）可让您高效便捷地管理多个 DiskStation 设备。它提供了一个界面，可监控多个服务器的状态、创建批量编辑服务器组设置的策略以及让每台服务器保持最新且运行流畅。群组或单个服务器的管理员权限可以授予具体用户或群组，以让各管理员能够控制和管理某些配置，进一步提高管理的效率和灵活性。",
     "leaf_confbkp_desc": "您可以通过 .dss 文件备份目前的系统设置，或者还原先前的系统设置",
     "leaf_control_panel": "控制面板",
     "leaf_control_panel_desc": "管理与文件共享服务、网络连接、硬件、应用程序等相关的系统设置。",
@@ -10434,7 +10535,12 @@ Map WebManagerStrings = {
     "usbbkp_warn_not_ready": "备份硬盘尚未就绪，请稍待...",
     "usbbkp_warn_offline": "备份操作需使用连接在服务器上的备份硬盘。请确认您已接上硬盘，并且将其格式化为备份用途。"
   },
-  "usbcopyset": {"sd_selectfolder": "单击 DiskStation 前面板的 Copy 按钮，就可以使用 SDCopy 一指复制功能，复制 SD 读卡器中的数据到 DiskStation 上。", "sdcopy_enable": "启动 SDCopy", "usb_selectfolder": "单击 DiskStation 前面板的 Copy 按钮，就可以使用USBCopy 一指复制功能，复制 USB 设备中的数据到 DiskStation 上。", "usbcopy_enable": "启动 USBCopy"},
+  "usbcopyset": {
+    "sd_selectfolder": "单击 DiskStation 前面板的 Copy 按钮，就可以使用 SDCopy 一指复制功能，复制 SD 读卡器中的数据到 DiskStation 上。",
+    "sdcopy_enable": "启动 SDCopy",
+    "usb_selectfolder": "单击 DiskStation 前面板的 Copy 按钮，就可以使用USBCopy 一指复制功能，复制 USB 设备中的数据到 DiskStation 上。",
+    "usbcopy_enable": "启动 USBCopy"
+  },
   "user": {
     "acnt_desc": "用户全名",
     "acnt_list": "用户帐号列表",
@@ -10587,7 +10693,8 @@ Map WebManagerStrings = {
     "for_more_information": "详情请参阅我们的<a href=\"http://www.synology.com/company/privacy\" target=\"_blank\">隐私声明</a>。",
     "join": "启用设备分析发送",
     "privacy_about_data_collection": "如需更多信息，请参阅<a href=\"https://www.synology.com/en-global/company/legal/privacy\" target=\"_blank\">隐私声明</a>。",
-    "privacy_about_share_network_location": "如需更多信息，请参阅<a href=\"https://www.synology.com/en-global/company/legal/privacy\" target=\"_blank\">隐私声明</a>和<a href=\"https://www.synology.com/company/legal/terms_conditions_account\" target=\"_blank\">服务条款</a>。",
+    "privacy_about_share_network_location":
+        "如需更多信息，请参阅<a href=\"https://www.synology.com/en-global/company/legal/privacy\" target=\"_blank\">隐私声明</a>和<a href=\"https://www.synology.com/company/legal/terms_conditions_account\" target=\"_blank\">服务条款</a>。",
     "share_network_location": "Share Network Location",
     "title": "设备分析"
   },
@@ -10614,7 +10721,16 @@ Map WebManagerStrings = {
     "wizard_title": "新增用户向导"
   },
   "vdsm": {"software_spec_not_match_suggestion": "Virtual DSM 的硬件配置已更改并已降低。请参阅其帮助以获得更多有关硬件配置的信息。"},
-  "video_player": {"broadcast_streaming": "实时串流", "error_play": "视频播放失败。您的浏览器不支持此格式。", "error_play_pc": "视频播放失败。您的浏览器或 VLC 插件不支持此格式。", "error_play_vlc": "无法播放视频。请安装 VLC Player 并重试。", "external_subtitle": "外部字幕", "menu_play": "播放", "no_subtitle": "无字幕", "title": "影片播放器"},
+  "video_player": {
+    "broadcast_streaming": "实时串流",
+    "error_play": "视频播放失败。您的浏览器不支持此格式。",
+    "error_play_pc": "视频播放失败。您的浏览器或 VLC 插件不支持此格式。",
+    "error_play_vlc": "无法播放视频。请安装 VLC Player 并重试。",
+    "external_subtitle": "外部字幕",
+    "menu_play": "播放",
+    "no_subtitle": "无字幕",
+    "title": "影片播放器"
+  },
   "volume": {
     "4k_hdd": "4K 原生硬盘",
     "4kn": "4Kn",
@@ -10635,14 +10751,18 @@ Map WebManagerStrings = {
     "cache_confirm_remove_crashed_cache_desc": "此 SSD 缓存或其目标存储空间已损毁。数据可能已损坏。建议保留当前环境并联系 Synology 技术支持以获得帮助。 ",
     "cache_confirm_service_stop_desc": "我了解删除 SSD 缓存会暂时停止所有服务并中断数据传输。 ",
     "cache_confirm_ssd_data_remove": "I understand that the data on the SSDs will be removed ",
-    "cache_crash_advice": "Detected a crash event of a SSD Read-Write Cache. It's recommended to check the connection status of its SSDs and then reboot your DiskStation. To protect data, system will mount its target volume read-only after rebooting to let you perform data backup.",
+    "cache_crash_advice":
+        "Detected a crash event of a SSD Read-Write Cache. It's recommended to check the connection status of its SSDs and then reboot your DiskStation. To protect data, system will mount its target volume read-only after rebooting to let you perform data backup.",
     "cache_crashed_desc": "{0} 已损毁。",
     "cache_create_existing_data_warning": "部分较旧的读写缓存数据仍保留在所选的 SSD 中。此可能是由读写缓存不当删除造成的。未同步到之前装载的存储空间中的数据，数据可能损毁。是否确定要清除 SSD 上的数据？",
-    "cache_create_limit_local_free_memory": "There’s no enough memory for SSD cache creation (system needs to reserve at least {0}) . Please refer to the {1}help{2} to check the memory rules of cache creation.",
+    "cache_create_limit_local_free_memory":
+        "There’s no enough memory for SSD cache creation (system needs to reserve at least {0}) . Please refer to the {1}help{2} to check the memory rules of cache creation.",
     "cache_create_limit_max_total_size": "System has already reached the maximum limitation ({0}) of total cache size on this model. ",
-    "cache_create_limit_remote_free_memory": "There’s no enough memory in another host for SSD cache creation (system needs to reserve at least {0}) . Please refer to the {1}help{2} to check the memory rules of cache creation.",
+    "cache_create_limit_remote_free_memory":
+        "There’s no enough memory in another host for SSD cache creation (system needs to reserve at least {0}) . Please refer to the {1}help{2} to check the memory rules of cache creation.",
     "cache_create_limit_same_chassis": "There’s no SSD on the same chassis with a Volume to create cache",
-    "cache_create_limit_usable_memory": "System has already used {0} memory for SSD cache, and it reaches the limit within this memory configuration. Please refer to the {1}help{2} to check the memory rules of cache creation.",
+    "cache_create_limit_usable_memory":
+        "System has already used {0} memory for SSD cache, and it reaches the limit within this memory configuration. Please refer to the {1}help{2} to check the memory rules of cache creation.",
     "cache_create_stop_service_warn_desc": "所有系统服务都将停止，数据传输将暂时中断。请在系统闲置时间执行此操作。 ",
     "cache_create_tip": "The maximum size of SSD Cache might be limited by the size of selected SSDs, the size of system memory, or model specs.",
     "cache_decide_remove_crashed_cache_desc": "我仍决定放弃存储空间 / iSCSI LUN 上的数据并强制删除此 SSD 缓存。 ",
@@ -10710,7 +10830,8 @@ Map WebManagerStrings = {
     "data_scrubbing_page_title": "数据清理",
     "data_scrubbing_suggestion": "RAID 清理提示",
     "dcache_data_scrubbing_confirmed": "是，请运行数据清理。",
-    "dcache_fsck": "The data in the disk write cache has probably been lost.  We suggest you run a full scan of the file system. It will stop all services and reboot. Once the operation is completed, we suggest you perform RAID scrubbing to ensure data integrity.",
+    "dcache_fsck":
+        "The data in the disk write cache has probably been lost.  We suggest you run a full scan of the file system. It will stop all services and reboot. Once the operation is completed, we suggest you perform RAID scrubbing to ensure data integrity.",
     "dedicated_ssd_cache": "缓存设备",
     "del_hard_check_fail": "由于以下原因导致操作失败：",
     "del_soft_check_fail": "系统正在处理以下任务。 单击“删除”以继续。",
@@ -10742,7 +10863,8 @@ Map WebManagerStrings = {
     "hdd_test": "硬盘检测",
     "hotspare_disk_same_chassis_note": "Hot Spare 硬盘仅适用于由同一控制器控制的存储池。",
     "hybrid_ssd_warning": "使用不同 SSD 型号创建 SSD 缓存可能影响其性能。",
-    "ignore_data_scrubbing_confirmed": "Ignore the data scrubbing can not fix the inconsistency of your RAID. It probably cause data corrupt when you recovery your RAID. Are you sure you want to ignore it?",
+    "ignore_data_scrubbing_confirmed":
+        "Ignore the data scrubbing can not fix the inconsistency of your RAID. It probably cause data corrupt when you recovery your RAID. Are you sure you want to ignore it?",
     "ignore_fsck_confirmed": "Ignore the full scan of the filesystem probably cause unexpected error on your filesystem. Are you sure you want to ignore it?",
     "initializing_inode_table": "正在优化文件系统",
     "initializing_inode_table_help": "系统现在可以安全访问、关机或重启。",
@@ -10786,7 +10908,8 @@ Map WebManagerStrings = {
     "raid_disk_too_many_warning": "这会有较高的风险，因为单个 RAID 中的硬盘数量超出了 {0} 个。是否确定继续",
     "raid_force_data_scrubbing": "RAID 已再汇编。为确保数据一致性，系统会立即对相应的存储池执行数据清理。",
     "raid_force_data_scrubbing_note": "<font class=\"note-font\"><b>注：</b></font>数据清理完成后，我们将自动通知您重启 DiskStation，然后运行全面的文件系统扫描。如果您在数据清理完成之前重启或关闭 DiskStation，系统将无法运行全面的文件系统扫描。",
-    "raid_force_fsck": "The RAID has been reassembled. We suggest you run a full scan of the file system. It will stop all services and reboot. Once the operation is completed, we suggest you perform RAID scrubbing to ensure data integrity.",
+    "raid_force_fsck":
+        "The RAID has been reassembled. We suggest you run a full scan of the file system. It will stop all services and reboot. Once the operation is completed, we suggest you perform RAID scrubbing to ensure data integrity.",
     "raid_force_notification": "RAID 通知汇编",
     "raid_force_notification_note": "<font class=\"note-font\"><b>注：</b></font>扫描过程可能需要一定时间（1TB 的磁盘约需 25 分钟），期间您可使用 Synology Assistant 来监控或取消此过程。",
     "raid_force_notification_reboot": "RAID 已再汇编。是否要在重启后全面扫描硬盘并恢复？",
@@ -10920,7 +11043,8 @@ Map WebManagerStrings = {
     "system_raid_sync_conf": "保存",
     "system_title": "系统分区",
     "unused_size": "未使用",
-    "vm_warning_volume_delete": "The selected volume contains the Virtual DSM Manager package or virtual disks. To remove this volume, you must remove the Virtual DSM Manager package or virtual disks first.\tEdit",
+    "vm_warning_volume_delete":
+        "The selected volume contains the Virtual DSM Manager package or virtual disks. To remove this volume, you must remove the Virtual DSM Manager package or virtual disks first.\tEdit",
     "volume": "存储空间",
     "volume_add_disk_into_raid": "利用一颗硬盘扩充",
     "volume_add_disk_into_shr_lun": "将硬盘添加到 SHR LUN",
@@ -11287,7 +11411,8 @@ Map WebManagerStrings = {
     "volume_scan_reboot_after_rebuild": "重新映射完成后重启",
     "volume_scan_reboot_immediately": "立即重启",
     "volume_scan_reboot_later": "稍后重启",
-    "volume_scan_wait4building": "在该磁盘中发现新的坏扇区（请参阅{0}了解详细信息）。 是否要在系统重新映射该磁盘后对硬盘进行全面扫描？<br><br><font class=\"note-font\"><b>注：</b></font>扫描过程可能需要一定时间（1TB 的磁盘约需 25 分钟），期间您可使用 Synology Assistant 来监控或取消此过程。",
+    "volume_scan_wait4building":
+        "在该磁盘中发现新的坏扇区（请参阅{0}了解详细信息）。 是否要在系统重新映射该磁盘后对硬盘进行全面扫描？<br><br><font class=\"note-font\"><b>注：</b></font>扫描过程可能需要一定时间（1TB 的磁盘约需 25 分钟），期间您可使用 Synology Assistant 来监控或取消此过程。",
     "volume_scrubbing_type_fs": "文件系统 scrubbing",
     "volume_scrubbing_type_raid": "RAID 清理",
     "volume_scrubbing_type_title": "选择 Data scrubbing 类型",
@@ -11430,10 +11555,12 @@ Map WebManagerStrings = {
     "volume_type_description_linear": "选择此类型可让您在今后通过将更多硬盘合并至单个存储空间来扩充硬盘容量。不支持数据冗余。",
     "volume_type_description_raid_0": "RAID 0 组合了两个或更多硬盘以提高性能和容量，但没有容错保护功能。单个硬盘出现故障将导致阵列中的的所有数据丢失。RAID 0 对于需要高性能比的非关键系统非常有用。",
     "volume_type_description_raid_1": "RAID 1 通常为两个硬盘来执行。硬盘中的数据被映射，在硬盘出现故障时提供容错保护功能。读取性能得到提高，而写入性能将与单个硬盘类似。单个硬盘出现故障时可得以维持而不会丢失数据。在容错保护非常关键而空间和性能不那么重要时，往往使用 RAID 1。",
-    "volume_type_description_raid_10": "RAID 10 集合了 RAID 1 与 RAID 0 的优势。读写性能有所提高，但用于存储数据的空间仅为总空间的一半。需要 4 个或更多硬盘使得成本相对较高，但在提供容错保护功能时性能较高。事实上，RAID 10 可在多个硬盘出现故障时得以维持 — 如果故障不是发生在同一子群组内。RAID 10 对于输入/输出要求较高的应用程序（如数据库服务器）非常理想。",
+    "volume_type_description_raid_10":
+        "RAID 10 集合了 RAID 1 与 RAID 0 的优势。读写性能有所提高，但用于存储数据的空间仅为总空间的一半。需要 4 个或更多硬盘使得成本相对较高，但在提供容错保护功能时性能较高。事实上，RAID 10 可在多个硬盘出现故障时得以维持 — 如果故障不是发生在同一子群组内。RAID 10 对于输入/输出要求较高的应用程序（如数据库服务器）非常理想。",
     "volume_type_description_raid_5": "RAID 5 提供容错保护功能并提高了读取性能。至少需要三个硬盘。RAID 5 可在单个硬盘丢失时得以维持运行。在硬盘出现故障的情况下，故障硬盘上的数据将从其余硬盘上延展的奇偶校验进行重建。因此，在 RAID 5 阵列处于降级状态时，读写性能受到严重影响。当存储空间和成本的重要性高于性能时，RAID 5 最为理想。",
     "volume_type_description_raid_6": "RAID 6 与 RAID 5 相似，但其提供了另一层区块延展功能，并在 2 个硬盘出现故障时得以维持。至少需要四个硬盘。RAID 6 的性能因其额外的容错保护功能而低于 RAID 5。在存储空间和成本较为重要且需要在多个硬盘出现故障得以维持的情况下，RAID 6 最为理想。",
-    "volume_type_description_raid_f1": "RAID F1 应用了 RAID 5 的机制，提供容错并提高读取性能。但通过 RAID F1，系统将在特定硬盘中写入更多的奇偶校验信息以加快其老化，这样可防止所有的硬盘同时达到使用年限。与 RAID 5 相比，这可能会对性能有细微影响。至少需要三个硬盘。RAID F1 可在单个硬盘丢失时得以维持运行。在硬盘出现故障的情况下，故障硬盘上的数据将从其余硬盘上延展的奇偶校验进行重建。因此，在 RAID F1 阵列处于降级状态时，读写性能受到严重影响。RAID F1 是全闪存阵列的理想选择。",
+    "volume_type_description_raid_f1":
+        "RAID F1 应用了 RAID 5 的机制，提供容错并提高读取性能。但通过 RAID F1，系统将在特定硬盘中写入更多的奇偶校验信息以加快其老化，这样可防止所有的硬盘同时达到使用年限。与 RAID 5 相比，这可能会对性能有细微影响。至少需要三个硬盘。RAID F1 可在单个硬盘丢失时得以维持运行。在硬盘出现故障的情况下，故障硬盘上的数据将从其余硬盘上延展的奇偶校验进行重建。因此，在 RAID F1 阵列处于降级状态时，读写性能受到严重影响。RAID F1 是全闪存阵列的理想选择。",
     "volume_type_description_shr": "建议新手采使用的 RAID 类型。选择此类型可让您在将来合并不同容量的硬盘以优化存储空间容量并确保数据冗余。",
     "volume_type_expansion": "扩充",
     "volume_type_linear": "JBOD",
@@ -11557,7 +11684,12 @@ Map WebManagerStrings = {
     "vpns_conflict": "连接失败。请进入“主菜单”>“VPN Server”禁用 OpenVPN 服务器，然后重试。",
     "waiting": "等待中..."
   },
-  "vtype": {"bad_backup_destination": "这个备份目的地名称无效或含有无效字符。", "bad_backup_target": "这个目标名称无效或含有无效字符。", "bad_beepduration": "请输入 1-600 秒之间的持续时间。", "bad_dar_profile_name": "仅能使用英文字母、数字和空格字符。请不要使用保留的字，如 <b>template</b>、<b>lang</b> 和 <b>global</b>。名称开头或结尾不可为空格。"},
+  "vtype": {
+    "bad_backup_destination": "这个备份目的地名称无效或含有无效字符。",
+    "bad_backup_target": "这个目标名称无效或含有无效字符。",
+    "bad_beepduration": "请输入 1-600 秒之间的持续时间。",
+    "bad_dar_profile_name": "仅能使用英文字母、数字和空格字符。请不要使用保留的字，如 <b>template</b>、<b>lang</b> 和 <b>global</b>。名称开头或结尾不可为空格。"
+  },
   "web_assistant_mobile": {
     "web_asst_mobile_diskstation_info": "设置密码",
     "web_asst_mobile_err_no_disk": "未发现硬盘。请关闭 DiskStation、安装硬盘然后继续安装。",
@@ -11574,7 +11706,8 @@ Map WebManagerStrings = {
     "apply_right_msg": "应用用户权限",
     "apply_share_msg": "创建web 共享文件夹",
     "apply_startserv_msg": "启动Web Station",
-    "final_descr": "若要创建网站：<ol><li>使用计算机的文件管理工具 (Windows 资源管理器、Mac 的 Finder 等) 访问 DiskStation 的 <b>web</b>  共享文件夹。</li><li>上传网页文件。</li><li>将主页文件命名为 <b>index.php</b>、<b>index.htm</b>，或 <b>index.html</b>。</li><li>联机到 {0}  浏览您的网站。</li></ol>若要将网站发布到互联网上，请运行互联网设置向导。",
+    "final_descr":
+        "若要创建网站：<ol><li>使用计算机的文件管理工具 (Windows 资源管理器、Mac 的 Finder 等) 访问 DiskStation 的 <b>web</b>  共享文件夹。</li><li>上传网页文件。</li><li>将主页文件命名为 <b>index.php</b>、<b>index.htm</b>，或 <b>index.html</b>。</li><li>联机到 {0}  浏览您的网站。</li></ol>若要将网站发布到互联网上，请运行互联网设置向导。",
     "finalstep_title": "设置完成",
     "long_descr": "使用PHP 创建网站",
     "short_descr": "Web Station",
@@ -11661,7 +11794,8 @@ Map WebManagerStrings = {
     "update_setting_type_hotfix_tip": "重要更新主要包括安全漏洞和关键问题的修复。",
     "update_setting_type_notify": "有 DSM 更新时通知我，让我手动安装",
     "welcome_access": "访问您 DiskStation 上的文件",
-    "welcome_access_desc": "File Station 可让您通过网络界面存储并访问 DiskStation 中的文件。如果您希望使用本地资源管理器浏览文件，请在 Win/Mac/NFS 页面启用 Win/Mac/NFS 服务。<br>若要随时随地访问和管理文件，请在您的移动设备上安装 <a href=\"http://www.synology.com/dsm/home_mobile_support_ds_file.php\" target=\"_blank\">DS file</a>。",
+    "welcome_access_desc":
+        "File Station 可让您通过网络界面存储并访问 DiskStation 中的文件。如果您希望使用本地资源管理器浏览文件，请在 Win/Mac/NFS 页面启用 Win/Mac/NFS 服务。<br>若要随时随地访问和管理文件，请在您的移动设备上安装 <a href=\"http://www.synology.com/dsm/home_mobile_support_ds_file.php\" target=\"_blank\">DS file</a>。",
     "welcome_access_title": "访问您的文件",
     "welcome_account_info_tip": "用户名为用来登录和管理 {0} 的管理员帐户。",
     "welcome_admin_account_desc": "以下信息将用于管理您的 {0}",
@@ -11673,7 +11807,8 @@ Map WebManagerStrings = {
     "welcome_admin_server_name": "服务器名称",
     "welcome_app_title": "快速入门",
     "welcome_click_here": "单击此处",
-    "welcome_cloud_desc": "自动在您的 DiskStation、计算机与移动设备之间同步文件；恢复已删除的文件并保留每个文件的历史版本以防数据意外丢失。<br>若要在移动设备与 DiskStation 之间同步文件，请在您的移动设备上安装 <a href=\"http://www.synology.com/dsm/business_mobile_supports_ds_cloud.php\" target=\"_blank\">DS cloud</a>。",
+    "welcome_cloud_desc":
+        "自动在您的 DiskStation、计算机与移动设备之间同步文件；恢复已删除的文件并保留每个文件的历史版本以防数据意外丢失。<br>若要在移动设备与 DiskStation 之间同步文件，请在您的移动设备上安装 <a href=\"http://www.synology.com/dsm/business_mobile_supports_ds_cloud.php\" target=\"_blank\">DS cloud</a>。",
     "welcome_cloud_title": "Cloud Service",
     "welcome_creating_shr": "正在准备存储空间...",
     "welcome_creating_user": "正在创建用户帐户...",
@@ -11714,7 +11849,8 @@ Map WebManagerStrings = {
     "welcome_open_win_mac_nfs": "打开 <b>Win/Mac/NFS</b> 的设置页面",
     "welcome_package_audio": "Audio Station",
     "welcome_package_cloud": "Cloud Station Server",
-    "welcome_package_desc": "从套件中心下载更多的应用程序来扩展 DiskStation 的功能。若要欣赏多媒体内容，可依喜好在“多媒体”区域下载应用程序。<br>您可以在<a href=\"http://www.synology.com/dsm/home_mobile_support_ds_audio.php\" target=\"_blank\">此处</a>找到多媒体移动应用程序。您也可以在移动设备上下载这些应用程序。",
+    "welcome_package_desc":
+        "从套件中心下载更多的应用程序来扩展 DiskStation 的功能。若要欣赏多媒体内容，可依喜好在“多媒体”区域下载应用程序。<br>您可以在<a href=\"http://www.synology.com/dsm/home_mobile_support_ds_audio.php\" target=\"_blank\">此处</a>找到多媒体移动应用程序。您也可以在移动设备上下载这些应用程序。",
     "welcome_package_download": "Download Station",
     "welcome_package_drive": "Drive",
     "welcome_package_mediaserver": "媒体服务器",
@@ -11741,7 +11877,8 @@ Map WebManagerStrings = {
     "welcome_setup_quickcnt_title": "设置 QuickConnect",
     "welcome_shared_folder_desc": "共享文件夹是 DiskStation 基本的目录结构，您可在其中存储并管理文件和文件夹。 您需要创建至少一个共享文件夹，特定用户或用户群组可根据您授予的访问权限进行访问。",
     "welcome_shared_folder_title": "文件共享",
-    "welcome_show_confirm": "您将离开快速入门向导。若要获取更多有关使用 Synology DSM 的指导信息，请参阅 <b>DSM 帮助</b>，或访问 <a href=\"http://www.synology.com/support/tutorials.php\" target=\"_blank\">Synology 网站</a>来阅读在线教程。<br>是否要在下次登录时显示此向导？",
+    "welcome_show_confirm":
+        "您将离开快速入门向导。若要获取更多有关使用 Synology DSM 的指导信息，请参阅 <b>DSM 帮助</b>，或访问 <a href=\"http://www.synology.com/support/tutorials.php\" target=\"_blank\">Synology 网站</a>来阅读在线教程。<br>是否要在下次登录时显示此向导？",
     "welcome_skip_alias": "跳过此步骤",
     "welcome_smart_quick_test_tip": "每个月都会对所有硬盘执行 S.M.A.R.T. 快速检测。",
     "welcome_smart_test": "运行 S.M.A.R.T. 检测以定期检查硬件的运行状况",

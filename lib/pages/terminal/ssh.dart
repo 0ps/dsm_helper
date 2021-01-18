@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:xterm/flutter.dart';
-import 'package:xterm/theme/terminal_theme.dart';
 import 'package:xterm/theme/terminal_themes.dart';
 import 'package:xterm/xterm.dart';
 import 'package:dartssh/client.dart';

@@ -103,12 +103,7 @@ class _PackageDetailState extends State<PackageDetail> {
       appBar: AppBar(
         title: Text(
           "${widget.package['dname']}",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: Column(
         children: [

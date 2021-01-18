@@ -1,12 +1,8 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/setting.dart';
 import 'package:dsm_helper/pages/resource_monitor/speed_limit.dart';
 import 'package:dsm_helper/pages/resource_monitor/task_manager.dart';
 import 'package:dsm_helper/pages/resource_monitor/users.dart';
-import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';

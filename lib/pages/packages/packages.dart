@@ -506,12 +506,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: Text(
           "套件中心",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: Stack(
         children: [
@@ -530,7 +525,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                   isScrollable: false,
                   controller: _tabController,
                   indicatorSize: TabBarIndicatorSize.label,
-                  labelColor: Colors.black,
+                  labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                   unselectedLabelColor: Colors.grey,
                   indicator: BubbleTabIndicator(
                     indicatorColor: Theme.of(context).scaffoldBackgroundColor,

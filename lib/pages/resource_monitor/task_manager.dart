@@ -52,9 +52,9 @@ class _TaskManagerState extends State<TaskManager> with SingleTickerProviderStat
     List<String> titles = service['display_name'].split(":");
     //判断是否在string内
     if (titles.length > 1) {
-      if (WebManagerStrings[titles[0]] != null && WebManagerStrings[titles[0]][titles[1]] != null) {
-        if (WebManagerStrings[titles[0]][titles[1]] != null) {
-          title = WebManagerStrings[titles[0]][titles[1]];
+      if (webManagerStrings[titles[0]] != null && webManagerStrings[titles[0]][titles[1]] != null) {
+        if (webManagerStrings[titles[0]][titles[1]] != null) {
+          title = webManagerStrings[titles[0]][titles[1]];
         }
       } else if (Util.strings[service['display_name']][titles[0]] != null && Util.strings[service['display_name']][titles[0]][titles[1]] != null) {
         title = Util.strings[service['display_name']][titles[0]][titles[1]];
@@ -167,7 +167,7 @@ class _TaskManagerState extends State<TaskManager> with SingleTickerProviderStat
                     isScrollable: true,
                     controller: _tabController,
                     indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Colors.black,
+                    labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                     unselectedLabelColor: Colors.grey,
                     indicator: BubbleTabIndicator(
                       indicatorColor: Theme.of(context).scaffoldBackgroundColor,

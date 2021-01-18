@@ -25,9 +25,9 @@ class _NotifyState extends State<Notify> {
     String title = "";
     List<String> titles = notify['title'].split(":");
     //判断是否在string内
-    if (WebManagerStrings[titles[0]] != null && WebManagerStrings[titles[0]][titles[1]] != null) {
-      if (WebManagerStrings[titles[0]][titles[1]] != null) {
-        title = WebManagerStrings[titles[0]][titles[1]];
+    if (webManagerStrings[titles[0]] != null && webManagerStrings[titles[0]][titles[1]] != null) {
+      if (webManagerStrings[titles[0]][titles[1]] != null) {
+        title = webManagerStrings[titles[0]][titles[1]];
       }
     } else if (Util.strings[notify['className']][titles[0]] != null && Util.strings[notify['className']][titles[0]][titles[1]] != null) {
       title = Util.strings[notify['className']][titles[0]][titles[1]];
@@ -96,12 +96,7 @@ class _NotifyState extends State<Notify> {
       appBar: AppBar(
         title: Text(
           "消息",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: Column(
         children: [

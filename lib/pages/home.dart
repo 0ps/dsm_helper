@@ -11,10 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 import 'package:vibrate/vibrate.dart';
-
-import 'provider/dark_mode.dart';
 
 class Home extends StatefulWidget {
   @override

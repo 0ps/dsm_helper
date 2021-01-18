@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
@@ -35,12 +34,7 @@ class _AboutState extends State<About> {
       appBar: AppBar(
         title: Text(
           "关于群晖助手",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: Column(
         children: [

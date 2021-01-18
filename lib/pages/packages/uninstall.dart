@@ -134,12 +134,7 @@ class _UninstallPackageState extends State<UninstallPackage> {
       appBar: AppBar(
         title: Text(
           "卸载${widget.package['dname']}",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: loading
           ? Center(
@@ -186,7 +181,7 @@ class _UninstallPackageState extends State<UninstallPackage> {
                           setState(() {
                             uninstalling = true;
                           });
-                          var res = await Api.uninstallPackageTask(widget.package['id'],extra: extra);
+                          await Api.uninstallPackageTask(widget.package['id'], extra: extra);
                           Util.toast("卸载成功");
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();

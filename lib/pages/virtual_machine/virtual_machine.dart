@@ -477,9 +477,6 @@ class _VirtualMachineState extends State<VirtualMachine> {
                     } else {
                       Util.toast("虚拟机状态未知，无法操作");
                     }
-                    setState(() {
-                      powerLoading[guest['id']] = false;
-                    });
                   },
                   child: NeuCard(
                     padding: EdgeInsets.all(10),

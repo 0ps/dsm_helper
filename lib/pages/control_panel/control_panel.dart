@@ -24,12 +24,7 @@ class _ControlPanelState extends State<ControlPanel> {
       appBar: AppBar(
         title: Text(
           "控制面板",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: ListView(
         children: [

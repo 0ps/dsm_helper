@@ -326,12 +326,7 @@ class _ShareState extends State<Share> {
       appBar: AppBar(
         title: Text(
           "共享文件",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: GestureDetector(
         onTap: () {

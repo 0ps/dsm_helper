@@ -1,7 +1,6 @@
 import 'package:dsm_helper/pages/update/update.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dsm_helper/util/function.dart';
 import 'package:package_info/package_info.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';

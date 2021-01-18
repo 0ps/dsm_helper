@@ -40,7 +40,9 @@ class _AddSharedFoldersState extends State<AddSharedFolders> {
   String shareQuota = "";
   @override
   void initState() {
-    volumeController.value = TextEditingValue(text: "${widget.volumes[selectedVolumeIndex]['display_name']}(可用容量：${Util.formatSize(int.parse(widget.volumes[selectedVolumeIndex]['size_free_byte']))}) - ${widget.volumes[selectedVolumeIndex]['fs_type']}");
+    volumeController.value = TextEditingValue(
+        text:
+            "${widget.volumes[selectedVolumeIndex]['display_name']}(可用容量：${Util.formatSize(int.parse(widget.volumes[selectedVolumeIndex]['size_free_byte']))}) - ${widget.volumes[selectedVolumeIndex]['fs_type']}");
     unitController.value = TextEditingValue(text: units[selectedUnitIndex]);
     super.initState();
   }
@@ -108,12 +110,7 @@ class _AddSharedFoldersState extends State<AddSharedFolders> {
       appBar: AppBar(
         title: Text(
           "新增共享文件夹",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: GestureDetector(
         onTap: () {
@@ -201,7 +198,9 @@ class _AddSharedFoldersState extends State<AddSharedFolders> {
                                             setState(() {
                                               selectedVolumeIndex = widget.volumes.indexOf(volume);
                                             });
-                                            volumeController.value = TextEditingValue(text: "${widget.volumes[selectedVolumeIndex]['display_name']}(可用容量：${Util.formatSize(int.parse(widget.volumes[selectedVolumeIndex]['size_free_byte']))}) - ${widget.volumes[selectedVolumeIndex]['fs_type']}");
+                                            volumeController.value = TextEditingValue(
+                                                text:
+                                                    "${widget.volumes[selectedVolumeIndex]['display_name']}(可用容量：${Util.formatSize(int.parse(widget.volumes[selectedVolumeIndex]['size_free_byte']))}) - ${widget.volumes[selectedVolumeIndex]['fs_type']}");
                                             Navigator.of(context).pop();
                                           },
                                           decoration: NeumorphicDecoration(

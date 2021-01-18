@@ -88,12 +88,7 @@ class _UpdateState extends State<Update> {
       appBar: AppBar(
         title: Text(
           "软件更新",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: Column(
         children: [

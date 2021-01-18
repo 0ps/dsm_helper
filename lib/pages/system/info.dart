@@ -343,12 +343,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
       appBar: AppBar(
         title: Text(
           "信息中心",
-          style: Theme.of(context).textTheme.headline6,
         ),
-        brightness: Brightness.light,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 0,
-        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -365,7 +360,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
               isScrollable: true,
               controller: _tabController,
               indicatorSize: TabBarIndicatorSize.label,
-              labelColor: Colors.black,
+              labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
               unselectedLabelColor: Colors.grey,
               indicator: BubbleTabIndicator(
                 indicatorColor: Theme.of(context).scaffoldBackgroundColor,
@@ -661,7 +656,10 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                                   flex: 2,
                                   child: Text(
                                     "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
-                                    style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
+                                    style: TextStyle(
+                                        color: widget.system['temperature_warning'] == null
+                                            ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green)
+                                            : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

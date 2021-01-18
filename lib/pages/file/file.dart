@@ -1623,6 +1623,10 @@ class FilesState extends State<Files> {
         multiSelect = false;
         selectedFiles = [];
       });
+    } else if (searchResult) {
+      setState(() {
+        refresh();
+      });
     } else {
       if (paths.length > 1) {
         paths.removeLast();
@@ -2122,43 +2126,44 @@ class FilesState extends State<Files> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: (MediaQuery.of(context).size.width - 100) / 4,
-                                      child: NeuButton(
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context)
-                                              .push(CupertinoPageRoute(
-                                                  builder: (content) {
-                                                    return Search(paths.join("/").substring(1));
-                                                  },
-                                                  settings: RouteSettings(name: "search")))
-                                              .then((res) {
-                                            if (res != null) {
-                                              search(res['folders'], res['pattern'], res['search_content']);
-                                            }
-                                          });
-                                        },
-                                        decoration: NeumorphicDecoration(
-                                          color: Theme.of(context).scaffoldBackgroundColor,
-                                          borderRadius: BorderRadius.circular(25),
-                                        ),
-                                        bevel: 20,
-                                        padding: EdgeInsets.symmetric(vertical: 10),
-                                        child: Column(
-                                          children: [
-                                            Image.asset(
-                                              "assets/icons/search.png",
-                                              width: 30,
-                                            ),
-                                            Text(
-                                              "搜索",
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                          ],
+                                    if (paths.length > 1)
+                                      SizedBox(
+                                        width: (MediaQuery.of(context).size.width - 100) / 4,
+                                        child: NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context)
+                                                .push(CupertinoPageRoute(
+                                                    builder: (content) {
+                                                      return Search(paths.join("/").substring(1));
+                                                    },
+                                                    settings: RouteSettings(name: "search")))
+                                                .then((res) {
+                                              if (res != null) {
+                                                search(res['folders'], res['pattern'], res['search_content']);
+                                              }
+                                            });
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 20,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Column(
+                                            children: [
+                                              Image.asset(
+                                                "assets/icons/search.png",
+                                                width: 30,
+                                              ),
+                                              Text(
+                                                "搜索",
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),

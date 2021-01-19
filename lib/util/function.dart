@@ -154,79 +154,8 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = [
-      "3gp",
-      "3g2",
-      "asf",
-      "dat",
-      "divx",
-      "dvr-ms",
-      "m2t",
-      "m2ts",
-      "m4v",
-      "mkv",
-      "mp4",
-      "mts",
-      "mov",
-      "qt",
-      "tp",
-      "trp",
-      "ts",
-      "vob",
-      "wmv",
-      "xvid",
-      "ac3",
-      "amr",
-      "rm",
-      "rmvb",
-      "ifo",
-      "mpeg",
-      "mpg",
-      "mpe",
-      "m1v",
-      "m2v",
-      "mpeg1",
-      "mpeg2",
-      "mpeg4",
-      "ogv",
-      "webm",
-      "flv",
-      "avi",
-      "swf",
-      "f4v"
-    ];
-    List<String> music = [
-      "aac",
-      "flac",
-      "m4a",
-      "m4b",
-      "aif",
-      "ogg",
-      "pcm",
-      "wav",
-      "cda",
-      "mid",
-      "mp2",
-      "mka",
-      "mpc",
-      "ape",
-      "ra",
-      "ac3",
-      "dts",
-      "wma",
-      "mp3",
-      "mp1",
-      "mp2",
-      "mpa",
-      "ram",
-      "m4p",
-      "aiff",
-      "dsf",
-      "dff",
-      "m3u",
-      "wpl",
-      "aiff"
-    ];
+    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
+    List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];
@@ -272,7 +201,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers}) async {
+  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken}) async {
     if (headers == null) {
       headers = {
         "Cookie": Util.cookie,
@@ -290,7 +219,6 @@ class Util {
     );
     //忽略Https校验
     if (!checkSsl) {
-      print("忽略HTTPS校验");
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
         client.badCertificateCallback = (cert, host, port) {
           return true;
@@ -300,7 +228,7 @@ class Util {
 
     Response response;
     try {
-      response = await dio.get(url, queryParameters: data);
+      response = await dio.get(url, queryParameters: data, cancelToken: cancelToken);
       if (response.headers.map['set-cookie'] != null && response.headers.map['set-cookie'].length > 0) {
         List cookies = [];
         for (int i = 0; i < response.headers.map['set-cookie'].length; i++) {
@@ -317,6 +245,7 @@ class Util {
         return response.data;
       }
     } on DioError catch (error) {
+      print(error.message);
       String code = "";
       if (error.message.contains("CERTIFICATE_VERIFY_FAILED")) {
         code = "SSL/HTTPS证书有误";
@@ -332,7 +261,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host}) async {
+  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken}) async {
     Dio dio = new Dio(
       new BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
@@ -355,10 +284,7 @@ class Util {
     }
     Response response;
     try {
-      response = await dio.post(
-        url,
-        data: data,
-      );
+      response = await dio.post(url, data: data, cancelToken: cancelToken);
 
       return response.data;
     } on DioError catch (error) {

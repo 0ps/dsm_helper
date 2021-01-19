@@ -31,6 +31,7 @@ class _LoginState extends State<Login> {
   TextEditingController _portController = TextEditingController();
   TextEditingController _otpController = TextEditingController();
   List servers = [];
+  CancelToken cancelToken = CancelToken();
   @override
   initState() {
     _portController.value = TextEditingValue(text: port);
@@ -99,23 +100,35 @@ class _LoginState extends State<Login> {
         setState(() {
           login = true;
         });
-        var checkLogin = await Api.shareList();
+        var checkLogin = await Api.shareList(cancelToken: cancelToken);
         if (!checkLogin['success']) {
-          //如果登录失效，尝试重新登录
-          String account = await Util.getStorage("account");
-          String password = await Util.getStorage("password");
-          var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password);
-          if (loginRes['success'] == true) {
-            //重新登录成功
-            Util.setStorage("sid", loginRes['data']['sid']);
-            Util.sid = loginRes['data']['sid'];
-            Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
-          } else {
-            Util.toast("自动登录失败，请手动登录");
-            Util.vibrate(FeedbackType.warning);
+          if (checkLogin['code'] == "用户取消") {
+            //如果用户主动取消登录
             setState(() {
               login = false;
             });
+          } else {
+            //如果登录失效，尝试重新登录
+            String account = await Util.getStorage("account");
+            String password = await Util.getStorage("password");
+            var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken);
+            if (loginRes['success'] == true) {
+              //重新登录成功
+              Util.setStorage("sid", loginRes['data']['sid']);
+              Util.sid = loginRes['data']['sid'];
+              Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+            } else {
+              if (loginRes['code'] == "用户取消") {
+                Util.toast("用户取消登录");
+              } else {
+                Util.toast("自动登录失败，请手动登录");
+                Util.vibrate(FeedbackType.warning);
+              }
+
+              setState(() {
+                login = false;
+              });
+            }
           }
         } else {
           //登录有效，进入首页
@@ -129,6 +142,8 @@ class _LoginState extends State<Login> {
     Util.checkSsl = checkSsl;
     FocusScope.of(context).requestFocus(FocusNode());
     if (login == true) {
+      cancelToken?.cancel("取消登录");
+      cancelToken = CancelToken();
       return;
     }
     if (host.trim() == "") {
@@ -148,11 +163,11 @@ class _LoginState extends State<Login> {
       login = true;
     });
     Util.cookie = "";
-    var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode);
+    var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode, cancelToken: cancelToken);
+    print(res);
     setState(() {
       login = false;
     });
-    print(res);
     if (res['success'] == true) {
       //记住登录信息
 
@@ -647,10 +662,20 @@ class _LoginState extends State<Login> {
               ),
               onPressed: _login,
               child: login
-                  ? Center(
-                      child: CupertinoActivityIndicator(
-                        radius: 13,
-                      ),
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CupertinoActivityIndicator(
+                          radius: 13,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "取消",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
                     )
                   : Text(
                       ' 登录 ',

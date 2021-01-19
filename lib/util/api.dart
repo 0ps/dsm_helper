@@ -9,20 +9,14 @@ import 'function.dart';
 class Api {
   static Future<Map> update(String buildNumber) async {
     if (Platform.isAndroid) {
-      var res = await Util.get(utf8.decode(base64Decode("aHR0cDovL2FwaS5maXIuaW0vYXBwcy9sYXRlc3QvNWZjZjg0ODViMmViNDY1ZjljY2MyNzlhP2FwaV90b2tlbj04MGFhOGVlYjQ3ZmY3N2UyZDcxM2MxN2I4YWZmMjVmOA==")));
+      var res = await Util.get("http://www.qd12333.cn/index/about/update");
+      print(res);
       if (res != null) {
-        if (int.parse(buildNumber) < int.parse(res['build'])) {
+        if (int.parse(buildNumber) < res['data']['build']) {
           return {
             "code": 1,
             "msg": "版本更新",
-            "data": {
-              "note": res['changelog'],
-              "url": res['install_url'],
-              "update_time": res['updated_at'],
-              "size": res['binary']['fsize'],
-              "build": res['build'],
-              "version": res['versionShort'],
-            },
+            "data": res['data'],
           };
         } else {
           return {

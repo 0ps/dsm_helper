@@ -184,7 +184,7 @@ class _MyAppState extends State<MyApp> {
                       brightness: Brightness.dark,
                     ),
                   ),
-                  home: widget.authPage ? Login() : Home(),
+                  home: widget.authPage ? AuthPage() : Login(),
                   navigatorObservers: [AppAnalysis()],
                   routes: {
                     "/login": (BuildContext context) => Login(),

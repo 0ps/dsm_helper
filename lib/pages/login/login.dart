@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:vibrate/vibrate.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -37,6 +39,8 @@ class _LoginState extends State<Login> {
   }
 
   getInfo() async {
+    String sid = await Util.getStorage("sid");
+    String smid = await Util.getStorage("smid");
     String https = await Util.getStorage("https");
     String host = await Util.getStorage("host");
     String port = await Util.getStorage("port");
@@ -84,6 +88,40 @@ class _LoginState extends State<Login> {
       setState(() {
         this.rememberPassword = rememberPassword == "1";
       });
+    }
+    if (https.isNotBlank && sid.isNotBlank && host.isNotBlank) {
+      //开始自动登录
+      Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
+      Util.sid = sid;
+      Util.cookie = smid;
+      //如果开启了自动登录，则判断当前登录状态
+      if (this.autoLogin) {
+        setState(() {
+          login = true;
+        });
+        var checkLogin = await Api.shareList();
+        if (!checkLogin['success']) {
+          //如果登录失效，尝试重新登录
+          String account = await Util.getStorage("account");
+          String password = await Util.getStorage("password");
+          var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password);
+          if (loginRes['success'] == true) {
+            //重新登录成功
+            Util.setStorage("sid", loginRes['data']['sid']);
+            Util.sid = loginRes['data']['sid'];
+            Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+          } else {
+            Util.toast("自动登录失败，请手动登录");
+            Util.vibrate(FeedbackType.warning);
+            setState(() {
+              login = false;
+            });
+          }
+        } else {
+          //登录有效，进入首页
+          Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+        }
+      }
     }
   }
 

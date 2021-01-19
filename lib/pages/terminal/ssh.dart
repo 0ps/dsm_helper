@@ -38,24 +38,29 @@ class _SshState extends State<Ssh> {
 
   void connect() {
     terminal.write('连接中 ${widget.host}:${widget.port}...');
-    client = SSHClient(
-      hostport: Uri.parse("http://${widget.host}:${widget.port}"),
-      login: widget.username,
-      print: print,
-      termWidth: 80,
-      termHeight: 25,
-      termvar: 'xterm-256color',
-      getPassword: () => utf8.encode(widget.password),
-      response: (transport, data) {
-        terminal.write(data);
-      },
-      success: () {
-        terminal.write('连接成功.\n');
-      },
-      disconnected: () {
-        terminal.write('断开连接.');
-      },
-    );
+    try {
+      client = SSHClient(
+        hostport: Uri.parse("http://${widget.host}:${widget.port}"),
+        login: widget.username,
+        print: print,
+        termWidth: 80,
+        termHeight: 25,
+        termvar: 'xterm-256color',
+        getPassword: () => utf8.encode(widget.password),
+        response: (transport, data) {
+          terminal.write(data);
+        },
+        success: () {
+          terminal.write('连接成功.\n');
+        },
+        disconnected: () {
+          terminal.write('断开连接.');
+        },
+      );
+    } catch (e) {
+      terminal.write('连接失败 $e');
+    }
+    ;
   }
 
   @override

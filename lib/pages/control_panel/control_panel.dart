@@ -1,3 +1,4 @@
+import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
 import 'package:dsm_helper/pages/control_panel/users/users.dart';
@@ -848,34 +849,43 @@ class _ControlPanelState extends State<ControlPanel> {
                           ],
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/terminal_and_SNMP.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "终端机和SNMP",
-                              maxLines: 1,
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (content) {
+                                return SshSetting();
+                              },
+                              settings: RouteSettings(name: "ssh_setting")));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/terminal_and_SNMP.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "终端机和SNMP",
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

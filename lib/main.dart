@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dsm_helper/pages/home.dart';
+import 'package:dsm_helper/pages/login/auth_page.dart';
 import 'package:dsm_helper/pages/login/login.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
@@ -20,25 +21,43 @@ void main() async {
     androidKey: '5ffe477d6a2a470e8f76809c',
     iosKey: '5ffe47cb6a2a470e8f7680a2',
   );
-  String sid = await Util.getStorage("sid");
-  String https = await Util.getStorage("https");
-  String host = await Util.getStorage("host");
-  String port = await Util.getStorage("port");
-  String smid = await Util.getStorage("smid");
-  String darkModeStr = await Util.getStorage("dark_mode");
-  String vibrateOn = await Util.getStorage("vibrate_on");
-  String vibrateNormal = await Util.getStorage("vibrate_normal");
-  String vibrateWarning = await Util.getStorage("vibrate_warning");
-  String checkSsl = await Util.getStorage("check_ssl");
-  if (checkSsl.isNotBlank) {
-    Util.checkSsl = checkSsl == "1";
+
+  //判断是否需要启动密码
+  bool launchAuth = false;
+  bool password = false;
+  bool biometrics = false;
+  String launchAuthStr = await Util.getStorage("launch_auth");
+  String launchAuthPasswordStr = await Util.getStorage("launch_auth_password");
+  String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
+  if (launchAuthStr != null) {
+    launchAuth = launchAuthStr == "1";
   } else {
-    Util.checkSsl = true;
+    launchAuth = false;
   }
+  if (launchAuthPasswordStr != null) {
+    password = launchAuthPasswordStr == "1";
+  } else {
+    password = false;
+  }
+  if (launchAuthBiometricsStr != null) {
+    biometrics = launchAuthBiometricsStr == "1";
+  } else {
+    biometrics = false;
+  }
+
+  bool authPage = launchAuth && (password || biometrics);
+
+  //暗色模式
+  String darkModeStr = await Util.getStorage("dark_mode");
   int darkMode = 2;
   if (darkModeStr.isNotBlank) {
     darkMode = int.parse(darkModeStr);
   }
+
+  //震动开关
+  String vibrateOn = await Util.getStorage("vibrate_on");
+  String vibrateNormal = await Util.getStorage("vibrate_normal");
+  String vibrateWarning = await Util.getStorage("vibrate_warning");
   if (vibrateOn.isNotBlank) {
     Util.vibrateOn = vibrateOn == "1";
   } else {
@@ -54,38 +73,19 @@ void main() async {
   } else {
     Util.vibrateWarning = true;
   }
-  if (https.isNotBlank && sid.isNotBlank && host.isNotBlank) {
-    Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
-    Util.sid = sid;
-    Util.cookie = smid;
-    //如果开启了自动登录，则判断当前登录状态
-    String autoLogin = await Util.getStorage("auto_login");
-    if (autoLogin == "1") {
-      var checkLogin = await Api.shareList();
-      if (!checkLogin['success']) {
-        //如果登录失效，尝试重新登录
-        String account = await Util.getStorage("account");
-        String password = await Util.getStorage("password");
-        var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password);
-        if (loginRes['success'] == true) {
-          //重新登录成功
-          Util.setStorage("sid", loginRes['data']['sid']);
-          Util.sid = loginRes['data']['sid'];
-          needLogin = false;
-        } else {
-          needLogin = true;
-        }
-      } else {
-        needLogin = false;
-      }
-    }
+  String checkSsl = await Util.getStorage("check_ssl");
+  if (checkSsl.isNotBlank) {
+    Util.checkSsl = checkSsl == "1";
+  } else {
+    Util.checkSsl = true;
   }
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: DarkModeProvider(darkMode)),
       ],
-      child: MyApp(needLogin),
+      child: MyApp(authPage),
     ),
   );
   if (Platform.isAndroid) {
@@ -138,8 +138,8 @@ class AppAnalysis extends NavigatorObserver {
 }
 
 class MyApp extends StatefulWidget {
-  final bool needLogin;
-  MyApp(this.needLogin);
+  final bool authPage;
+  MyApp(this.authPage);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -184,7 +184,7 @@ class _MyAppState extends State<MyApp> {
                       brightness: Brightness.dark,
                     ),
                   ),
-                  home: widget.needLogin ? Login() : Home(),
+                  home: widget.authPage ? Login() : Home(),
                   navigatorObservers: [AppAnalysis()],
                   routes: {
                     "/login": (BuildContext context) => Login(),
@@ -219,12 +219,13 @@ class _MyAppState extends State<MyApp> {
                             brightness: Brightness.dark,
                           ),
                         ),
-                  home: widget.needLogin ? Login() : Home(),
+                  home: widget.authPage ? AuthPage() : Login(),
                   // onGenerateRoute: ,
                   navigatorObservers: [AppAnalysis()],
                   routes: {
                     "/login": (BuildContext context) => Login(),
                     "/home": (BuildContext context) => Home(),
+                    "/splash": (BuildContext context) => Home(),
                   },
                 ),
         );

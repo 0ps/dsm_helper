@@ -75,7 +75,6 @@ class _SelectServerState extends State<SelectServer> {
               ),
               NeuButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
                   setState(() {
                     servers.remove(server);
                   });

@@ -16,7 +16,7 @@ class _AddServerState extends State<AddServer> {
   String host = "";
   String account = "";
   String password = "";
-  String port = "5000";
+  String port = "22";
 
   TextEditingController _hostController = TextEditingController();
   TextEditingController _accountController = TextEditingController();

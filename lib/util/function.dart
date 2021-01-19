@@ -60,6 +60,7 @@ class Util {
   static bool vibrateNormal = true;
   static String cookie = "";
   static Map strings = {};
+  static bool isAuthPage = false;
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static toast(String text) {
     showToast(text ?? "");

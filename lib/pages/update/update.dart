@@ -26,7 +26,7 @@ class _UpdateState extends State<Update> {
   int totalSize = 0;
   @override
   void initState() {
-    fileName = "dsm_helper-${widget.data['build']}.apk";
+    fileName = "dsm_helper-${widget.data['build']}1.apk";
     Util.fileExist(fileName).then((res) {
       setState(() {
         if (res != null) {
@@ -206,16 +206,17 @@ class _UpdateState extends State<Update> {
                   color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: FAProgressBar(
-                  backgroundColor: Colors.transparent,
-                  changeColorValue: 90,
-                  changeProgressColor: Colors.red,
-                  progressColor: Colors.blue,
-                  currentValue: 50,
-                  size: 64,
-                  borderRadius: 20,
-                  displayText: '%',
-                  displayTextStyle: TextStyle(fontSize: 18, color: Colors.white),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: FAProgressBar(
+                    backgroundColor: Colors.transparent,
+                    progressColor: Colors.blue,
+                    currentValue: (progress * 100).ceil(),
+                    size: 64,
+                    borderRadius: 20,
+                    displayText: '%',
+                    displayTextStyle: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
               ),
             ),

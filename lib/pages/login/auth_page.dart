@@ -23,8 +23,15 @@ class _AuthPageState extends State<AuthPage> {
   String password = "";
   @override
   void initState() {
+    Util.isAuthPage = true;
     getData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    Util.isAuthPage = false;
+    super.dispose();
   }
 
   getData() async {

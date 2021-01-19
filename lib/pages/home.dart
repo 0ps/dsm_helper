@@ -45,16 +45,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && authPage) {
-      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-        return AuthPage(
-          launch: false,
-        );
-      }));
+    if (state == AppLifecycleState.paused) {
+      checkAuth();
     }
   }
 
-  getData() async {
+  checkAuth() async {
+    // print("是否需要启动密码")
     String launchAuthStr = await Util.getStorage("launch_auth");
     String launchAuthPasswordStr = await Util.getStorage("launch_auth_password");
     String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
@@ -75,6 +72,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
 
     authPage = launchAuth && (password || biometrics);
+    if (Util.isAuthPage == false && authPage) {
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+        return AuthPage(
+          launch: false,
+        );
+      }));
+    }
+  }
+
+  getData() async {
     if (Platform.isAndroid) {
       packageInfo = await PackageInfo.fromPlatform();
       var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber

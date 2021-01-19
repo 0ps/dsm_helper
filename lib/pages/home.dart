@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dsm_helper/pages/dashborad/dashboard.dart';
 import 'package:dsm_helper/pages/download/download.dart';
 import 'package:dsm_helper/pages/file/file.dart';
+import 'package:dsm_helper/pages/login/auth_page.dart';
 import 'package:dsm_helper/pages/setting/setting.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/update_dialog.dart';
@@ -18,19 +19,62 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   int _currentIndex = 0;
   DateTime lastPopTime;
   PackageInfo packageInfo;
   GlobalKey<FilesState> _filesStateKey = GlobalKey<FilesState>();
   GlobalKey<DashboardState> _dashboardStateKey = GlobalKey<DashboardState>();
+  //判断是否需要启动密码
+  bool launchAuth = false;
+  bool password = false;
+  bool biometrics = false;
+  bool authPage = false;
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     getData();
     super.initState();
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && authPage) {
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+        return AuthPage(
+          launch: false,
+        );
+      }));
+    }
+  }
+
   getData() async {
+    String launchAuthStr = await Util.getStorage("launch_auth");
+    String launchAuthPasswordStr = await Util.getStorage("launch_auth_password");
+    String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
+    if (launchAuthStr != null) {
+      launchAuth = launchAuthStr == "1";
+    } else {
+      launchAuth = false;
+    }
+    if (launchAuthPasswordStr != null) {
+      password = launchAuthPasswordStr == "1";
+    } else {
+      password = false;
+    }
+    if (launchAuthBiometricsStr != null) {
+      biometrics = launchAuthBiometricsStr == "1";
+    } else {
+      biometrics = false;
+    }
+
+    authPage = launchAuth && (password || biometrics);
     if (Platform.isAndroid) {
       packageInfo = await PackageInfo.fromPlatform();
       var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber

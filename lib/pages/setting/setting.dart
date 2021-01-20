@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dsm_helper/pages/backup/backup.dart';
+import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/pages/setting/helper_setting.dart';
@@ -455,6 +456,13 @@ class _SettingState extends State<Setting> {
                             await Api.setTerminal(!ssh, telnet, sshPort);
                             await getData();
                           }
+                        },
+                        onLongPress: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return SshSetting();
+                              },
+                              settings: RouteSettings(name: "ssh_setting")));
                         },
                         child: NeuCard(
                           // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

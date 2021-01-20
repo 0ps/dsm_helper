@@ -744,91 +744,95 @@ class DashboardState extends State<Dashboard> {
         ),
       );
     } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return SystemInfo(2, system, volumes, disks);
-          }));
-        },
-        child: NeuCard(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          curveType: CurveType.flat,
-          bevel: 20,
-          decoration: NeumorphicDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
+      return Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                return SystemInfo(2, system, volumes, disks);
+              }));
+            },
+            child: NeuCard(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              curveType: CurveType.flat,
+              bevel: 20,
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      "assets/icons/pie.png",
-                      width: 26,
-                      height: 26,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "存储",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-              ...volumes.reversed.map(_buildVolumeItem).toList(),
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
-        ),
-      );
-    } else if (ssdCaches != null && ssdCaches.length > 0) {
-      return NeuCard(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        curveType: CurveType.flat,
-        bevel: 20,
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
+              child: Column(
                 children: [
-                  Image.asset(
-                    "assets/icons/cache.png",
-                    width: 26,
-                    height: 26,
-                  ),
                   SizedBox(
-                    width: 10,
+                    height: 20,
                   ),
-                  Text(
-                    "缓存",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/icons/pie.png",
+                          width: 26,
+                          height: 26,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "存储",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ...volumes.reversed.map(_buildVolumeItem).toList(),
+                  SizedBox(
+                    height: 20,
                   ),
                 ],
               ),
             ),
-            ...ssdCaches.map(_buildSSDCacheItem).toList(),
-            SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+          ),
+          if (ssdCaches != null && ssdCaches.length > 0)
+            NeuCard(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              curveType: CurveType.flat,
+              bevel: 20,
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/icons/cache.png",
+                          width: 26,
+                          height: 26,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "缓存",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ...ssdCaches.map(_buildSSDCacheItem).toList(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+              ),
+            )
+        ],
       );
     } else {
       return Container();

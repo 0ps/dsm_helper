@@ -39,6 +39,8 @@ PODS:
     - Flutter
   - gallery_saver (0.0.1):
     - Flutter
+  - local_auth (0.0.1):
+    - Flutter
   - open_file (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -77,6 +79,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - gallery_saver (from `.symlinks/plugins/gallery_saver/ios`)
+  - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -108,6 +111,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_downloader/ios"
   gallery_saver:
     :path: ".symlinks/plugins/gallery_saver/ios"
+  local_auth:
+    :path: ".symlinks/plugins/local_auth/ios"
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
   package_info:
@@ -141,6 +146,7 @@ SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
+  local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

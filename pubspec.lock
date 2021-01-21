@@ -288,7 +288,7 @@ packages:
       name: gallery_saver
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   gesture_password:
     dependency: "direct main"
     description:

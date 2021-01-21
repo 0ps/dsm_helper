@@ -164,7 +164,6 @@ class _LoginState extends State<Login> {
     });
     Util.cookie = "";
     var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode, cancelToken: cancelToken);
-    print(res);
     setState(() {
       login = false;
     });
@@ -249,7 +248,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "群辉助手",
+          "群晖助手",
         ),
         actions: servers.length > 0
             ? [

@@ -411,6 +411,14 @@ class Util {
     }
   }
 
+  static String timeRemaining(int seconds) {
+    Duration duration = Duration(seconds: seconds);
+    int hour = seconds / 60 ~/ 60;
+    int minute = (seconds - hour * 60 * 60) ~/ 60;
+    int second = seconds ~/ 60;
+    return "${hour.toString().padLeft(2, "0")}:${minute.toString().padLeft(2, "0")}:${second.toString().padLeft(2, "0")}";
+  }
+
   static Future<bool> setStorage(String name, String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString(name, value);
@@ -462,7 +470,7 @@ class Util {
       }
       File image = await getCachedImageFile(url);
       File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
-      bool result = await GallerySaver.saveImage(save.path, albumName: "群辉助手");
+      bool result = await GallerySaver.saveImage(save.path, albumName: "群晖助手");
       if (showLoading) {
         hide();
       }

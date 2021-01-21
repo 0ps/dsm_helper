@@ -118,8 +118,7 @@ class _AboutState extends State<About> {
                             if (Platform.isAndroid) {
                               AndroidIntent intent = AndroidIntent(
                                 action: 'action_view',
-                                data:
-                                    'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
+                                data: 'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
                                 arguments: {},
                                 // data: 'https://qm.qq.com/cgi-bin/qm/qr?k=Gf20e3f1FXrlIUfgp9IwzMnqPuFKRwVK&jump_from=webapi',
                                 // type: "video/*",
@@ -127,8 +126,7 @@ class _AboutState extends State<About> {
 
                               intent.launch();
                             } else {
-                              launch(
-                                  'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
+                              launch('mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
                             }
                           },
                           child: Text("加群"),
@@ -212,7 +210,7 @@ class _AboutState extends State<About> {
                           width: 10,
                         ),
                         Text(
-                          "群辉助手开源地址",
+                          "群晖助手开源地址",
                           style: TextStyle(fontSize: 16),
                         ),
                         Spacer(),

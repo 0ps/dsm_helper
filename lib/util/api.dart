@@ -10,7 +10,6 @@ class Api {
   static Future<Map> update(String buildNumber) async {
     if (Platform.isAndroid) {
       var res = await Util.get("http://www.qd12333.cn/index/about/update");
-      print(res);
       if (res != null) {
         if (int.parse(buildNumber) < res['data']['build']) {
           return {
@@ -48,7 +47,9 @@ class Api {
       "method": "login",
       "session": "FileStation",
     };
-    return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken);
+    var headers = {"origin": host, "referer": host};
+    print(headers);
+    return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken, headers: headers);
   }
 
   static Future<Map> shareList({List<String> additional = const ["perm", "time", "size"], CancelToken cancelToken}) async {
@@ -474,64 +475,87 @@ class Api {
     return result;
   }
 
-  static Future<Map> systemInfo() async {
-    List apis = [
-      {
+  static Future<Map> systemInfo(List widgets) async {
+    List apis = [];
+    if (widgets.contains("SYNO.SDS.SystemInfoApp.SystemHealthWidget")) {
+      apis.add({
         "api": "SYNO.Core.System.Utilization",
         "method": "get",
         "version": 1,
         "type": "current",
         "resource": ["cpu", "memory", "network", "disk"]
-      },
-      {
-        "api": "SYNO.Storage.CGI.Storage",
-        "method": "load_info",
-        "version": 1,
-      },
-      {
-        "api": "SYNO.Core.CurrentConnection",
-        "method": "list",
-        "sort_direction": "DESC",
-        "sort_by": "time",
-        "version": 1,
-      },
-      {
-        "api": "SYNO.Core.System",
-        "method": "info",
-        "version": 1,
-      },
-      {
-        "api": "SYNO.Core.TaskScheduler",
-        "sort_by": "next_trigger_time",
-        "sort_direction": "ASC",
-        "start": 0,
-        "limit": 50,
-        "method": "list",
-        "version": 1,
-      },
-      {
-        "api": "SYNO.Core.SyslogClient.Status",
-        "start": 0,
-        "limit": 50,
-        "widget": true,
-        "dir": "desc",
-        "method": "latestlog_get",
-        "version": 1,
-      },
-      {
-        "action": "load",
-        "lastRead": DateTime.now().secondsSinceEpoch,
-        "lastSeen": DateTime.now().secondsSinceEpoch,
-        "api": "SYNO.Core.DSMNotify",
-        "method": "notify",
-        "version": 1,
-      },
-      {
-        "api": "SYNO.Core.AppNotify",
-        "method": "get",
-        "version": 1,
-      },
-    ];
+      });
+      if (widgets.contains("SYNO.SDS.SystemInfoApp.StorageUsageWidget")) {
+        apis.add({
+          "api": "SYNO.Storage.CGI.Storage",
+          "method": "load_info",
+          "version": 1,
+        });
+      }
+      if (widgets.contains("SYNO.SDS.SystemInfoApp.ConnectionLogWidget")) {
+        apis.add({
+          "api": "SYNO.Core.CurrentConnection",
+          "method": "list",
+          "sort_direction": "DESC",
+          "sort_by": "time",
+          "version": 1,
+        });
+      }
+      if (widgets.contains("SYNO.SDS.ResourceMonitor.Widget")) {
+        apis.add({
+          "api": "SYNO.Core.System",
+          "method": "info",
+          "version": 1,
+        });
+      }
+      if (widgets.contains("SYNO.SDS.TaskScheduler.TaskSchedulerWidget")) {
+        apis.add({
+          "api": "SYNO.Core.TaskScheduler",
+          "sort_by": "next_trigger_time",
+          "sort_direction": "ASC",
+          "start": 0,
+          "limit": 50,
+          "method": "list",
+          "version": 1,
+        });
+      }
+      if (widgets.contains("SYNO.SDS.SystemInfoApp.RecentLogWidget")) {
+        apis.add({
+          "api": "SYNO.Core.SyslogClient.Status",
+          "start": 0,
+          "limit": 50,
+          "widget": true,
+          "dir": "desc",
+          "method": "latestlog_get",
+          "version": 1,
+        });
+      }
+      if (widgets.contains("SYNO.SDS.SystemInfoApp.FileChangeLogWidget")) {
+        apis.add({
+          "start": 0,
+          "limit": 50,
+          "target": "LOCAL",
+          "logtype": "ftp,filestation,webdav,cifs,tftp,afp",
+          "dir": "desc",
+          "api": "SYNO.Core.SyslogClient.Log",
+          "method": "list",
+          "version": 1,
+        });
+      }
+    }
+    apis.add({
+      "action": "load",
+      "lastRead": DateTime.now().secondsSinceEpoch,
+      "lastSeen": DateTime.now().secondsSinceEpoch,
+      "api": "SYNO.Core.DSMNotify",
+      "method": "notify",
+      "version": 1,
+    });
+    apis.add({
+      "api": "SYNO.Core.AppNotify",
+      "method": "get",
+      "version": 1,
+    });
     var result = await Util.post("entry.cgi", data: {
       "api": 'SYNO.Entry.Request',
       "method": 'request',
@@ -1048,5 +1072,112 @@ class Api {
       data['preserve_profile'] = preserveProfile;
     }
     return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> lastLog(int start, int limit) async {
+    var data = {
+      "api": 'SYNO.Core.SyslogClient.Status',
+      "start": start,
+      "limit": limit,
+      "method": "latestlog_get",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> log(
+    int start,
+    int limit, {
+    String target: "LOCAL",
+    String logType: "system,netbackup",
+    int dateFrom: 0,
+    int dateTo: 0,
+    String keyword: "",
+    String level: "",
+  }) async {
+    var data = {
+      "api": 'SYNO.Core.SyslogClient.Log',
+      "start": start,
+      "limit": limit,
+      "method": "list",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> logHistory() async {
+    var data = {
+      "api": 'SYNO.LogCenter.History',
+      "offset": 0,
+      "limit": 50,
+      "method": "list",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadStationInfo() async {
+    List apis = [
+      {
+        "api": "SYNO.DownloadStation2.Task",
+        "method": "list",
+        "version": 2,
+        "limit": 25,
+        "offset": 0,
+        "sort_by": "task_id",
+        "order": "ASC",
+        "additional": ["detail", "transfer"],
+        "type": ["emule"],
+        "type_inverse": true,
+      },
+      {
+        "api": "SYNO.DownloadStation2.Task.Statistic",
+        "method": "get",
+        "version": 1,
+        "type": ["emule"],
+        "type_inverse": true,
+      },
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"parallel"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  //id: ["dbid_39"]
+  // api: SYNO.DownloadStation2.Task
+  // method: pause
+  // version: 2
+  static Future<Map> downloadTaskAction(List id, String action) async {
+    var data = {
+      "id": json.encode(id),
+      "api": 'SYNO.DownloadStation2.Task',
+      "method": action,
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadTaskCreate(String destination, String type, String url) async {
+    List<String> urls = url.split("\n");
+    var data = {
+      "type": type,
+      "url": json.encode(urls),
+      "api": 'SYNO.DownloadStation2.Task',
+      "method": "create",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    print(data);
+    // return await Util.post("entry.cgi", data: data);
   }
 }

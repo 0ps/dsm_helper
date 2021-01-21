@@ -19,6 +19,7 @@ class _WidgetSettingState extends State<WidgetSetting> {
     "SYNO.SDS.SystemInfoApp.StorageUsageWidget",
     "SYNO.SDS.SystemInfoApp.ConnectionLogWidget",
     "SYNO.SDS.TaskScheduler.TaskSchedulerWidget",
+    "SYNO.SDS.SystemInfoApp.FileChangeLogWidget",
     "SYNO.SDS.SystemInfoApp.RecentLogWidget",
   ];
   Map name = {

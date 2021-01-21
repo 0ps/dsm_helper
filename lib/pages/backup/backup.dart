@@ -180,7 +180,7 @@ class _BackupState extends State<Backup> {
                   children: [
                     Text(
                       "备份目的地",
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 12),
                     ),
                     Text(
                       backupFolder == "" ? "请选择目的地" : backupFolder,
@@ -208,7 +208,7 @@ class _BackupState extends State<Backup> {
                   children: [
                     Text(
                       "备份源",
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 12),
                     ),
                     Text(
                       backupSource,

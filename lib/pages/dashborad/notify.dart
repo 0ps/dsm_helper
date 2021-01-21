@@ -19,7 +19,6 @@ class _NotifyState extends State<Notify> {
   }
 
   Widget _buildNotifyItem(notify) {
-    print(notify);
     // print(widget.strings[notify['className']]['common']['displayname']);
     String msg = notify['msg'].toString();
     String title = "";

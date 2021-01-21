@@ -1167,17 +1167,43 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
+  static Future<Map> downloadLocation() async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Settings.Location',
+      "method": "get",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  //delete_condition  delete
   static Future<Map> downloadTaskCreate(String destination, String type, String url) async {
     List<String> urls = url.split("\n");
     var data = {
-      "type": type,
+      "type": '"$type"',
+      "destination": '"$destination"',
+      "create_list": true,
       "url": json.encode(urls),
       "api": 'SYNO.DownloadStation2.Task',
       "method": "create",
       "version": 1,
       "_sid": Util.sid,
     };
+    // print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadDetail(String id) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task',
+      "id": json.encode([id]),
+      "additional": json.encode(["detail", "transfer"]),
+      "method": "get",
+      "version": 2,
+      "_sid": Util.sid,
+    };
     print(data);
-    // return await Util.post("entry.cgi", data: data);
+    return await Util.post("entry.cgi", data: data);
   }
 }

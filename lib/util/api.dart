@@ -477,7 +477,7 @@ class Api {
 
   static Future<Map> systemInfo(List widgets) async {
     List apis = [];
-    if (widgets.contains("SYNO.SDS.SystemInfoApp.SystemHealthWidget")) {
+    if (widgets.contains("SYNO.SDS.ResourceMonitor.Widget")) {
       apis.add({
         "api": "SYNO.Core.System.Utilization",
         "method": "get",
@@ -498,13 +498,6 @@ class Api {
           "method": "list",
           "sort_direction": "DESC",
           "sort_by": "time",
-          "version": 1,
-        });
-      }
-      if (widgets.contains("SYNO.SDS.ResourceMonitor.Widget")) {
-        apis.add({
-          "api": "SYNO.Core.System",
-          "method": "info",
           "version": 1,
         });
       }
@@ -543,6 +536,11 @@ class Api {
         });
       }
     }
+    apis.add({
+      "api": "SYNO.Core.System",
+      "method": "info",
+      "version": 1,
+    });
     apis.add({
       "action": "load",
       "lastRead": DateTime.now().secondsSinceEpoch,

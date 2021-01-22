@@ -9,7 +9,7 @@ import 'function.dart';
 class Api {
   static Future<Map> update(String buildNumber) async {
     if (Platform.isAndroid) {
-      var res = await Util.get("http://www.qd12333.cn/index/about/update");
+      var res = await Util.get("https://dsm.flutter.fit/version");
       if (res != null) {
         if (int.parse(buildNumber) < res['data']['build']) {
           return {
@@ -1117,6 +1117,10 @@ class Api {
       "_sid": Util.sid,
     };
     return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> reward() async {
+    return await Util.get("https://dsm.flutter.fit/reward");
   }
 
   static Future<Map> downloadStationInfo() async {

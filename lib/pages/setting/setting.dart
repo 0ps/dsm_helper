@@ -110,7 +110,7 @@ class _SettingState extends State<Setting> {
                           child: NeuButton(
                             onPressed: () async {
                               Navigator.of(context).pop();
-                              power("shutdown", true);
+                              power(type, true);
                             },
                             decoration: NeumorphicDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,

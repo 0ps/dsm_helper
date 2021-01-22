@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
 import 'package:dsm_helper/pages/setting/open_source.dart';
+import 'package:dsm_helper/pages/setting/reward.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -147,6 +149,49 @@ class _AboutState extends State<About> {
                   curveType: CurveType.flat,
                   child: Padding(
                     padding: EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/icons/wechat.png",
+                          width: 20,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "公众号：群晖助手",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        Spacer(),
+                        NeuButton(
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                          onPressed: () {
+                            ClipboardData data = new ClipboardData(text: "群晖助手");
+                            Clipboard.setData(data);
+                            Util.toast("已复制到剪贴板");
+                          },
+                          child: Text("复制"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                NeuCard(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  curveType: CurveType.flat,
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -162,6 +207,23 @@ class _AboutState extends State<About> {
                             Text(
                               "给作者买杯咖啡",
                               style: TextStyle(fontSize: 16),
+                            ),
+                            Spacer(),
+                            NeuButton(
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                              onPressed: () {
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) {
+                                    return Reward();
+                                  },
+                                  settings: RouteSettings(name: "reward"),
+                                ));
+                              },
+                              child: Text("打赏名单"),
                             ),
                           ],
                         ),

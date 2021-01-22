@@ -361,7 +361,7 @@ class DashboardState extends State<Dashboard> {
           ],
         ),
       );
-    } else if (widget == "SYNO.SDS.TaskScheduler.TaskSchedulerWidget" && tasks.length > 0) {
+    } else if (widget == "SYNO.SDS.TaskScheduler.TaskSchedulerWidget") {
       return GestureDetector(
         onTap: () {
           Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
@@ -408,7 +408,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (widget == "SYNO.SDS.SystemInfoApp.RecentLogWidget" && latestLog.length > 0) {
+    } else if (widget == "SYNO.SDS.SystemInfoApp.RecentLogWidget") {
       return GestureDetector(
         onTap: () {
           Navigator.of(context).push(CupertinoPageRoute(
@@ -454,14 +454,18 @@ class DashboardState extends State<Dashboard> {
               ),
               SizedBox(
                 height: 300,
-                child: CupertinoScrollbar(
-                  child: ListView.builder(
-                    itemBuilder: (context, i) {
-                      return _buildLogItem(latestLog[i]);
-                    },
-                    itemCount: latestLog.length,
-                  ),
-                ),
+                child: latestLog.length > 0
+                    ? CupertinoScrollbar(
+                        child: ListView.builder(
+                          itemBuilder: (context, i) {
+                            return _buildLogItem(latestLog[i]);
+                          },
+                          itemCount: latestLog.length,
+                        ),
+                      )
+                    : Center(
+                        child: Text("暂无日志"),
+                      ),
               ),
               SizedBox(
                 height: 10,
@@ -470,7 +474,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (widget == "SYNO.SDS.ResourceMonitor.Widget" && utilization != null) {
+    } else if (widget == "SYNO.SDS.ResourceMonitor.Widget") {
       return GestureDetector(
         onTap: () {
           Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
@@ -745,7 +749,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget" && volumes != null && volumes.length > 0) {
+    } else if (widget == "SYNO.SDS.SystemInfoApp.StorageUsageWidget") {
       return Column(
         children: [
           GestureDetector(
@@ -872,22 +876,21 @@ class DashboardState extends State<Dashboard> {
             SizedBox(
               height: 10,
             ),
-            if (fileLogs.length > 0)
-              SizedBox(
-                height: 300,
-                child: CupertinoScrollbar(
-                  child: ListView.builder(
-                    itemBuilder: (context, i) {
-                      return _buildFileLogItem(fileLogs[i]);
-                    },
-                    itemCount: fileLogs.length,
-                  ),
-                ),
-              )
-            else
-              Center(
-                child: Text("暂无日志"),
-              ),
+            SizedBox(
+              height: 300,
+              child: fileLogs.length > 0
+                  ? CupertinoScrollbar(
+                      child: ListView.builder(
+                        itemBuilder: (context, i) {
+                          return _buildFileLogItem(fileLogs[i]);
+                        },
+                        itemCount: fileLogs.length,
+                      ),
+                    )
+                  : Center(
+                      child: Text("暂无日志"),
+                    ),
+            ),
             SizedBox(
               height: 10,
             ),
@@ -2008,6 +2011,7 @@ class DashboardState extends State<Dashboard> {
                   if (res != null) {
                     setState(() {
                       widgets = res;
+                      getData();
                     });
                   }
                 });
@@ -2102,7 +2106,14 @@ class DashboardState extends State<Dashboard> {
                               onPressed: () {
                                 Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                                   return WidgetSetting(widgets, restoreSizePos);
-                                }));
+                                })).then((res) {
+                                  if (res != null) {
+                                    setState(() {
+                                      widgets = res;
+                                      getData();
+                                    });
+                                  }
+                                });
                               },
                               child: Text(
                                 ' 添加 ',

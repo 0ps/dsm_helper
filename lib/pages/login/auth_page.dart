@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +41,9 @@ class _AuthPageState extends State<AuthPage> {
     password = pass ?? "";
     String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
     if (launchAuthBiometricsStr == "1") {
+      if (Platform.isIOS) {
+        await Future.delayed(Duration(milliseconds: 300));
+      }
       try {
         bool didAuthenticate = await auth.authenticateWithBiometrics(
           localizedReason: '请触摸指纹传感器',

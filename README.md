@@ -27,7 +27,7 @@ Download Station、Photo Station、存储空间管理员、日志中心、以及
 群晖助手交流反馈群：240557031
 
 # 软件下载
-安卓：http://fir.fmtol.com/dsmm  
+安卓：https://gitee.com/challengerV/dsm_helper/releases
 iOS：暂未上架苹果商店，可通过Test Flight下载安装。具体流程进群查看群公告
 
 # 软件截图

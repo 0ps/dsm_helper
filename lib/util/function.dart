@@ -155,7 +155,47 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
+    List<String> movie = [
+      "3gp",
+      "3g2",
+      "asf",
+      "dat",
+      "divx",
+      "dvr-ms",
+      "m2t",
+      "m2ts",
+      "m4v",
+      "mkv",
+      "mp4",
+      "mts",
+      "mov",
+      "qt",
+      "tp",
+      "trp",
+      "ts",
+      "vob",
+      "wmv",
+      "xvid",
+      "ac3",
+      "amr",
+      "rm",
+      "rmvb",
+      "ifo",
+      "mpeg",
+      "mpg",
+      "mpe",
+      "m1v",
+      "m2v",
+      "mpeg1",
+      "mpeg2",
+      "mpeg4",
+      "ogv",
+      "webm",
+      "flv",
+      "avi",
+      "swf",
+      "f4v"
+    ];
     List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
@@ -203,15 +243,11 @@ class Util {
   }
 
   static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken}) async {
-    if (headers == null) {
-      headers = {
-        "Cookie": Util.cookie,
-        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5",
-      };
-    } else {
-      headers['Cookie'] = Util.cookie;
-      headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
-    }
+    headers = headers ?? {};
+    headers['Cookie'] = Util.cookie;
+    headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
+    headers['origin'] = host ?? baseUrl;
+    headers['referer'] = host ?? baseUrl;
     Dio dio = new Dio(
       BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
@@ -262,12 +298,17 @@ class Util {
     }
   }
 
-  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken}) async {
+  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers}) async {
+    headers = headers ?? {};
+    headers['Cookie'] = Util.cookie;
+    headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
+    headers['origin'] = host ?? baseUrl;
+    headers['referer'] = host ?? baseUrl;
     Dio dio = new Dio(
       new BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
         contentType: "application/x-www-form-urlencoded",
-        headers: {"Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5"},
+        headers: headers,
       ),
     );
     // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
@@ -298,11 +339,12 @@ class Util {
     }
   }
 
-  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress}) async {
-    Map<String, dynamic> headers = {
-      "Cookie": Util.cookie,
-    };
-    print(data);
+  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
+    headers = headers ?? {};
+    headers['Cookie'] = Util.cookie;
+    headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
+    headers['origin'] = host ?? baseUrl;
+    headers['referer'] = host ?? baseUrl;
     Dio dio = new Dio(
       new BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",

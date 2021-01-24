@@ -47,9 +47,7 @@ class Api {
       "method": "login",
       "session": "FileStation",
     };
-    var headers = {"origin": host, "referer": host};
-    print(headers);
-    return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken, headers: headers);
+    return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken);
   }
 
   static Future<Map> shareList({List<String> additional = const ["perm", "time", "size"], CancelToken cancelToken}) async {

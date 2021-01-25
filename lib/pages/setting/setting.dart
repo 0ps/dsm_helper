@@ -756,7 +756,7 @@ class _SettingState extends State<Setting> {
             child: NeuButton(
               onPressed: () {
                 Util.removeStorage("sid");
-                Util.removeStorage("smid");
+                // Util.removeStorage("smid");
                 Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
               },
               // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

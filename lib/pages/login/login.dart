@@ -25,6 +25,7 @@ class _LoginState extends State<Login> {
   bool rememberPassword = true;
   bool autoLogin = true;
   bool checkSsl = true;
+  bool rememberDevice = false;
   TextEditingController _hostController = TextEditingController();
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -42,6 +43,7 @@ class _LoginState extends State<Login> {
   getInfo() async {
     String sid = await Util.getStorage("sid");
     String smid = await Util.getStorage("smid");
+    Util.cookie = smid;
     String https = await Util.getStorage("https");
     String host = await Util.getStorage("host");
     String port = await Util.getStorage("port");
@@ -94,7 +96,6 @@ class _LoginState extends State<Login> {
       //开始自动登录
       Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
       Util.sid = sid;
-      Util.cookie = smid;
       //如果开启了自动登录，则判断当前登录状态
       if (this.autoLogin) {
         setState(() {
@@ -162,8 +163,7 @@ class _LoginState extends State<Login> {
     setState(() {
       login = true;
     });
-    Util.cookie = "";
-    var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode, cancelToken: cancelToken);
+    var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode, cancelToken: cancelToken, rememberDevice: rememberDevice);
     setState(() {
       login = false;
     });
@@ -521,22 +521,60 @@ class _LoginState extends State<Login> {
               height: 20,
             ),
             if (needOtp) ...[
-              NeuCard(
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                bevel: 12,
-                curveType: CurveType.flat,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: NeuTextField(
-                  controller: _otpController,
-                  onChanged: (v) => otpCode = v,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: '二步验证代码',
+              Row(
+                children: [
+                  Expanded(
+                    child: NeuCard(
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      bevel: 12,
+                      curveType: CurveType.flat,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                      child: NeuTextField(
+                        controller: _otpController,
+                        onChanged: (v) => otpCode = v,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: '二步验证代码',
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        rememberDevice = !rememberDevice;
+                      });
+                    },
+                    child: NeuCard(
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      curveType: rememberDevice ? CurveType.emboss : CurveType.flat,
+                      bevel: 12,
+                      height: 68,
+                      width: 120,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: Row(
+                        children: [
+                          Text("记住设备"),
+                          Spacer(),
+                          if (rememberDevice)
+                            Icon(
+                              CupertinoIcons.checkmark_alt,
+                              color: Color(0xffff9813),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 20,

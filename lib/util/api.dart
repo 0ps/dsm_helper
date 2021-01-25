@@ -9,7 +9,7 @@ import 'function.dart';
 class Api {
   static Future<Map> update(String buildNumber) async {
     if (Platform.isAndroid) {
-      var res = await Util.get("https://dsm.flutter.fit/version");
+      var res = await Util.get("https://dsm.flutter.fit/version", host: "https://dsm.flutter.fit");
       if (res != null) {
         if (int.parse(buildNumber) < res['data']['build']) {
           return {
@@ -37,7 +37,7 @@ class Api {
 //    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
   }
 
-  static Future<Map> login({String host, String account, String password, String otpCode, CancelToken cancelToken}) async {
+  static Future<Map> login({String host, String account, String password, String otpCode, CancelToken cancelToken, bool rememberDevice}) async {
     var data = {
       "account": account,
       "passwd": password,
@@ -46,7 +46,9 @@ class Api {
       "api": "SYNO.API.Auth",
       "method": "login",
       "session": "FileStation",
+      "enable_device_token": rememberDevice,
     };
+    print(data);
     return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken);
   }
 
@@ -1161,7 +1163,7 @@ class Api {
   }
 
   static Future<Map> reward() async {
-    return await Util.get("https://dsm.flutter.fit/reward");
+    return await Util.get("https://dsm.flutter.fit/reward", host: "https://dsm.flutter.fit");
   }
 
   static Future<Map> downloadStationInfo() async {

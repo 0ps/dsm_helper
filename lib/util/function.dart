@@ -154,7 +154,47 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
+    List<String> movie = [
+      "3gp",
+      "3g2",
+      "asf",
+      "dat",
+      "divx",
+      "dvr-ms",
+      "m2t",
+      "m2ts",
+      "m4v",
+      "mkv",
+      "mp4",
+      "mts",
+      "mov",
+      "qt",
+      "tp",
+      "trp",
+      "ts",
+      "vob",
+      "wmv",
+      "xvid",
+      "ac3",
+      "amr",
+      "rm",
+      "rmvb",
+      "ifo",
+      "mpeg",
+      "mpg",
+      "mpe",
+      "m1v",
+      "m2v",
+      "mpeg1",
+      "mpeg2",
+      "mpeg4",
+      "ogv",
+      "webm",
+      "flv",
+      "avi",
+      "swf",
+      "f4v"
+    ];
     List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
@@ -203,6 +243,7 @@ class Util {
 
   static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken}) async {
     headers = headers ?? {};
+    print(Util.cookie);
     headers['Cookie'] = Util.cookie;
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
     headers['origin'] = host ?? baseUrl;
@@ -225,14 +266,20 @@ class Util {
     Response response;
     try {
       response = await dio.get(url, queryParameters: data, cancelToken: cancelToken);
-      if (response.headers.map['set-cookie'] != null && response.headers.map['set-cookie'].length > 0) {
-        List cookies = [];
-        for (int i = 0; i < response.headers.map['set-cookie'].length; i++) {
-          Cookie cookie = Cookie.fromSetCookieValue(response.headers.map['set-cookie'][i]);
-          cookies.add("${cookie.name}=${cookie.value}");
+      print(response.request.baseUrl);
+      print(baseUrl + "/webapi/");
+      if (response.request.baseUrl == baseUrl + "/webapi/") {
+        if (response.headers.map['set-cookie'] != null && response.headers.map['set-cookie'].length > 0) {
+          List cookies = [];
+          for (int i = 0; i < response.headers.map['set-cookie'].length; i++) {
+            Cookie cookie = Cookie.fromSetCookieValue(response.headers.map['set-cookie'][i]);
+            cookies.add("${cookie.name}=${cookie.value}");
+          }
+          Util.cookie = cookies.join("; ");
+          setStorage("smid", Util.cookie);
+          print("登录设置cookie");
+          print(Util.cookie);
         }
-        Util.cookie = cookies.join("; ");
-        setStorage("smid", Util.cookie);
       }
 
       if (response.data is String) {

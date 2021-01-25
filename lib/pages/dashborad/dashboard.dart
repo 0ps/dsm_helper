@@ -293,7 +293,7 @@ class DashboardState extends State<Dashboard> {
                   Text("$hostname"),
                 ],
               ),
-              if (system != null && system['sys_temp'] != null && system['temperature_warning'] != null)
+              if (system != null && system['sys_temp'] != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Row(

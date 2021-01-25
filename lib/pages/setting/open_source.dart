@@ -31,10 +31,6 @@ class _OpenSourceState extends State<OpenSource> {
       "url": "",
     },
     {
-      "name": "flutter_screenutil",
-      "url": "",
-    },
-    {
       "name": "pull_to_refresh",
       "url": "",
     },

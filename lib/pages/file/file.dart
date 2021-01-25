@@ -181,6 +181,9 @@ class FilesState extends State<Files> {
   }
 
   goPath(String path) async {
+    setState(() {
+      success = true;
+    });
     setPaths(path);
     if (path == "/") {
       await getShareList();

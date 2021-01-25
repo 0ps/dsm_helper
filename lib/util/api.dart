@@ -698,8 +698,8 @@ class Api {
     MultipartFile multipartFile = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last);
     print(multipartFile.length);
     print(filePath.split("/").last);
-
-    var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2"; //&_sid=${Util.sid}
+    print(multipartFile.contentType);
+    var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2&_sid=${Util.sid}";
     // var url = "entry.cgi";
     // var data = {
     //   "api": "SYNO.FileStation.Upload",
@@ -715,10 +715,10 @@ class Api {
     var data = {
       "_sid": Util.sid,
       "mtime": DateTime.now().millisecondsSinceEpoch,
-      "overwrite": "true",
+      "overwrite": true,
       "path": uploadPath,
       "size": await file.length(),
-      "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
+      "file": multipartFile,
     };
     var result = await Util.upload(url, data: data, cancelToken: cancelToken, onSendProgress: onSendProgress);
     // print(result);
@@ -1036,7 +1036,7 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> dockerInfo() async {
+  static Future<Map> dockerContainerInfo() async {
     List apis = [
       {"api": "SYNO.Docker.Container", "method": "list", "version": 1, "limit": -1, "offset": 0, "type": "all"},
       {"api": "SYNO.Docker.Container.Resource", "method": "get", "version": 1},
@@ -1051,6 +1051,51 @@ class Api {
       "_sid": Util.sid,
     });
     return result;
+  }
+
+  static Future<Map> dockerImageInfo() async {
+    List apis = [
+      {"api": "SYNO.Docker.Image", "method": "list", "version": 1, "limit": -1, "offset": 0, "show_dsm": false},
+      {"api": "SYNO.Docker.Registry", "method": "get", "version": 1, "limit": -1, "offset": 0}
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"parallel"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> dockerDetail(String name, String method) async {
+    var data = {
+      "api": 'SYNO.Docker.Container',
+      "method": method,
+      "name": '"$name"',
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> dockerLog(String name, String method, {String date}) async {
+    var data = {
+      "api": 'SYNO.Docker.Container.Log',
+      "method": method,
+      "name": '"$name"',
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    if (method == "get") {
+      data['sort_dir'] = '"ASC"';
+      data['date'] = '"$date"';
+      data['limit'] = 1000;
+      data['offset'] = 0;
+    }
+    print(data);
+    return await Util.post("entry.cgi", data: data);
   }
 
   static Future<Map> dockerPower(String name, String action, {bool preserveProfile}) async {

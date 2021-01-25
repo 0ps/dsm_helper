@@ -19,7 +19,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vibrate/vibrate.dart';
-export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:dsm_helper/util/api.dart';
 export 'package:dsm_helper/extensions/datetime.dart';
 export 'package:dsm_helper/extensions/string.dart';
@@ -155,47 +154,7 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = [
-      "3gp",
-      "3g2",
-      "asf",
-      "dat",
-      "divx",
-      "dvr-ms",
-      "m2t",
-      "m2ts",
-      "m4v",
-      "mkv",
-      "mp4",
-      "mts",
-      "mov",
-      "qt",
-      "tp",
-      "trp",
-      "ts",
-      "vob",
-      "wmv",
-      "xvid",
-      "ac3",
-      "amr",
-      "rm",
-      "rmvb",
-      "ifo",
-      "mpeg",
-      "mpg",
-      "mpe",
-      "m1v",
-      "m2v",
-      "mpeg1",
-      "mpeg2",
-      "mpeg4",
-      "ogv",
-      "webm",
-      "flv",
-      "avi",
-      "swf",
-      "f4v"
-    ];
+    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
     List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
@@ -352,15 +311,14 @@ class Util {
         contentType: "",
       ),
     );
-    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
-    //   // config the http client
-    //   client.findProxy = (uri) {
-    //     //proxy all request to localhost:8888
-    //     return "PROXY 192.168.1.159:8888";
-    //   };
-    //   // you can also create a new HttpClient to dio
-    //   // return new HttpClient();
-    // };
+    //忽略Https校验
+    if (!checkSsl) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+        client.badCertificateCallback = (cert, host, port) {
+          return true;
+        };
+      };
+    }
     FormData formData = FormData.fromMap(data);
     Response response;
 

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/file_icon.dart';
+import 'package:dsm_helper/widgets/label.dart';
 import 'package:file_picker/file_picker.dart' hide FileType;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,83 +34,44 @@ class _UploadState extends State<Upload> {
 
   Widget _buildUploadStatus(UploadItem upload) {
     if (upload.status == UploadStatus.complete) {
-      return NeuCard(
-        padding: EdgeInsets.symmetric(vertical: 2),
-        bevel: 0,
-        width: 60,
-        height: 20,
-        alignment: Alignment.center,
-        decoration: NeumorphicDecoration(
-          color: Colors.lightGreen,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          "上传完成",
-          style: TextStyle(fontSize: 10, color: Colors.white),
-        ),
+      return Label(
+        "上传完成",
+        Colors.lightGreen,
+        fill: true,
+        fontSize: 10,
+        height: 22,
       );
     } else if (upload.status == UploadStatus.failed) {
-      return NeuCard(
-        padding: EdgeInsets.symmetric(vertical: 2),
-        bevel: 0,
-        width: 60,
-        height: 20,
-        decoration: NeumorphicDecoration(
-          color: Colors.redAccent,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          "上传失败",
-          style: TextStyle(fontSize: 10, color: Colors.white),
-        ),
+      return Label(
+        "上传失败",
+        Colors.redAccent,
+        fill: true,
+        fontSize: 10,
+        height: 22,
       );
     } else if (upload.status == UploadStatus.canceled) {
-      return NeuCard(
-        padding: EdgeInsets.symmetric(vertical: 2),
-        bevel: 0,
-        width: 60,
-        height: 20,
-        alignment: Alignment.center,
-        decoration: NeumorphicDecoration(
-          color: Colors.redAccent,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          "取消上传",
-          style: TextStyle(fontSize: 10, color: Colors.white),
-        ),
+      return Label(
+        "取消上传",
+        Colors.redAccent,
+        fill: true,
+        fontSize: 10,
+        height: 22,
       );
     } else if (upload.status == UploadStatus.running) {
-      return NeuCard(
-        padding: EdgeInsets.symmetric(vertical: 4),
-        bevel: 0,
-        width: 60,
-        height: 20,
-        alignment: Alignment.center,
-        decoration: NeumorphicDecoration(
-          color: Colors.lightBlueAccent,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          "${(upload.uploadSize / (upload.fileSize == 0 ? 1 : upload.fileSize) * 100).toStringAsFixed(2)}%",
-          style: TextStyle(fontSize: 10, color: Colors.white),
-        ),
+      return Label(
+        "${(upload.uploadSize / (upload.fileSize == 0 ? 1 : upload.fileSize) * 100).toStringAsFixed(2)}%",
+        Colors.lightBlueAccent,
+        fill: true,
+        fontSize: 10,
+        height: 22,
       );
     } else if (upload.status == UploadStatus.wait) {
-      return NeuCard(
-        padding: EdgeInsets.symmetric(vertical: 2),
-        bevel: 0,
-        width: 60,
-        height: 20,
-        alignment: Alignment.center,
-        decoration: NeumorphicDecoration(
-          color: Colors.lightBlueAccent,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          "等待上传",
-          style: TextStyle(fontSize: 10, color: Colors.white),
-        ),
+      return Label(
+        "等待上传",
+        Colors.lightBlueAccent,
+        fill: true,
+        fontSize: 10,
+        height: 22,
       );
     } else {
       return Container();
@@ -117,7 +79,6 @@ class _UploadState extends State<Upload> {
   }
 
   Widget _buildUploadItem(UploadItem upload) {
-    print(upload.file.path);
     FileType fileType = Util.fileType(upload.file.name);
     // String path = file['path'];
     return Padding(

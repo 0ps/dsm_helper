@@ -251,13 +251,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.11"
-  flutter_screenutil:
-    dependency: "direct main"
-    description:
-      name: flutter_screenutil
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "4.0.2+5"
   flutter_svg:
     dependency: transitive
     description:

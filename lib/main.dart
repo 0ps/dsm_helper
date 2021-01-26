@@ -15,7 +15,6 @@ import 'pages/provider/dark_mode.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  bool needLogin = true;
   await FlutterDownloader.initialize(debug: false);
   await UmengAnalyticsPlugin.init(
     androidKey: '5ffe477d6a2a470e8f76809c',

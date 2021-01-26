@@ -266,19 +266,35 @@ class Util {
     Response response;
     try {
       response = await dio.get(url, queryParameters: data, cancelToken: cancelToken);
-      print(response.request.baseUrl);
-      print(baseUrl + "/webapi/");
-      if (response.request.baseUrl == baseUrl + "/webapi/") {
+      if (url == "auth.cgi") {
         if (response.headers.map['set-cookie'] != null && response.headers.map['set-cookie'].length > 0) {
           List cookies = [];
+          //从原始cookie中提取did
+          String did = "";
+          if (Util.cookie != null) {
+            List originCookies = Util.cookie.split("; ");
+            for (int i = 0; i < originCookies.length; i++) {
+              Cookie cookie = Cookie.fromSetCookieValue(originCookies[i]);
+              if (cookie.name == "did") {
+                did = cookie.value;
+              }
+            }
+          }
+          bool haveDid = false;
           for (int i = 0; i < response.headers.map['set-cookie'].length; i++) {
             Cookie cookie = Cookie.fromSetCookieValue(response.headers.map['set-cookie'][i]);
             cookies.add("${cookie.name}=${cookie.value}");
+            if (cookie.name == "did") {
+              haveDid = true;
+            }
           }
+          //如果新cookie中不含did
+          if (!haveDid && did != "") {
+            cookies.add("did=$did");
+          }
+
           Util.cookie = cookies.join("; ");
           setStorage("smid", Util.cookie);
-          print("登录设置cookie");
-          print(Util.cookie);
         }
       }
 
@@ -459,7 +475,6 @@ class Util {
   }
 
   static String timeRemaining(int seconds) {
-    Duration duration = Duration(seconds: seconds);
     int hour = seconds / 60 ~/ 60;
     int minute = (seconds - hour * 60 * 60) ~/ 60;
     int second = seconds ~/ 60;

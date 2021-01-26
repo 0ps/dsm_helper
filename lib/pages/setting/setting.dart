@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dsm_helper/pages/backup/backup.dart';
 import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
-import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/pages/setting/helper_setting.dart';
 import 'package:dsm_helper/pages/terminal/select_server.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -26,10 +26,100 @@ class _SettingState extends State<Setting> {
   bool shutdowning = false;
   bool rebooting = false;
   String sshPort;
+
+  List servers = [];
+
+  Widget _buildServerItem(server) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: NeuButton(
+        onPressed: () async {
+          Navigator.of(context).pop();
+          // return;
+          setState(() {
+            // https = server['https'];
+            // host = server['host'];
+            // _hostController.value = TextEditingValue(text: host);
+            // port = server['port'];
+            // _portController.value = TextEditingValue(text: port);
+            // account = server['account'];
+            // _accountController.value = TextEditingValue(text: account);
+            // password = server['password'];
+            // _passwordController.value = TextEditingValue(text: password);
+            // autoLogin = server['auto_login'];
+            // rememberPassword = server['remember_password'];
+            // checkSsl = server['check_ssl'] ?? true;
+            // Util.cookie = server['cookie'];
+          });
+        },
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: EdgeInsets.zero,
+        bevel: 20,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${server['account']}",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              NeuButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    servers.remove(server);
+                  });
+
+                  Util.setStorage("servers", json.encode(servers));
+                  Util.toast("删除成功");
+                },
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                bevel: 20,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Image.asset(
+                  "assets/icons/delete.png",
+                  width: 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     getData();
+    getServers();
     super.initState();
+  }
+
+  getServers() async {
+    String serverString = await Util.getStorage("servers");
+    if (serverString.isNotBlank) {
+      servers = json.decode(serverString);
+    }
   }
 
   getData() async {
@@ -725,51 +815,114 @@ class _SettingState extends State<Setting> {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: NeuButton(
-              onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) {
-                      return About();
-                    },
-                    settings: RouteSettings(name: "about")));
-              },
-              // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              padding: EdgeInsets.symmetric(vertical: 20),
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 20,
-              child: Text(
-                "关于群晖助手",
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          ),
           SizedBox(
             height: 20,
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: NeuButton(
-              onPressed: () {
-                Util.removeStorage("sid");
-                // Util.removeStorage("smid");
-                Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
-              },
-              // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              padding: EdgeInsets.symmetric(vertical: 20),
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 20,
-              child: Text(
-                "退出登录",
-                style: TextStyle(fontSize: 18),
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: NeuButton(
+                    onPressed: () {
+                      Util.removeStorage("sid");
+                      // Util.removeStorage("smid");
+                      Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
+                    },
+                    // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    child: Text(
+                      "退出登录",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                // SizedBox(
+                //   width: 20,
+                // ),
+                // Expanded(
+                //   child: NeuButton(
+                //     onPressed: () {
+                //       showCupertinoModalPopup(
+                //         context: context,
+                //         builder: (context) {
+                //           return Material(
+                //             color: Colors.transparent,
+                //             child: NeuCard(
+                //               width: double.infinity,
+                //               height: MediaQuery.of(context).size.height * 0.8,
+                //               bevel: 5,
+                //               curveType: CurveType.emboss,
+                //               decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                //               child: Padding(
+                //                 padding: EdgeInsets.symmetric(vertical: 20),
+                //                 child: Column(
+                //                   mainAxisSize: MainAxisSize.min,
+                //                   children: <Widget>[
+                //                     Text(
+                //                       "选择账号",
+                //                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                //                     ),
+                //                     SizedBox(
+                //                       height: 20,
+                //                     ),
+                //                     Expanded(
+                //                       child: ListView.builder(
+                //                         padding: EdgeInsets.all(20),
+                //                         itemBuilder: (context, i) {
+                //                           return _buildServerItem(servers[i]);
+                //                         },
+                //                         itemCount: servers.length,
+                //                       ),
+                //                     ),
+                //                     Padding(
+                //                       padding: EdgeInsets.symmetric(horizontal: 20),
+                //                       child: NeuButton(
+                //                         onPressed: () async {
+                //                           Navigator.of(context).pop();
+                //                         },
+                //                         decoration: NeumorphicDecoration(
+                //                           color: Theme.of(context).scaffoldBackgroundColor,
+                //                           borderRadius: BorderRadius.circular(25),
+                //                         ),
+                //                         bevel: 20,
+                //                         padding: EdgeInsets.symmetric(vertical: 10),
+                //                         child: Text(
+                //                           "取消",
+                //                           style: TextStyle(fontSize: 18),
+                //                         ),
+                //                       ),
+                //                     ),
+                //                     SizedBox(
+                //                       height: 8,
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           );
+                //         },
+                //       );
+                //     },
+                //     // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                //     padding: EdgeInsets.symmetric(vertical: 20),
+                //     decoration: NeumorphicDecoration(
+                //       color: Theme.of(context).scaffoldBackgroundColor,
+                //       borderRadius: BorderRadius.circular(20),
+                //     ),
+                //     bevel: 20,
+                //     child: Text(
+                //       "切换账号",
+                //       style: TextStyle(fontSize: 18),
+                //     ),
+                //   ),
+                // )
+              ],
             ),
           ),
           SizedBox(

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dsm_helper/pages/common/gesture_password.dart';
+import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -433,6 +434,40 @@ class _HelperSettingState extends State<HelperSetting> {
                   ],
                 ),
               ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          NeuButton(
+            onPressed: () {
+              Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) {
+                    return About();
+                  },
+                  settings: RouteSettings(name: "about")));
+            },
+            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.all(20),
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            bevel: 20,
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/icons/info_liner.png",
+                  width: 25,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Text(
+                  "关于群晖助手",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
             ),
           ),
         ],

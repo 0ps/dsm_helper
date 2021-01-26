@@ -43,7 +43,6 @@ class _LoginState extends State<Login> {
   getInfo() async {
     String sid = await Util.getStorage("sid");
     String smid = await Util.getStorage("smid");
-    Util.cookie = smid;
     String https = await Util.getStorage("https");
     String host = await Util.getStorage("host");
     String port = await Util.getStorage("port");
@@ -53,6 +52,9 @@ class _LoginState extends State<Login> {
     String rememberPassword = await Util.getStorage("remember_password");
     String checkSsl = await Util.getStorage("check_ssl");
     String serverString = await Util.getStorage("servers");
+
+    Util.cookie = smid;
+    print(Util.cookie);
     if (serverString.isNotBlank) {
       servers = jsonDecode(serverString);
     }
@@ -203,6 +205,8 @@ class _LoginState extends State<Login> {
           servers[i]['remember_password'] = rememberPassword;
           servers[i]['auto_login'] = autoLogin;
           servers[i]['check_ssl'] = checkSsl;
+          servers[i]['cookie'] = Util.cookie;
+          servers[i]['sid'] = res['data']['sid'];
           exist = true;
         }
       }
@@ -216,6 +220,8 @@ class _LoginState extends State<Login> {
           "remember_password": rememberPassword,
           "auto_login": autoLogin,
           "check_ssl": checkSsl,
+          "cookie": Util.cookie,
+          "sid": res['data']['sid'],
         };
         if (rememberPassword) {
           server['password'] = password;
@@ -241,6 +247,85 @@ class _LoginState extends State<Login> {
         Util.toast("登录失败，code:${res['error']['code']}");
       }
     }
+  }
+
+  Widget _buildServerItem(server) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: NeuButton(
+        onPressed: () async {
+          Navigator.of(context).pop();
+          // return;
+          setState(() {
+            https = server['https'];
+            host = server['host'];
+            _hostController.value = TextEditingValue(text: host);
+            port = server['port'];
+            _portController.value = TextEditingValue(text: port);
+            account = server['account'];
+            _accountController.value = TextEditingValue(text: account);
+            password = server['password'];
+            _passwordController.value = TextEditingValue(text: password);
+            autoLogin = server['auto_login'];
+            rememberPassword = server['remember_password'];
+            checkSsl = server['check_ssl'] ?? true;
+            Util.cookie = server['cookie'];
+          });
+        },
+        decoration: NeumorphicDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: EdgeInsets.zero,
+        bevel: 20,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${server['account']}",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}",
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              NeuButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    servers.remove(server);
+                  });
+
+                  Util.setStorage("servers", jsonEncode(servers));
+                  Util.toast("删除成功");
+                },
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                bevel: 20,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Image.asset(
+                  "assets/icons/delete.png",
+                  width: 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -269,11 +354,12 @@ class _LoginState extends State<Login> {
                             color: Colors.transparent,
                             child: NeuCard(
                               width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.8,
                               bevel: 5,
                               curveType: CurveType.emboss,
                               decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                               child: Padding(
-                                padding: EdgeInsets.all(20),
+                                padding: EdgeInsets.symmetric(vertical: 20),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
@@ -284,84 +370,15 @@ class _LoginState extends State<Login> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    ...servers.map((server) {
-                                      return Padding(
-                                        padding: EdgeInsets.only(bottom: 20),
-                                        child: NeuButton(
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
-                                            print(server);
-                                            // return;
-                                            setState(() {
-                                              https = server['https'];
-                                              host = server['host'];
-                                              _hostController.value = TextEditingValue(text: host);
-                                              port = server['port'];
-                                              _portController.value = TextEditingValue(text: port);
-                                              account = server['account'];
-                                              _accountController.value = TextEditingValue(text: account);
-                                              password = server['password'];
-                                              _passwordController.value = TextEditingValue(text: password);
-                                              autoLogin = server['auto_login'];
-                                              rememberPassword = server['remember_password'];
-                                              checkSsl = server['check_ssl'] ?? true;
-                                            });
-                                          },
-                                          decoration: NeumorphicDecoration(
-                                            color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                          padding: EdgeInsets.zero,
-                                          bevel: 20,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "${server['account']}",
-                                                        style: TextStyle(fontSize: 18),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Text(
-                                                        "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}",
-                                                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                NeuButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                    setState(() {
-                                                      servers.remove(server);
-                                                    });
-
-                                                    Util.setStorage("servers", jsonEncode(servers));
-                                                    Util.toast("删除成功");
-                                                  },
-                                                  decoration: NeumorphicDecoration(
-                                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                                    borderRadius: BorderRadius.circular(10),
-                                                  ),
-                                                  bevel: 20,
-                                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                                  child: Image.asset(
-                                                    "assets/icons/delete.png",
-                                                    width: 20,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
+                                    Expanded(
+                                      child: ListView.builder(
+                                        padding: EdgeInsets.all(20),
+                                        itemBuilder: (context, i) {
+                                          return _buildServerItem(servers[i]);
+                                        },
+                                        itemCount: servers.length,
+                                      ),
+                                    ),
                                     NeuButton(
                                       onPressed: () async {
                                         Navigator.of(context).pop();
@@ -535,6 +552,7 @@ class _LoginState extends State<Login> {
                       child: NeuTextField(
                         controller: _otpController,
                         onChanged: (v) => otpCode = v,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           labelText: '二步验证代码',
@@ -691,33 +709,36 @@ class _LoginState extends State<Login> {
             // SizedBox(
             //   height: 20,
             // ),
-            NeuButton(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: NeuButton(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                onPressed: _login,
+                child: login
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CupertinoActivityIndicator(
+                            radius: 13,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "取消",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      )
+                    : Text(
+                        ' 登录 ',
+                        style: TextStyle(fontSize: 18),
+                      ),
               ),
-              onPressed: _login,
-              child: login
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CupertinoActivityIndicator(
-                          radius: 13,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "取消",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    )
-                  : Text(
-                      ' 登录 ',
-                      style: TextStyle(fontSize: 18),
-                    ),
             ),
           ],
         ),

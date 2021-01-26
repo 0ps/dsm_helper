@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:http_parser/http_parser.dart';
 import 'function.dart';
 
 class Api {
@@ -46,9 +45,8 @@ class Api {
       "api": "SYNO.API.Auth",
       "method": "login",
       "session": "FileStation",
-      "enable_device_token": rememberDevice,
+      "enable_device_token": rememberDevice ? "yes" : "no",
     };
-    print(data);
     return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken);
   }
 

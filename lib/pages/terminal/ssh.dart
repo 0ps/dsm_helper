@@ -60,7 +60,6 @@ class _SshState extends State<Ssh> {
     } catch (e) {
       terminal.write('连接失败 $e');
     }
-    ;
   }
 
   @override

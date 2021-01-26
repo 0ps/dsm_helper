@@ -709,36 +709,33 @@ class _LoginState extends State<Login> {
             // SizedBox(
             //   height: 20,
             // ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: NeuButton(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                onPressed: _login,
-                child: login
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CupertinoActivityIndicator(
-                            radius: 13,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "取消",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      )
-                    : Text(
-                        ' 登录 ',
-                        style: TextStyle(fontSize: 18),
-                      ),
+            NeuButton(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
               ),
+              onPressed: _login,
+              child: login
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CupertinoActivityIndicator(
+                          radius: 13,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "取消",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      ' 登录 ',
+                      style: TextStyle(fontSize: 18),
+                    ),
             ),
           ],
         ),

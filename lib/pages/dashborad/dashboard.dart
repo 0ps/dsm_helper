@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
-import 'package:dsm_helper/pages/dashborad/notify.dart';
+import 'package:dsm_helper/pages/notify/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/docker/docker.dart';
 import 'package:dsm_helper/pages/download_station/download_station.dart';
@@ -2033,9 +2033,19 @@ class DashboardState extends State<Dashboard> {
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () {
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return Notify(notifies);
-                }));
+                Navigator.of(context)
+                    .push(CupertinoPageRoute(
+                        builder: (context) {
+                          return Notify(notifies);
+                        },
+                        settings: RouteSettings(name: "notify")))
+                    .then((res) {
+                  if (res != null && res) {
+                    setState(() {
+                      notifies = [];
+                    });
+                  }
+                });
               },
               child: Stack(
                 alignment: Alignment.topRight,

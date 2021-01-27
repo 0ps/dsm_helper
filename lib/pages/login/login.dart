@@ -114,7 +114,7 @@ class _LoginState extends State<Login> {
             //如果登录失效，尝试重新登录
             String account = await Util.getStorage("account");
             String password = await Util.getStorage("password");
-            var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken);
+            var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken, rememberDevice: false);
             if (loginRes['success'] == true) {
               //重新登录成功
               Util.setStorage("sid", loginRes['data']['sid']);

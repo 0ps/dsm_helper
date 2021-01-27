@@ -11,10 +11,8 @@ class Notify extends StatefulWidget {
 }
 
 class _NotifyState extends State<Notify> {
-  List notifies = [];
   @override
   void initState() {
-    notifies = widget.notifies;
     super.initState();
   }
 
@@ -100,9 +98,9 @@ class _NotifyState extends State<Notify> {
       body: Column(
         children: [
           Expanded(
-            child: notifies.length > 0
+            child: widget.notifies.length > 0
                 ? ListView(
-                    children: notifies.map(_buildNotifyItem).toList(),
+                    children: widget.notifies.map(_buildNotifyItem).toList(),
                   )
                 : Center(
                     child: Text("暂无消息"),
@@ -122,9 +120,7 @@ class _NotifyState extends State<Notify> {
                       var res = await Api.clearNotify();
                       if (res['success']) {
                         Util.toast("清除成功");
-                        setState(() {
-                          notifies = [];
-                        });
+                        Navigator.of(context).pop(true);
                       }
                     },
                     child: Text("全部清除"),

@@ -36,7 +36,7 @@ class Api {
 //    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
   }
 
-  static Future<Map> login({String host, String account, String password, String otpCode, CancelToken cancelToken, bool rememberDevice}) async {
+  static Future<Map> login({String host, String account, String password, String otpCode, CancelToken cancelToken, bool rememberDevice: false}) async {
     var data = {
       "account": account,
       "passwd": password,
@@ -559,6 +559,27 @@ class Api {
       "compound": jsonEncode(apis),
       "version": 1,
       "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> notify() async {
+    var result = await Util.post("entry.cgi", data: {
+      "action": "load",
+      "lastRead": DateTime.now().secondsSinceEpoch,
+      "lastSeen": DateTime.now().secondsSinceEpoch,
+      "api": "SYNO.Core.DSMNotify",
+      "method": "notify",
+      "version": 1,
+    });
+    return result;
+  }
+
+  static Future<Map> storage() async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": "SYNO.Storage.CGI.Storage",
+      "method": "load_info",
+      "version": 1,
     });
     return result;
   }

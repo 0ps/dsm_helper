@@ -223,29 +223,35 @@ class _DownloadStationState extends State<DownloadStation> {
                                                 style: TextStyle(fontSize: 12, color: Colors.greenAccent),
                                                 textAlign: TextAlign.right,
                                               )
-                                            : download['status'] == 101
+                                            : download['status'] == 11
                                                 ? Text(
-                                                    "错误",
-                                                    style: TextStyle(fontSize: 12, color: Colors.red),
+                                                    "等待中",
+                                                    style: TextStyle(fontSize: 12, color: Colors.blue),
                                                     textAlign: TextAlign.right,
                                                   )
-                                                : download['status'] == 105
+                                                : download['status'] == 101
                                                     ? Text(
-                                                        "空间不足",
+                                                        "错误",
                                                         style: TextStyle(fontSize: 12, color: Colors.red),
                                                         textAlign: TextAlign.right,
                                                       )
-                                                    : download['status'] == 113
+                                                    : download['status'] == 105
                                                         ? Text(
-                                                            "重复的任务",
+                                                            "空间不足",
                                                             style: TextStyle(fontSize: 12, color: Colors.red),
                                                             textAlign: TextAlign.right,
                                                           )
-                                                        : Text(
-                                                            "代码：${download['status']}",
-                                                            style: TextStyle(fontSize: 12, color: Colors.red),
-                                                            textAlign: TextAlign.right,
-                                                          ),
+                                                        : download['status'] == 113
+                                                            ? Text(
+                                                                "重复的任务",
+                                                                style: TextStyle(fontSize: 12, color: Colors.red),
+                                                                textAlign: TextAlign.right,
+                                                              )
+                                                            : Text(
+                                                                "代码：${download['status']}",
+                                                                style: TextStyle(fontSize: 12, color: Colors.red),
+                                                                textAlign: TextAlign.right,
+                                                              ),
                   ),
                 ],
               ),

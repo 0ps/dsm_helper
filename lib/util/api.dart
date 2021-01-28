@@ -975,7 +975,8 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data":
+          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -1246,11 +1247,17 @@ class Api {
   //delete_condition  delete
   static Future<Map> downloadTaskCreate(String destination, String type, String url) async {
     List<String> urls = url.split("\n");
+    List<String> validUrls = [];
+    for (String url in urls) {
+      if (url.trim().isNotBlank) {
+        validUrls.add(url.trim());
+      }
+    }
     var data = {
       "type": '"$type"',
       "destination": '"$destination"',
       "create_list": true,
-      "url": json.encode(urls),
+      "url": json.encode(validUrls),
       "api": 'SYNO.DownloadStation2.Task',
       "method": "create",
       "version": 1,

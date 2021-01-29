@@ -1,6 +1,7 @@
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -19,7 +20,10 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
   TabController _tabController;
   List usbDev;
   List nifs;
+  List volumes = [];
+  List disks = [];
   Map network;
+  bool loadingDisks = false;
   @override
   void initState() {
     _tabController = TabController(initialIndex: widget.index, length: 6, vsync: this);
@@ -27,6 +31,17 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
       usbDev = widget.system['usb_dev'];
     });
     getData();
+    if (widget.volumes.length > 0 || widget.disks.length > 0) {
+      setState(() {
+        volumes = widget.volumes;
+        disks = widget.disks;
+      });
+    } else {
+      setState(() {
+        loadingDisks = true;
+      });
+      getDisks();
+    }
     super.initState();
   }
 
@@ -38,6 +53,17 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
         nifs = network['nif'];
       });
       print(network);
+    }
+  }
+
+  getDisks() async {
+    var res = await Api.storage();
+    if (res['success']) {
+      setState(() {
+        loadingDisks = false;
+        volumes = res['data']['volumes'];
+        disks = res['data']['disks'];
+      });
     }
   }
 
@@ -656,10 +682,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                                   flex: 2,
                                   child: Text(
                                     "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
-                                    style: TextStyle(
-                                        color: widget.system['temperature_warning'] == null
-                                            ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green)
-                                            : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
+                                    style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -923,60 +946,75 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                           ...nifs.map(_buildNifItem).toList(),
                         ],
                       ),
-                ListView(
-                  children: [
-                    NeuCard(
-                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      curveType: CurveType.flat,
-                      bevel: 20,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                loadingDisks
+                    ? Center(
+                        child: NeuCard(
+                          padding: EdgeInsets.all(50),
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: CupertinoActivityIndicator(
+                            radius: 14,
+                          ),
+                        ),
+                      )
+                    : ListView(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20, top: 20),
-                            child: Text(
-                              "存储空间",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          NeuCard(
+                            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            curveType: CurveType.flat,
+                            bevel: 20,
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 20, top: 20),
+                                  child: Text(
+                                    "存储空间",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                ...volumes.reversed.map(_buildVolumeItem).toList(),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
                             ),
                           ),
-                          ...widget.volumes.reversed.map(_buildVolumeItem).toList(),
-                          SizedBox(
-                            height: 20,
+                          NeuCard(
+                            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            curveType: CurveType.flat,
+                            bevel: 20,
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(left: 20, top: 20),
+                                  child: Text(
+                                    "硬盘",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                ...disks.map(_buildDiskItem).toList(),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    NeuCard(
-                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      curveType: CurveType.flat,
-                      bevel: 20,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 20, top: 20),
-                            child: Text(
-                              "硬盘",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          ...widget.disks.map(_buildDiskItem).toList(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
                 Container(),
                 Container(),
                 Container(),

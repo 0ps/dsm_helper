@@ -498,67 +498,69 @@ class _VirtualMachineState extends State<VirtualMachine> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                  child: Text("CPU："),
-                ),
-                Expanded(
-                  child: NeuCard(
-                    curveType: CurveType.flat,
-                    bevel: 10,
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: FAProgressBar(
-                      backgroundColor: Colors.transparent,
-                      changeColorValue: 90,
-                      changeProgressColor: Colors.red,
-                      progressColor: Colors.blue,
-                      currentValue: guest['cpu_usage'] ~/ 10,
-                      displayText: '.${guest['cpu_usage'] % 10}%',
+            if (guest['status'] != "shutdown") ...[
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Text("CPU："),
+                  ),
+                  Expanded(
+                    child: NeuCard(
+                      curveType: CurveType.flat,
+                      bevel: 10,
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: FAProgressBar(
+                        backgroundColor: Colors.transparent,
+                        changeColorValue: 90,
+                        changeProgressColor: Colors.red,
+                        progressColor: Colors.blue,
+                        currentValue: guest['cpu_usage'] ~/ 10,
+                        displayText: '.${guest['cpu_usage'] % 10}%',
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                  child: Text("RAM："),
-                ),
-                Expanded(
-                  child: NeuCard(
-                    curveType: CurveType.flat,
-                    bevel: 10,
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: FAProgressBar(
-                      backgroundColor: Colors.transparent,
-                      changeColorValue: 90,
-                      changeProgressColor: Colors.red,
-                      progressColor: Colors.blue,
-                      currentValue: guest['ram_usage'] ~/ 100,
-                      displayText: '.${(guest['ram_usage'] % 100).toString().padLeft(2, "0")}%',
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Text("RAM："),
+                  ),
+                  Expanded(
+                    child: NeuCard(
+                      curveType: CurveType.flat,
+                      bevel: 10,
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: FAProgressBar(
+                        backgroundColor: Colors.transparent,
+                        changeColorValue: 90,
+                        changeProgressColor: Colors.red,
+                        progressColor: Colors.blue,
+                        currentValue: guest['ram_usage'] ~/ 100,
+                        displayText: '.${(guest['ram_usage'] % 100).toString().padLeft(2, "0")}%',
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            ...networks.map((network) {
-              return _buildNetworkItem(network, networks.indexOf(network));
-            }).toList(),
+                ],
+              ),
+              ...networks.map((network) {
+                return _buildNetworkItem(network, networks.indexOf(network));
+              }).toList(),
+            ],
           ],
         ),
       ),

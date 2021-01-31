@@ -10,6 +10,7 @@ import 'package:dsm_helper/pages/download_station/download_station.dart';
 import 'package:dsm_helper/pages/iscsi/iscsi.dart';
 import 'package:dsm_helper/pages/log_center/log_center.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
+import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/security_scan/security_scan.dart';
 import 'package:dsm_helper/pages/storage_manager/storage_manager.dart';
@@ -518,11 +519,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 1,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 1,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance")));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -559,11 +562,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 2,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 2,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance")));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -597,11 +602,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 3,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 3,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance")));
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -636,11 +643,13 @@ class DashboardState extends State<Dashboard> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return ResourceMonitor(
-                      tabIndex: 3,
-                    );
-                  }));
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Performance(
+                          tabIndex: 3,
+                        );
+                      },
+                      settings: RouteSettings(name: "performance")));
                 },
                 child: AspectRatio(
                   aspectRatio: 1.70,

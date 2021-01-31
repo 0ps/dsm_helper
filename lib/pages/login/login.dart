@@ -104,6 +104,7 @@ class _LoginState extends State<Login> {
           login = true;
         });
         var checkLogin = await Api.shareList(cancelToken: cancelToken);
+        print(checkLogin);
         if (!checkLogin['success']) {
           if (checkLogin['code'] == "用户取消") {
             //如果用户主动取消登录
@@ -115,6 +116,7 @@ class _LoginState extends State<Login> {
             String account = await Util.getStorage("account");
             String password = await Util.getStorage("password");
             var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken, rememberDevice: false);
+            print(loginRes);
             if (loginRes['success'] == true) {
               //重新登录成功
               Util.setStorage("sid", loginRes['data']['sid']);
@@ -333,7 +335,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "群晖助手",
+          "账号登录",
         ),
         actions: servers.length > 0
             ? [
@@ -565,6 +567,7 @@ class _LoginState extends State<Login> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       setState(() {
                         rememberDevice = !rememberDevice;
                       });

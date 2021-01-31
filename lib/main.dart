@@ -157,7 +157,7 @@ class _MyAppState extends State<MyApp> {
         return OKToast(
           child: darkModeProvider.darkMode == 2
               ? MaterialApp(
-                  title: '群晖助手',
+                  title: '${Platform.isIOS ? "NAS助手" : "群晖助手"}',
                   debugShowCheckedModeBanner: false,
                   theme: ThemeData.light().copyWith(
                     appBarTheme: AppBarTheme(
@@ -191,7 +191,7 @@ class _MyAppState extends State<MyApp> {
                   },
                 )
               : MaterialApp(
-                  title: '群晖助手',
+                  title: '${Platform.isIOS ? "NAS助手" : "群晖助手"}',
                   debugShowCheckedModeBanner: false,
                   theme: darkModeProvider.darkMode == 0
                       ? ThemeData.light().copyWith(

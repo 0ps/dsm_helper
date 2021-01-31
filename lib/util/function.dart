@@ -195,7 +195,38 @@ class Util {
       "swf",
       "f4v"
     ];
-    List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
+    List<String> music = [
+      "aac",
+      "flac",
+      "m4a",
+      "m4b",
+      "aif",
+      "ogg",
+      "pcm",
+      "wav",
+      "cda",
+      "mid",
+      "mp2",
+      "mka",
+      "mpc",
+      "ape",
+      "ra",
+      "ac3",
+      "dts",
+      "wma",
+      "mp3",
+      "mp1",
+      "mp2",
+      "mpa",
+      "ram",
+      "m4p",
+      "aiff",
+      "dsf",
+      "dff",
+      "m3u",
+      "wpl",
+      "aiff"
+    ];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];
@@ -361,7 +392,8 @@ class Util {
     }
   }
 
-  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
+  static Future<dynamic> upload(String url,
+      {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
     headers = headers ?? {};
     headers['Cookie'] = Util.cookie;
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
@@ -532,7 +564,7 @@ class Util {
       }
       File image = await getCachedImageFile(url);
       File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
-      bool result = await GallerySaver.saveImage(save.path, albumName: "群晖助手");
+      bool result = await GallerySaver.saveImage(save.path, albumName: Platform.isIOS ? "NAS助手" : "群晖助手");
       if (showLoading) {
         hide();
       }

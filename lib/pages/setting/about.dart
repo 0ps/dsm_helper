@@ -35,7 +35,7 @@ class _AboutState extends State<About> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "关于群晖助手",
+          "关于${Platform.isIOS ? "NAS助手" : "群晖助手"}",
         ),
       ),
       body: Column(
@@ -69,7 +69,7 @@ class _AboutState extends State<About> {
                     Column(
                       children: [
                         Text(
-                          "群晖助手",
+                          "${Platform.isIOS ? "NAS助手" : "群晖助手"}",
                           style: TextStyle(fontSize: 32),
                         ),
                         if (packageInfo != null)
@@ -120,7 +120,8 @@ class _AboutState extends State<About> {
                             if (Platform.isAndroid) {
                               AndroidIntent intent = AndroidIntent(
                                 action: 'action_view',
-                                data: 'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
+                                data:
+                                    'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
                                 arguments: {},
                                 // data: 'https://qm.qq.com/cgi-bin/qm/qr?k=Gf20e3f1FXrlIUfgp9IwzMnqPuFKRwVK&jump_from=webapi',
                                 // type: "video/*",
@@ -128,7 +129,8 @@ class _AboutState extends State<About> {
 
                               intent.launch();
                             } else {
-                              launch('mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
+                              launch(
+                                  'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
                             }
                           },
                           child: Text("加群"),
@@ -159,7 +161,7 @@ class _AboutState extends State<About> {
                           width: 10,
                         ),
                         Text(
-                          "公众号：群晖助手",
+                          "公众号：${Platform.isIOS ? "NAS助手" : "群晖助手"}",
                           style: TextStyle(fontSize: 16),
                         ),
                         Spacer(),
@@ -272,7 +274,7 @@ class _AboutState extends State<About> {
                           width: 10,
                         ),
                         Text(
-                          "群晖助手开源地址",
+                          "${Platform.isIOS ? "NAS助手" : "群晖助手"}开源地址",
                           style: TextStyle(fontSize: 16),
                         ),
                         Spacer(),

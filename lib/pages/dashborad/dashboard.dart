@@ -58,8 +58,14 @@ class DashboardState extends State<Dashboard> {
   int maxNetworkSpeed = 0;
   Map volWarnings;
   String msg = "";
+  bool showMainMenu = false;
   @override
   void initState() {
+    Util.getStorage("account").then((value) {
+      setState(() {
+        showMainMenu = value != "challengerv";
+      });
+    });
     getInfo().then((_) {
       getData();
     });
@@ -81,8 +87,9 @@ class DashboardState extends State<Dashboard> {
     if (init['success']) {
       setState(() {
         if (init['data']['UserSettings'] != null) {
+          print(init['data']['UserSettings']['SYNO.SDS._Widget.Instance']);
           if (init['data']['UserSettings']['SYNO.SDS._Widget.Instance'] != null) {
-            widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'];
+            widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'] ?? [];
             restoreSizePos = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['restoreSizePos'];
           }
           applications = init['data']['UserSettings']['Desktop']['appview_order'] ?? init['data']['UserSettings']['Desktop']['valid_appview_order'];
@@ -147,13 +154,10 @@ class DashboardState extends State<Dashboard> {
     }
     var res = await Api.systemInfo(widgets);
 
-    setState(() {
-      if (loading) {
-        success = res['success'];
-      }
-      loading = false;
-    });
     if (res['success']) {
+      setState(() {
+        success = true;
+      });
       List result = res['data']['result'];
       result.forEach((item) {
         if (item['success'] == true) {
@@ -227,6 +231,9 @@ class DashboardState extends State<Dashboard> {
       });
     } else {
       setState(() {
+        if (loading) {
+          success = res['success'];
+        }
         loading = false;
         msg = res['msg'] ?? "加载失败，code:${res['error']['code']}";
       });
@@ -302,7 +309,8 @@ class DashboardState extends State<Dashboard> {
                       Text("散热状态："),
                       Text(
                         "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                        style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                        style: TextStyle(
+                            color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -1985,24 +1993,26 @@ class DashboardState extends State<Dashboard> {
         title: Text(
           "控制台",
         ),
-        leading: Padding(
-          padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-          child: NeuButton(
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: EdgeInsets.all(10),
-            bevel: 5,
-            onPressed: () {
-              _scaffoldKey.currentState.openDrawer();
-            },
-            child: Image.asset(
-              "assets/icons/application.png",
-              width: 20,
-            ),
-          ),
-        ),
+        leading: showMainMenu
+            ? Padding(
+                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                child: NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  bevel: 5,
+                  onPressed: () {
+                    _scaffoldKey.currentState.openDrawer();
+                  },
+                  child: Image.asset(
+                    "assets/icons/application.png",
+                    width: 20,
+                  ),
+                ),
+              )
+            : SizedBox(),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),

@@ -36,7 +36,7 @@ class Api {
 //    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
   }
 
-  static Future<Map> login({String host, String account, String password, String otpCode, CancelToken cancelToken, bool rememberDevice: false}) async {
+  static Future<Map> login({String host, String account, String password, String otpCode: "", CancelToken cancelToken, bool rememberDevice: false}) async {
     var data = {
       "account": account,
       "passwd": password,
@@ -47,6 +47,7 @@ class Api {
       "session": "FileStation",
       "enable_device_token": rememberDevice ? "yes" : "no",
     };
+    print(data);
     return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken);
   }
 

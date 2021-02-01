@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
@@ -20,6 +21,7 @@ import 'package:dsm_helper/pages/virtual_machine/virtual_machine.dart';
 import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +89,6 @@ class DashboardState extends State<Dashboard> {
     if (init['success']) {
       setState(() {
         if (init['data']['UserSettings'] != null) {
-          print(init['data']['UserSettings']['SYNO.SDS._Widget.Instance']);
           if (init['data']['UserSettings']['SYNO.SDS._Widget.Instance'] != null) {
             widgets = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['modulelist'] ?? [];
             restoreSizePos = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['restoreSizePos'];
@@ -143,6 +144,7 @@ class DashboardState extends State<Dashboard> {
   }
 
   getData() async {
+    print("getData");
     if (!mounted) {
       timer?.cancel();
       return;
@@ -152,8 +154,11 @@ class DashboardState extends State<Dashboard> {
         getData();
       });
     }
+    print("systemInfo");
     var res = await Api.systemInfo(widgets);
-
+    setState(() {
+      loading = false;
+    });
     if (res['success']) {
       setState(() {
         success = true;
@@ -234,7 +239,6 @@ class DashboardState extends State<Dashboard> {
         if (loading) {
           success = res['success'];
         }
-        loading = false;
         msg = res['msg'] ?? "加载失败，code:${res['error']['code']}";
       });
       if (timer != null) {
@@ -253,7 +257,6 @@ class DashboardState extends State<Dashboard> {
           }));
         },
         child: NeuCard(
-          padding: EdgeInsets.all(20),
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           bevel: 20,
           curveType: CurveType.flat,
@@ -261,72 +264,83 @@ class DashboardState extends State<Dashboard> {
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Column(
-            children: [
-              Row(
+          child: Container(
+            // decoration: BoxDecoration(
+            //   borderRadius: BorderRadius.circular(20),
+            //   image: DecorationImage(
+            //     image: ExtendedNetworkImageProvider("http://192.168.0.233:5000/webapi/entry.cgi?api=SYNO.Core.PersonalSettings&method=wallpaper&version=1&path=%22%22&retina=false&_sid=${Util.sid}"),
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
                 children: [
-                  Image.asset(
-                    "assets/icons/info.png",
-                    width: 26,
-                    height: 26,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "系统状态",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              if (system != null && system['model'] != null)
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Row(
+                  Row(
                     children: [
-                      Text("产品型号："),
-                      Text("${system['model']}"),
-                    ],
-                  ),
-                ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Text("系统名称："),
-                  Text("$hostname"),
-                ],
-              ),
-              if (system != null && system['sys_temp'] != null)
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Row(
-                    children: [
-                      Text("散热状态："),
+                      Image.asset(
+                        "assets/icons/info.png",
+                        width: 26,
+                        height: 26,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Text(
-                        "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                        style: TextStyle(
-                            color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
-                        overflow: TextOverflow.ellipsis,
+                        "系统状态",
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
-                ),
-              if (system != null && system['up_time'] != null && system['up_time'] != "")
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Row(
+                  SizedBox(
+                    height: 5,
+                  ),
+                  if (system != null && system['model'] != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Row(
+                        children: [
+                          Text("产品型号："),
+                          Text("${system['model']}"),
+                        ],
+                      ),
+                    ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
                     children: [
-                      Text("运行时间："),
-                      Text("${Util.parseOpTime(system['up_time'])}"),
+                      Text("系统名称："),
+                      Text("$hostname"),
                     ],
                   ),
-                ),
-            ],
+                  if (system != null && system['sys_temp'] != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Row(
+                        children: [
+                          Text("散热状态："),
+                          Text(
+                            "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
+                            style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (system != null && system['up_time'] != null && system['up_time'] != "")
+                    Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Row(
+                        children: [
+                          Text("运行时间："),
+                          Text("${Util.parseOpTime(system['up_time'])}"),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       );

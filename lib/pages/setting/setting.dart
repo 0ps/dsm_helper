@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:dsm_helper/pages/backup/backup.dart';
 import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
+import 'package:dsm_helper/pages/login/confirm_logout.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/helper_setting.dart';
 import 'package:dsm_helper/pages/terminal/select_server.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -28,6 +30,12 @@ class _SettingState extends State<Setting> {
   String sshPort;
 
   List servers = [];
+
+  String account = "";
+
+  bool otpEnable = false;
+  bool otpEnforced = false;
+  String email = "";
 
   Widget _buildServerItem(server) {
     return Padding(
@@ -112,6 +120,8 @@ class _SettingState extends State<Setting> {
   void initState() {
     getData();
     getServers();
+    getNormalUser();
+    Util.getStorage("account").then((value) => setState(() => account = value));
     super.initState();
   }
 
@@ -135,6 +145,18 @@ class _SettingState extends State<Setting> {
       setState(() {
         sshLoading = false;
         ssh = null;
+      });
+    }
+  }
+
+  getNormalUser() async {
+    var res = await Api.normalUser();
+    if (res['success']) {
+      print(res['data']);
+      setState(() {
+        otpEnable = res['data']['OTP_enable'];
+        otpEnforced = res['data']['OTP_enforced'];
+        email = res['data']['email'];
       });
     }
   }
@@ -294,6 +316,92 @@ class _SettingState extends State<Setting> {
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: 20),
               children: [
+                SizedBox(
+                  height: 30,
+                ),
+                NeuCard(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  curveType: CurveType.flat,
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: AssetImage("assets/logo.png"),
+                          radius: 30,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "$account",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                              ),
+                              if (email.isNotEmpty) ...[
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "$email",
+                                  style: TextStyle(color: Colors.grey),
+                                )
+                              ],
+                            ],
+                          ),
+                        ),
+                        NeuButton(
+                          onPressed: () {
+                            bool forget = false;
+                            showCupertinoModalPopup(
+                              context: context,
+                              builder: (context) {
+                                return ConfirmLogout(otpEnable);
+                              },
+                            );
+                          },
+                          // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          padding: EdgeInsets.all(10),
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          bevel: 20,
+                          child: Icon(
+                            Icons.logout,
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                        ),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        // NeuButton(
+                        //   onPressed: () {
+                        //     Util.removeStorage("sid");
+                        //     // Util.removeStorage("smid");
+                        //     Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
+                        //   },
+                        //   // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        //   padding: EdgeInsets.all(10),
+                        //   decoration: NeumorphicDecoration(
+                        //     color: Theme.of(context).scaffoldBackgroundColor,
+                        //     borderRadius: BorderRadius.circular(10),
+                        //   ),
+                        //   bevel: 20,
+                        //   child: Icon(Icons.autorenew_sharp),
+                        // ),
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 30,
                 ),
@@ -822,26 +930,9 @@ class _SettingState extends State<Setting> {
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                Expanded(
-                  child: NeuButton(
-                    onPressed: () {
-                      Util.removeStorage("sid");
-                      // Util.removeStorage("smid");
-                      Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
-                    },
-                    // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    bevel: 20,
-                    child: Text(
-                      "退出登录",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                ),
+                // Expanded(
+                //   child: ,
+                // ),
                 // SizedBox(
                 //   width: 20,
                 // ),

@@ -205,87 +205,18 @@ class _StorageManagerState extends State<StorageManager> {
             ),
             Row(
               children: [
-                Text(pool['device_type'] == "basic"
-                    ? "Basic"
-                    : pool['device_type'] == "shr_without_disk_protect" || pool['device_type'] == "shr"
-                        ? "Synology Hybrid RAID (SHR) "
-                        : pool['device_type']),
-                if (pool['device_type'] == "basic" || pool['device_type'] == "shr_without_disk_protect")
-                  Text(
-                    "（无数据保护）",
-                    style: TextStyle(color: Colors.red),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDiskItem(pool) {
-    return NeuCard(
-      curveType: CurveType.flat,
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      decoration: NeumorphicDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        // color: Colors.red,
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 5),
-      bevel: 8,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text("存储池 ${pool['num_id']}"),
-                SizedBox(
-                  width: 10,
+                Text(
+                  pool['device_type'] == "basic"
+                      ? "Basic"
+                      : pool['device_type'] == "shr_without_disk_protect" || pool['device_type'] == "shr"
+                          ? "Synology Hybrid RAID (SHR) "
+                          : pool['device_type'],
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
-                pool['status'] == "normal"
-                    ? Label(
-                        "正常",
-                        Colors.green,
-                        fill: true,
-                      )
-                    : pool['status'] == "background"
-                        ? Label(
-                            "警告",
-                            Colors.orangeAccent,
-                            fill: true,
-                          )
-                        : pool['status'] == "attention"
-                            ? Label(
-                                "正在检查硬盘",
-                                Colors.lightBlueAccent,
-                                fill: true,
-                              )
-                            : Label(
-                                pool['status'],
-                                Colors.red,
-                                fill: true,
-                              ),
-                Spacer(),
-                Text(Util.formatSize(int.parse(pool['size']['total']))),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text(pool['device_type'] == "basic"
-                    ? "Basic"
-                    : pool['device_type'] == "shr_without_disk_protect" || pool['device_type'] == "shr"
-                        ? "Synology Hybrid RAID (SHR) "
-                        : pool['device_type']),
                 if (pool['device_type'] == "basic" || pool['device_type'] == "shr_without_disk_protect")
                   Text(
                     "（无数据保护）",
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(fontSize: 12, color: Colors.red),
                   ),
               ],
             ),

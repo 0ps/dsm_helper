@@ -7,8 +7,8 @@ import 'package:dsm_helper/pages/login/confirm_logout.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/helper_setting.dart';
 import 'package:dsm_helper/pages/terminal/select_server.dart';
+import 'package:dsm_helper/pages/user/setting.dart';
 import 'package:dsm_helper/util/function.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -150,9 +150,8 @@ class _SettingState extends State<Setting> {
   }
 
   getNormalUser() async {
-    var res = await Api.normalUser();
+    var res = await Api.normalUser("get");
     if (res['success']) {
-      print(res['data']);
       setState(() {
         otpEnable = res['data']['OTP_enable'];
         otpEnforced = res['data']['OTP_enforced'];
@@ -320,7 +319,19 @@ class _SettingState extends State<Setting> {
                   height: 30,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(CupertinoPageRoute(
+                            builder: (context) {
+                              return UserSetting();
+                            },
+                            settings: RouteSettings(name: "user_setting")))
+                        .then((res) {
+                      if (res != null && res) {
+                        getNormalUser();
+                      }
+                    });
+                  },
                   child: NeuCard(
                     decoration: NeumorphicDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor,
@@ -361,7 +372,6 @@ class _SettingState extends State<Setting> {
                           ),
                           NeuButton(
                             onPressed: () {
-                              bool forget = false;
                               showCupertinoModalPopup(
                                 context: context,
                                 builder: (context) {

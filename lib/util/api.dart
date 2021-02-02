@@ -1291,13 +1291,17 @@ class Api {
   }
 
   //SYNO.Core.NormalUser
-  static Future<Map> normalUser() async {
+  static Future<Map> normalUser(String method, {Map<String, String> changedData}) async {
     var data = {
       "api": 'SYNO.Core.NormalUser',
-      "method": "get",
-      "version": 1,
+      "method": method,
+      "version": method == "get" ? 1 : 2,
       "_sid": Util.sid,
     };
+    if (changedData != null) {
+      data.addAll(changedData);
+    }
+    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 }

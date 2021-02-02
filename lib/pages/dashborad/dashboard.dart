@@ -21,7 +21,6 @@ import 'package:dsm_helper/pages/virtual_machine/virtual_machine.dart';
 import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +143,6 @@ class DashboardState extends State<Dashboard> {
   }
 
   getData() async {
-    print("getData");
     if (!mounted) {
       timer?.cancel();
       return;
@@ -154,7 +152,7 @@ class DashboardState extends State<Dashboard> {
         getData();
       });
     }
-    print("systemInfo");
+
     var res = await Api.systemInfo(widgets);
     setState(() {
       loading = false;
@@ -1433,7 +1431,6 @@ class DashboardState extends State<Dashboard> {
           },
           child: NeuCard(
             width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-            height: 110,
             padding: EdgeInsets.symmetric(vertical: 20),
             curveType: CurveType.flat,
             decoration: NeumorphicDecoration(

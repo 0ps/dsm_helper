@@ -10,7 +10,7 @@ import 'package:neumorphic/neumorphic.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:umeng_analytics_plugin/umeng_analytics_plugin.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'pages/provider/dark_mode.dart';
 
 void main() async {
@@ -183,6 +183,14 @@ class _MyAppState extends State<MyApp> {
                       brightness: Brightness.dark,
                     ),
                   ),
+                  localizationsDelegates: [
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    const Locale('zh', 'CN'),
+                  ],
                   home: widget.authPage ? AuthPage() : Login(),
                   navigatorObservers: [AppAnalysis()],
                   routes: {
@@ -218,6 +226,14 @@ class _MyAppState extends State<MyApp> {
                             brightness: Brightness.dark,
                           ),
                         ),
+                  localizationsDelegates: [
+                    GlobalCupertinoLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    const Locale('zh', 'CN'),
+                  ],
                   home: widget.authPage ? AuthPage() : Login(),
                   // onGenerateRoute: ,
                   navigatorObservers: [AppAnalysis()],

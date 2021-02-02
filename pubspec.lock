@@ -215,7 +215,7 @@ packages:
       name: flutter_datetime_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.4.0"
+    version: "1.5.0"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -237,6 +237,11 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.10.3"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_page_indicator:
     dependency: transitive
     description:
@@ -281,7 +286,7 @@ packages:
       name: gallery_saver
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   gesture_password:
     dependency: "direct main"
     description:
@@ -393,7 +398,7 @@ packages:
       name: package_info
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.3+2"
+    version: "0.4.3+4"
   path:
     dependency: transitive
     description:
@@ -491,7 +496,7 @@ packages:
       name: photo_manager
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.8"
+    version: "0.6.0"
   platform:
     dependency: transitive
     description:
@@ -533,7 +538,7 @@ packages:
       name: provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.3.2+3"
+    version: "4.3.3"
   pull_to_refresh:
     dependency: "direct main"
     description:

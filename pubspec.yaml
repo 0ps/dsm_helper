@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.0.36+36
+version: 0.0.38+38
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,7 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_localizations:
+    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -31,14 +32,14 @@ dependencies:
   neumorphic: ^0.4.0
 #  fluttertoast: ^7.1.6
   oktoast: ^2.3.2
-  package_info: ^0.4.3+2
+  package_info: ^0.4.3+4
   dio: ^3.0.10
   pull_to_refresh: ^1.6.3
   shared_preferences: ^0.5.12+4
   permission_handler: ^5.0.1+1
   extended_image: ^1.5.0
   cool_ui: ^0.6.3
-  gallery_saver: ^2.0.2
+  gallery_saver: ^2.0.3
   android_intent: ^0.3.7+7
   path_provider: ^1.6.27
   flutter_downloader: ^1.5.2
@@ -47,16 +48,16 @@ dependencies:
   flutter_animation_progress_bar: ^1.0.6
   file_picker: ^2.1.5+1
   open_file: ^3.0.3
-  flutter_datetime_picker: ^1.4.0
+  flutter_datetime_picker: ^1.5.0
   flutter_swiper: ^1.1.6
   html: ^0.14.0+4
   flutter_html: ^1.2.0
-  provider: ^4.3.2+3
+  provider: ^4.3.3
   wave: ^0.1.0
   dartssh: ^1.0.3+3
   xterm: ^1.1.1+1
   umeng_analytics_plugin: ^1.0.3
-  photo_manager: ^0.5.8
+  photo_manager: ^0.6.0
   vibrate: ^0.0.4
   url_launcher: ^5.7.10
   http: ^0.12.2

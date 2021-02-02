@@ -319,86 +319,89 @@ class _SettingState extends State<Setting> {
                 SizedBox(
                   height: 30,
                 ),
-                NeuCard(
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  bevel: 20,
-                  curveType: CurveType.flat,
-                  child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: AssetImage("assets/logo.png"),
-                          radius: 30,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "$account",
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                              ),
-                              if (email.isNotEmpty) ...[
-                                SizedBox(
-                                  height: 5,
-                                ),
+                GestureDetector(
+                  onTap: () {},
+                  child: NeuCard(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    curveType: CurveType.flat,
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: AssetImage("assets/logo.png"),
+                            radius: 30,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
-                                  "$email",
-                                  style: TextStyle(color: Colors.grey),
-                                )
+                                  "$account",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                                ),
+                                if (email.isNotEmpty) ...[
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "$email",
+                                    style: TextStyle(color: Colors.grey),
+                                  )
+                                ],
                               ],
-                            ],
+                            ),
                           ),
-                        ),
-                        NeuButton(
-                          onPressed: () {
-                            bool forget = false;
-                            showCupertinoModalPopup(
-                              context: context,
-                              builder: (context) {
-                                return ConfirmLogout(otpEnable);
-                              },
-                            );
-                          },
-                          // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          padding: EdgeInsets.all(10),
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(10),
+                          NeuButton(
+                            onPressed: () {
+                              bool forget = false;
+                              showCupertinoModalPopup(
+                                context: context,
+                                builder: (context) {
+                                  return ConfirmLogout(otpEnable);
+                                },
+                              );
+                            },
+                            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: EdgeInsets.all(10),
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            bevel: 20,
+                            child: Icon(
+                              Icons.logout,
+                              color: Colors.grey,
+                              size: 16,
+                            ),
                           ),
-                          bevel: 20,
-                          child: Icon(
-                            Icons.logout,
-                            color: Colors.grey,
-                            size: 16,
-                          ),
-                        ),
-                        // SizedBox(
-                        //   width: 10,
-                        // ),
-                        // NeuButton(
-                        //   onPressed: () {
-                        //     Util.removeStorage("sid");
-                        //     // Util.removeStorage("smid");
-                        //     Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
-                        //   },
-                        //   // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        //   padding: EdgeInsets.all(10),
-                        //   decoration: NeumorphicDecoration(
-                        //     color: Theme.of(context).scaffoldBackgroundColor,
-                        //     borderRadius: BorderRadius.circular(10),
-                        //   ),
-                        //   bevel: 20,
-                        //   child: Icon(Icons.autorenew_sharp),
-                        // ),
-                      ],
+                          // SizedBox(
+                          //   width: 10,
+                          // ),
+                          // NeuButton(
+                          //   onPressed: () {
+                          //     Util.removeStorage("sid");
+                          //     // Util.removeStorage("smid");
+                          //     Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
+                          //   },
+                          //   // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          //   padding: EdgeInsets.all(10),
+                          //   decoration: NeumorphicDecoration(
+                          //     color: Theme.of(context).scaffoldBackgroundColor,
+                          //     borderRadius: BorderRadius.circular(10),
+                          //   ),
+                          //   bevel: 20,
+                          //   child: Icon(Icons.autorenew_sharp),
+                          // ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

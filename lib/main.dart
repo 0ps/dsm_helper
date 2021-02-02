@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:umeng_analytics_plugin/umeng_analytics_plugin.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,6 +29,9 @@ void main() async {
   String launchAuthStr = await Util.getStorage("launch_auth");
   String launchAuthPasswordStr = await Util.getStorage("launch_auth_password");
   String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
+
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  Util.appName = packageInfo.appName;
   if (launchAuthStr != null) {
     launchAuth = launchAuthStr == "1";
   } else {
@@ -157,7 +161,7 @@ class _MyAppState extends State<MyApp> {
         return OKToast(
           child: darkModeProvider.darkMode == 2
               ? MaterialApp(
-                  title: '${Platform.isIOS ? "NAS助手" : "群晖助手"}',
+                  title: '${Util.appName}',
                   debugShowCheckedModeBanner: false,
                   theme: ThemeData.light().copyWith(
                     appBarTheme: AppBarTheme(
@@ -199,7 +203,7 @@ class _MyAppState extends State<MyApp> {
                   },
                 )
               : MaterialApp(
-                  title: '${Platform.isIOS ? "NAS助手" : "群晖助手"}',
+                  title: '${Util.appName}',
                   debugShowCheckedModeBanner: false,
                   theme: darkModeProvider.darkMode == 0
                       ? ThemeData.light().copyWith(

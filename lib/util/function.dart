@@ -61,6 +61,7 @@ class Util {
   static Map strings = {};
   static bool isAuthPage = false;
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
+  static String appName = "";
   static toast(String text) {
     showToast(text ?? "");
   }
@@ -564,7 +565,7 @@ class Util {
       }
       File image = await getCachedImageFile(url);
       File save = await image.copy(image.path + DateTime.now().millisecondsSinceEpoch.toString() + ".png");
-      bool result = await GallerySaver.saveImage(save.path, albumName: Platform.isIOS ? "NAS助手" : "群晖助手");
+      bool result = await GallerySaver.saveImage(save.path, albumName: Util.appName);
       if (showLoading) {
         hide();
       }

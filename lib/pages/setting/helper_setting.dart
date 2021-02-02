@@ -464,7 +464,7 @@ class _HelperSettingState extends State<HelperSetting> {
                   width: 8,
                 ),
                 Text(
-                  "关于${Platform.isIOS ? "NAS助手" : "群晖助手"}",
+                  "关于${Util.appName}",
                   style: TextStyle(fontSize: 16),
                 ),
               ],

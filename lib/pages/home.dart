@@ -117,7 +117,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       if (v) {
         if (lastPopTime == null || DateTime.now().difference(lastPopTime) > Duration(seconds: 2)) {
           lastPopTime = DateTime.now();
-          Util.toast('再按一次退出${Platform.isIOS ? "NAS助手" : "群晖助手"}');
+          Util.toast('再按一次退出${Util.appName}');
         } else {
           lastPopTime = DateTime.now();
           // 退出app

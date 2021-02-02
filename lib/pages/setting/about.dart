@@ -35,7 +35,7 @@ class _AboutState extends State<About> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "关于${Platform.isIOS ? "NAS助手" : "群晖助手"}",
+          "关于${Util.appName}",
         ),
       ),
       body: Column(
@@ -161,7 +161,7 @@ class _AboutState extends State<About> {
                           width: 10,
                         ),
                         Text(
-                          "公众号：${Platform.isIOS ? "NAS助手" : "群晖助手"}",
+                          "公众号：群晖助手",
                           style: TextStyle(fontSize: 16),
                         ),
                         Spacer(),
@@ -274,7 +274,7 @@ class _AboutState extends State<About> {
                           width: 10,
                         ),
                         Text(
-                          "${Platform.isIOS ? "NAS助手" : "群晖助手"}开源地址",
+                          "${Util.appName}开源地址",
                           style: TextStyle(fontSize: 16),
                         ),
                         Spacer(),

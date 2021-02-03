@@ -7,11 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 class Packages extends StatefulWidget {
+  final String version;
+  Packages(this.version);
   @override
   _PackagesState createState() => _PackagesState();
 }
 
 class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin {
+  int version = 1;
   TabController _tabController;
   List banners = [];
   List others = [];
@@ -30,17 +33,35 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   bool loadingOthers = true;
   @override
   void initState() {
+    String ver = widget.version;
+    int end = ver.indexOf("-");
+    var dsmVersion = ver.substring(4, end);
+    print(dsmVersion);
+    List v = dsmVersion.split(".");
+    if (v[0] == "6" && v[1] == "1") {
+      version = 1;
+    } else if (v[0] == "5") {
+      version = 1;
+    } else {
+      version = 2;
+    }
     _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
     getData();
     super.initState();
   }
 
   getData() async {
-    var res = await Api.packages();
+    var res = await Api.packages(version: version);
     if (res['success']) {
       setState(() {
         banners = res['data']['banners'];
-        packages = res['data']['packages'];
+        if (res['data']['packages'] != null) {
+          packages = res['data']['packages'];
+        } else {
+          packages = res['data']['data'];
+        }
+
+        //
         categories = res['data']['categories'];
       });
       setState(() {
@@ -68,11 +89,16 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
 
   getOthers() async {
     print("获取第三方套件");
-    var res = await Api.packages(others: true);
+    var res = await Api.packages(others: true, version: version);
     print("获取第三方套件end");
     if (res['success']) {
       setState(() {
-        others = res['data']['packages'];
+        if (res['data']['packages'] != null) {
+          others = res['data']['packages'];
+        } else {
+          others = res['data']['data'];
+        }
+        //
         loadingOthers = false;
       });
       calcInstalledPackage();
@@ -98,7 +124,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     installedPackages = [];
     canUpdatePackages = [];
     print("获取已安装套件");
-    var res = await Api.installedPackages();
+    var res = await Api.installedPackages(version: version);
     print("获取已安装套件end");
     if (res['success']) {
       setState(() {
@@ -398,7 +424,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      update['dname'],
+                      "${update['dname']}",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
@@ -485,7 +511,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                   ),
                   Text(
                     // "${package['category']}",
-                    "${installed ? package['additional']['updated_at'] : package['category'] is List && getCategoryName(package['category']).length > 0 ? getCategoryName(package['category']).join(",") : package['maintainer']}",
+                    "${installed && package['additional']['updated_at'] != null ? package['additional']['updated_at'] : package['category'] is List && getCategoryName(package['category']).length > 0 ? getCategoryName(package['category']).join(",") : package['maintainer']}",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: TextStyle(color: Colors.grey),

@@ -124,7 +124,9 @@ class Util {
     List items = optime.split(":");
     int days = int.parse(items[0]) ~/ 24;
     items[0] = (int.parse(items[0]) % 24).toString().padLeft(2, "0");
-    return "$days天 ${items.join(":")}";
+    items[1] = items[1].toString().padLeft(2, "0");
+    items[2] = items[2].toString().padLeft(2, "0");
+    return "${days > 0 ? "$days天" : ""} ${items.join(":")}";
   }
 
   static Map timeLong(int ticket) {
@@ -155,79 +157,8 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = [
-      "3gp",
-      "3g2",
-      "asf",
-      "dat",
-      "divx",
-      "dvr-ms",
-      "m2t",
-      "m2ts",
-      "m4v",
-      "mkv",
-      "mp4",
-      "mts",
-      "mov",
-      "qt",
-      "tp",
-      "trp",
-      "ts",
-      "vob",
-      "wmv",
-      "xvid",
-      "ac3",
-      "amr",
-      "rm",
-      "rmvb",
-      "ifo",
-      "mpeg",
-      "mpg",
-      "mpe",
-      "m1v",
-      "m2v",
-      "mpeg1",
-      "mpeg2",
-      "mpeg4",
-      "ogv",
-      "webm",
-      "flv",
-      "avi",
-      "swf",
-      "f4v"
-    ];
-    List<String> music = [
-      "aac",
-      "flac",
-      "m4a",
-      "m4b",
-      "aif",
-      "ogg",
-      "pcm",
-      "wav",
-      "cda",
-      "mid",
-      "mp2",
-      "mka",
-      "mpc",
-      "ape",
-      "ra",
-      "ac3",
-      "dts",
-      "wma",
-      "mp3",
-      "mp1",
-      "mp2",
-      "mpa",
-      "ram",
-      "m4p",
-      "aiff",
-      "dsf",
-      "dff",
-      "m3u",
-      "wpl",
-      "aiff"
-    ];
+    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
+    List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];
@@ -393,20 +324,28 @@ class Util {
     }
   }
 
-  static Future<dynamic> upload(String url,
-      {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
+  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
     headers = headers ?? {};
     headers['Cookie'] = Util.cookie;
+    headers['Accept-Encoding'] = "gzip";
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
     headers['origin'] = host ?? baseUrl;
     headers['referer'] = host ?? baseUrl;
+    // headers['host'] = host ?? baseUrl;
+    headers['Connection'] = "keep-alive";
+    //Proxy-Connection: keep-alive
     Dio dio = new Dio(
       new BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
         headers: headers,
-        contentType: "",
+        // contentType: "",
       ),
     );
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+    //   client.findProxy = (uri) {
+    //     return "PROXY 192.168.1.6:8888";
+    //   };
+    // };
     //忽略Https校验
     if (!checkSsl) {
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
@@ -431,7 +370,8 @@ class Util {
         return response.data;
       }
     } on DioError catch (error) {
-      print("请求出错:$url 请求内容:$data");
+      print(error.request.contentType);
+      print("请求出错:$baseUrl/$url 请求内容:$data msg:${error.message}");
       return {
         "success": false,
         "error": {"code": error.message},

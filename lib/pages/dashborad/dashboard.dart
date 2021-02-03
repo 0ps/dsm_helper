@@ -154,11 +154,10 @@ class DashboardState extends State<Dashboard> {
     }
 
     var res = await Api.systemInfo(widgets);
-    setState(() {
-      loading = false;
-    });
+
     if (res['success']) {
       setState(() {
+        loading = false;
         success = true;
       });
       List result = res['data']['result'];
@@ -236,7 +235,9 @@ class DashboardState extends State<Dashboard> {
       setState(() {
         if (loading) {
           success = res['success'];
+          loading = false;
         }
+
         msg = res['msg'] ?? "加载失败，code:${res['error']['code']}";
       });
       if (timer != null) {
@@ -1508,7 +1509,7 @@ class DashboardState extends State<Dashboard> {
             Navigator.of(context).pop();
             Navigator.of(context).push(CupertinoPageRoute(
                 builder: (context) {
-                  return Packages();
+                  return Packages(system['firmware_ver']);
                 },
                 settings: RouteSettings(name: "packages")));
           },

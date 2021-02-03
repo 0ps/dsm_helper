@@ -654,7 +654,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                                 Expanded(
                                   flex: 2,
                                   child: Text(
-                                    "${widget.system['up_time']}",
+                                    "${Util.parseOpTime(widget.system['up_time'])}",
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

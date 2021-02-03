@@ -89,7 +89,7 @@ class _DownloadDetailState extends State<DownloadDetail> with SingleTickerProvid
                                       var res = await Api.downloadTaskAction([task['id']], "delete");
                                       if (res['success']) {
                                         Util.toast("任务删除成功");
-                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop(true);
                                       } else {
                                         Util.toast("任务删除失败，代码：${res['error']['code']}");
                                       }

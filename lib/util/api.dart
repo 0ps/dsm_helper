@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'function.dart';
+import 'package:http_parser/http_parser.dart';
 
 class Api {
   static Future<Map> update(String buildNumber) async {
@@ -718,9 +719,6 @@ class Api {
     File file = File(filePath);
     // var permission = await checkPermission(uploadPath, filePath);
     MultipartFile multipartFile = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last);
-    print(multipartFile.length);
-    print(filePath.split("/").last);
-    print(multipartFile.contentType);
     var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2&_sid=${Util.sid}";
     // var url = "entry.cgi";
     // var data = {
@@ -739,7 +737,7 @@ class Api {
       "mtime": DateTime.now().millisecondsSinceEpoch,
       "overwrite": true,
       "path": uploadPath,
-      "size": await file.length(),
+      "size": file.lengthSync(),
       "file": multipartFile,
     };
     var result = await Util.upload(url, data: data, cancelToken: cancelToken, onSendProgress: onSendProgress);
@@ -760,20 +758,20 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> packages({bool others = false}) async {
+  static Future<Map> packages({bool others = false, int version: 1}) async {
     var data = {
       "updateSprite": true,
       "blforcereload": false,
       "blloadothers": others,
       "api": "SYNO.Core.Package.Server",
-      "version": 2,
+      "version": version,
       "method": "list",
       "_sid": Util.sid,
     };
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> installedPackages() async {
+  static Future<Map> installedPackages({int version: 1}) async {
     List<String> additional = [
       "description",
       "description_enu",
@@ -794,16 +792,18 @@ class Api {
       "silent_upgrade",
       "installing_progress",
       "ctl_uninstall",
-      "updated_at",
       "status",
       "url",
     ];
+    if (version == 2) {
+      additional.add("updated_at");
+    }
     var data = {
       "additional": jsonEncode(additional),
       "polling_interval": 15,
       "force_set_params": true,
       "api": "SYNO.Core.Package",
-      "version": 2,
+      "version": version,
       "method": "list",
       "_sid": Util.sid,
     };
@@ -1245,25 +1245,62 @@ class Api {
   }
 
   //delete_condition  delete
-  static Future<Map> downloadTaskCreate(String destination, String type, String url) async {
-    List<String> urls = url.split("\n");
-    List<String> validUrls = [];
-    for (String url in urls) {
-      if (url.trim().isNotBlank) {
-        validUrls.add(url.trim());
-      }
-    }
+  static Future<Map> downloadTaskCreate(String destination, String type, {String url, String filePath}) async {
     var data = {
-      "type": '"$type"',
-      "destination": '"$destination"',
-      "create_list": true,
-      "url": json.encode(validUrls),
       "api": 'SYNO.DownloadStation2.Task',
       "method": "create",
       "version": 1,
+      "type": '"$type"',
+      "create_list": true,
+    };
+    if (type == "file") {
+      // File file = File(filePath);
+      MultipartFile torrent = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("application/octet-stream"));
+      data['file'] = json.encode(["-1891550746"]);
+      data['-1891550746'] = torrent;
+      // data['size'] = file.lengthSync();
+      // data['mtime'] = DateTime.now().millisecondsSinceEpoch;
+      data['destination'] = '"$destination"';
+      return await Util.upload("entry.cgi", data: data);
+    } else {
+      List<String> urls = url.split("\n");
+      List<String> validUrls = [];
+      for (String url in urls) {
+        if (url.trim().isNotBlank) {
+          validUrls.add(url.trim());
+        }
+      }
+      data["url"] = json.encode(validUrls);
+      data['destination'] = '"$destination"'; //"destination": '"$destination"',
+      data['_sid'] = Util.sid;
+      return await Util.post("entry.cgi", data: data);
+    }
+  }
+
+  //SYNO.DownloadStation2.Task.List
+  static Future<Map> downloadFileList(String listId) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task.List',
+      "list_id": listId,
+      "method": "get",
+      "version": 2,
       "_sid": Util.sid,
     };
-    // print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadCreate(String listId, String destination, List selectedFile) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task.List.Polling',
+      "destination": '"$destination"',
+      "list_id": '"$listId"',
+      "selected": json.encode(selectedFile),
+      "method": "download",
+      "create_subfolder": true,
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -1276,7 +1313,6 @@ class Api {
       "version": 2,
       "_sid": Util.sid,
     };
-    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 

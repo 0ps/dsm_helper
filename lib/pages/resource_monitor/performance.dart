@@ -25,21 +25,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
   List disks = [];
   List spaces = [];
   List luns = [];
-  List colors = [
-    Colors.red,
-    Colors.redAccent,
-    Colors.purpleAccent,
-    Colors.green,
-    Colors.amber,
-    Colors.orange,
-    Colors.teal,
-    Colors.indigoAccent,
-    Colors.cyanAccent,
-    Colors.yellow,
-    Colors.black,
-    Colors.lightGreenAccent,
-    Colors.pinkAccent
-  ];
+  List colors = [Colors.red, Colors.redAccent, Colors.purpleAccent, Colors.green, Colors.amber, Colors.orange, Colors.teal, Colors.indigoAccent, Colors.cyanAccent, Colors.yellow, Colors.black, Colors.lightGreenAccent, Colors.pinkAccent];
   Timer timer;
   int maxNetworkSpeed = 0;
   int maxDiskReadSpeed = 0;
@@ -1379,9 +1365,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                               Text.rich(
                                                 TextSpan(
                                                   children: [
-                                                    TextSpan(
-                                                        text: "${Util.formatSize((memories.last['memory_size'] - memories.last['total_real']) * 1024, fixed: 1)}",
-                                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                                                    TextSpan(text: "${Util.formatSize((memories.last['memory_size'] - memories.last['total_real']) * 1024, fixed: 1)}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                                                   ],
                                                 ),
                                                 style: TextStyle(color: Colors.grey),
@@ -1412,9 +1396,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                               Text.rich(
                                                 TextSpan(
                                                   children: [
-                                                    TextSpan(
-                                                        text: "${Util.formatSize(memories.last['real_usage'] * memories.last['memory_size'] * 10.24, fixed: 1)}",
-                                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                                                    TextSpan(text: "${Util.formatSize(memories.last['real_usage'] * memories.last['memory_size'] * 10.24, fixed: 1)}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                                                   ],
                                                 ),
                                                 style: TextStyle(color: Colors.orange),
@@ -1635,7 +1617,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 ),
                                                 LineChartBarData(
                                                   spots: networks.map((network) {
-                                                    return FlSpot(networks.indexOf(network).toDouble(), network[0]['rx'].toDouble());
+                                                    return FlSpot(networks.indexOf(network).toDouble(), network[i]['rx'].toDouble());
                                                   }).toList(),
                                                   isCurved: true,
                                                   colors: [

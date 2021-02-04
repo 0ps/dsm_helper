@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dsm_helper/pages/login/login.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/label.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,7 +35,6 @@ class _AccountsState extends State<Accounts> {
       setState(() {
         servers = json.decode(serverString);
       });
-      print(servers);
       getInfo();
     }
   }
@@ -54,16 +54,24 @@ class _AccountsState extends State<Accounts> {
         //仅首次重新登录
         if (server['loading']) {
           String host = "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}";
+          print(server);
           Api.shareList(sid: server['sid'], checkSsl: server['check_ssl'], cookie: server['smid'], host: host).then((checkLogin) async {
             if (checkLogin['success']) {
               server['is_login'] = true;
+              print("登录有效");
               //获取系统信息
               serverInfo(server);
             } else {
               //登录失败，尝试重新登录
               var res = await Api.login(host: host, account: server['account'], password: server['password'], otpCode: "", rememberDevice: false, cookie: server['smid']);
               if (res['success']) {
+                print("重新登录成功");
+                setState(() {
+                  server['is_login'] = true;
+                });
                 server['sid'] = res['data']['sid'];
+                saveAccounts();
+                serverInfo(server);
               } else {
                 setState(() {
                   server['loading'] = false;
@@ -76,9 +84,31 @@ class _AccountsState extends State<Accounts> {
     });
   }
 
+  saveAccounts() async {
+    List accounts = [];
+    servers.forEach((server) {
+      accounts.add({
+        "https": server['https'],
+        "host": server['host'],
+        "port": server['port'],
+        "account": server['account'],
+        "remember_password": server['remember_password'],
+        "password": server['password'],
+        "auto_login": server['auto_login'],
+        "check_ssl": server['check_ssl'],
+        "cookie": server['cookie'],
+        "sid": server['sid'],
+      });
+    });
+    Util.setStorage("servers", json.encode(accounts));
+  }
+
   serverInfo(server) async {
     var res = await Api.utilization(sid: server['sid'], checkSsl: server['check_ssl'], cookie: server['smid'], host: "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}");
     if (res['success']) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         server['cpu'] = (res['data']['cpu']['user_load'] + res['data']['cpu']['system_load']);
         server['ram'] = res['data']['memory']['real_usage'];
@@ -116,9 +146,15 @@ class _AccountsState extends State<Accounts> {
           Util.setStorage("remember_password", server['remember_password'] ? "1" : "0");
           Util.setStorage("auto_login", server['auto_login'] ? "1" : "0");
           Util.setStorage("check_ssl", server['check_ssl'] ? "1" : "0");
+          Util.setStorage("sid", server['sid']);
           Util.sid = server['sid'];
           Util.cookie = server['smid'];
           Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+        } else {
+          server['action'] = "login";
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return Login(server: server);
+          }));
         }
       },
       child: NeuCard(
@@ -154,6 +190,52 @@ class _AccountsState extends State<Accounts> {
                           ),
                         ),
                         if (server['loading']) CupertinoActivityIndicator() else if (!server['is_login']) Label("登录失效", Colors.red),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        NeuButton(
+                          onPressed: () {
+                            print(server);
+                            server['action'] = "edit";
+                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                              return Login(server: server);
+                            }));
+                          },
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          bevel: 20,
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          child: Image.asset(
+                            "assets/icons/edit.png",
+                            width: 20,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        NeuButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            setState(() {
+                              servers.remove(server);
+                            });
+
+                            saveAccounts();
+                            Util.toast("删除成功");
+                          },
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          bevel: 20,
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          child: Image.asset(
+                            "assets/icons/delete.png",
+                            width: 20,
+                          ),
+                        ),
                       ],
                     ),
                     Row(

@@ -10,6 +10,8 @@ import 'package:neumorphic/neumorphic.dart';
 import 'package:vibrate/vibrate.dart';
 
 class Login extends StatefulWidget {
+  final Map server;
+  Login({this.server});
   @override
   _LoginState createState() => _LoginState();
 }
@@ -21,6 +23,8 @@ class _LoginState extends State<Login> {
   String port = "5000";
   bool needOtp = false;
   String otpCode = "";
+  String sid = "";
+  String smid = "";
   bool https = false;
   bool login = false;
   bool rememberPassword = true;
@@ -37,69 +41,101 @@ class _LoginState extends State<Login> {
   @override
   initState() {
     _portController.value = TextEditingValue(text: port);
-    getInfo();
+    Util.getStorage("servers").then((serverString) {
+      if (serverString.isNotBlank) {
+        servers = jsonDecode(serverString);
+      }
+      if (widget.server != null) {
+        print(widget.server);
+        setState(() {
+          https = widget.server['https'];
+          host = widget.server['host'];
+          port = widget.server['port'];
+          account = widget.server['account'];
+          password = widget.server['password'];
+          autoLogin = widget.server['auto_login'];
+          rememberPassword = widget.server['remember_password'];
+          checkSsl = widget.server['check_ssl'];
+          if (host.isNotBlank) {
+            _hostController.value = TextEditingValue(text: host);
+          }
+          if (port.isNotBlank) {
+            _portController.value = TextEditingValue(text: port);
+          }
+          if (account.isNotBlank) {
+            _accountController.value = TextEditingValue(text: account);
+          }
+          print(password);
+          if (password.isNotBlank) {
+            _passwordController.value = TextEditingValue(text: password);
+          }
+        });
+        Util.cookie = widget.server['cookie'];
+        Util.sid = widget.server['sid'];
+      } else {
+        getInfo();
+      }
+    });
+
     super.initState();
   }
 
   getInfo() async {
-    String sid = await Util.getStorage("sid");
-    String smid = await Util.getStorage("smid");
-    String https = await Util.getStorage("https");
-    String host = await Util.getStorage("host");
-    String port = await Util.getStorage("port");
-    String account = await Util.getStorage("account");
-    String password = await Util.getStorage("password");
-    String autoLogin = await Util.getStorage("auto_login");
-    String rememberPassword = await Util.getStorage("remember_password");
-    String checkSsl = await Util.getStorage("check_ssl");
-    String serverString = await Util.getStorage("servers");
+    sid = await Util.getStorage("sid");
+    smid = await Util.getStorage("smid");
+    String httpsString = await Util.getStorage("https");
+    host = await Util.getStorage("host");
+    port = await Util.getStorage("port");
+    account = await Util.getStorage("account");
+    password = await Util.getStorage("password");
+    String autoLoginString = await Util.getStorage("auto_login");
 
+    String rememberPasswordString = await Util.getStorage("remember_password");
+    String checkSslString = await Util.getStorage("check_ssl");
     Util.cookie = smid;
-    if (serverString.isNotBlank) {
-      servers = jsonDecode(serverString);
-    }
-    if (https.isNotBlank) {
+
+    if (httpsString.isNotBlank) {
       setState(() {
-        this.https = https == "1";
+        https = httpsString == "1";
       });
     }
-    if (checkSsl.isNotBlank) {
+    if (checkSslString.isNotBlank) {
       setState(() {
-        this.checkSsl = checkSsl == "1";
+        checkSsl = checkSslString == "1";
       });
     }
     if (host.isNotBlank) {
-      this.host = host;
       _hostController.value = TextEditingValue(text: host);
     }
     if (port.isNotBlank) {
-      this.port = port;
       _portController.value = TextEditingValue(text: port);
     }
     if (account.isNotBlank) {
-      this.account = account;
       _accountController.value = TextEditingValue(text: account);
     }
     if (password.isNotBlank) {
-      this.password = password;
       _passwordController.value = TextEditingValue(text: password);
     }
-    if (autoLogin.isNotBlank) {
+    if (autoLoginString.isNotBlank) {
       setState(() {
-        this.autoLogin = autoLogin == "1";
+        autoLogin = autoLoginString == "1";
       });
     }
-    if (rememberPassword.isNotBlank) {
+    if (rememberPasswordString.isNotBlank) {
       setState(() {
-        this.rememberPassword = rememberPassword == "1";
+        rememberPassword = rememberPasswordString == "1";
       });
     }
-    if (https.isNotBlank && sid.isNotBlank && host.isNotBlank) {
+  }
+
+  checkLogin() async {
+    if (https != null && sid.isNotBlank && host.isNotBlank) {
       //开始自动登录
-      Util.baseUrl = "${https == "1" ? "https" : "http"}://$host:$port";
+      Util.baseUrl = "${https ? "https" : "http"}://$host:$port";
       Util.sid = sid;
       //如果开启了自动登录，则判断当前登录状态
-      if (this.autoLogin) {
+      print("autoLogin:${autoLogin}");
+      if (autoLogin) {
         setState(() {
           login = true;
         });
@@ -112,26 +148,25 @@ class _LoginState extends State<Login> {
             });
           } else {
             //如果登录失效，尝试重新登录
-            String account = await Util.getStorage("account");
-            String password = await Util.getStorage("password");
-            var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken, rememberDevice: false);
-            if (loginRes['success'] == true) {
-              //重新登录成功
-              Util.setStorage("sid", loginRes['data']['sid']);
-              Util.sid = loginRes['data']['sid'];
-              Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
-            } else {
-              if (loginRes['code'] == "用户取消") {
-                Util.toast("用户取消登录");
-              } else {
-                Util.toast("自动登录失败，请手动登录");
-                Util.vibrate(FeedbackType.warning);
-              }
-
-              setState(() {
-                login = false;
-              });
-            }
+            _login();
+            // var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken, rememberDevice: false);
+            // if (loginRes['success'] == true) {
+            //   //重新登录成功
+            //   Util.setStorage("sid", loginRes['data']['sid']);
+            //   Util.sid = loginRes['data']['sid'];
+            //   Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+            // } else {
+            //   if (loginRes['code'] == "用户取消") {
+            //     Util.toast("用户取消登录");
+            //   } else {
+            //     Util.toast("自动登录失败，请手动登录");
+            //     Util.vibrate(FeedbackType.warning);
+            //   }
+            //
+            //   setState(() {
+            //     login = false;
+            //   });
+            // }
           }
         } else {
           //登录有效，进入首页

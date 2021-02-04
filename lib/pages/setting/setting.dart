@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:dsm_helper/pages/backup/backup.dart';
 import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
+import 'package:dsm_helper/pages/login/accounts.dart';
 import 'package:dsm_helper/pages/login/confirm_logout.dart';
 import 'package:dsm_helper/pages/provider/dark_mode.dart';
 import 'package:dsm_helper/pages/setting/helper_setting.dart';
 import 'package:dsm_helper/pages/terminal/select_server.dart';
 import 'package:dsm_helper/pages/user/setting.dart';
 import 'package:dsm_helper/util/function.dart';
-import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -387,30 +387,32 @@ class _SettingState extends State<Setting> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             bevel: 20,
-                            child: Icon(
-                              Icons.logout,
-                              color: Colors.grey,
-                              size: 16,
+                            child: Image.asset(
+                              "assets/icons/exit.png",
+                              width: 16,
                             ),
                           ),
-                          // SizedBox(
-                          //   width: 10,
-                          // ),
-                          // NeuButton(
-                          //   onPressed: () {
-                          //     Util.removeStorage("sid");
-                          //     // Util.removeStorage("smid");
-                          //     Navigator.of(context).pushNamedAndRemoveUntil("/login", (route) => false);
-                          //   },
-                          //   // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          //   padding: EdgeInsets.all(10),
-                          //   decoration: NeumorphicDecoration(
-                          //     color: Theme.of(context).scaffoldBackgroundColor,
-                          //     borderRadius: BorderRadius.circular(10),
-                          //   ),
-                          //   bevel: 20,
-                          //   child: Icon(Icons.autorenew_sharp),
-                          // ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          NeuButton(
+                            onPressed: () {
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                return Accounts();
+                              }));
+                            },
+                            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            padding: EdgeInsets.all(10),
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            bevel: 20,
+                            child: Image.asset(
+                              "assets/icons/change.png",
+                              width: 16,
+                            ),
+                          ),
                         ],
                       ),
                     ),

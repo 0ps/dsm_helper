@@ -69,6 +69,7 @@ class Api {
       cancelToken: cancelToken,
       cookie: cookie,
       host: host,
+      checkSsl: checkSsl,
     );
   }
 
@@ -978,8 +979,7 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data":
-          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,

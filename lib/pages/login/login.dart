@@ -126,6 +126,7 @@ class _LoginState extends State<Login> {
         rememberPassword = rememberPasswordString == "1";
       });
     }
+    checkLogin();
   }
 
   checkLogin() async {

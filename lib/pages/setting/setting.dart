@@ -310,508 +310,175 @@ class _SettingState extends State<Setting> {
           ),
         ],
       ),
-      body: Column(
+      body: ListView(
+        padding: EdgeInsets.symmetric(horizontal: 20),
         children: [
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(CupertinoPageRoute(
-                            builder: (context) {
-                              return UserSetting();
-                            },
-                            settings: RouteSettings(name: "user_setting")))
-                        .then((res) {
-                      if (res != null && res) {
-                        getNormalUser();
-                      }
-                    });
-                  },
-                  child: NeuCard(
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
+          SizedBox(
+            height: 30,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context)
+                  .push(CupertinoPageRoute(
+                      builder: (context) {
+                        return UserSetting();
+                      },
+                      settings: RouteSettings(name: "user_setting")))
+                  .then((res) {
+                if (res != null && res) {
+                  getNormalUser();
+                }
+              });
+            },
+            child: NeuCard(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              bevel: 20,
+              curveType: CurveType.flat,
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage("assets/logo.png"),
+                      radius: 30,
                     ),
-                    bevel: 20,
-                    curveType: CurveType.flat,
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Row(
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage("assets/logo.png"),
-                            radius: 30,
+                          Text(
+                            "$account",
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                           ),
                           SizedBox(
-                            width: 20,
+                            height: 5,
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "$account",
-                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                                ),
-                                if (email.isNotEmpty) ...[
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "$email",
-                                    style: TextStyle(color: Colors.grey),
-                                  )
-                                ],
-                              ],
-                            ),
-                          ),
-                          NeuButton(
-                            onPressed: () {
-                              showCupertinoModalPopup(
-                                context: context,
-                                builder: (context) {
-                                  return ConfirmLogout(otpEnable);
-                                },
-                              );
-                            },
-                            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            padding: EdgeInsets.all(10),
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            child: Image.asset(
-                              "assets/icons/exit.png",
-                              width: 16,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          NeuButton(
-                            onPressed: () {
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return Accounts();
-                              }));
-                            },
-                            // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            padding: EdgeInsets.all(10),
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            child: Image.asset(
-                              "assets/icons/change.png",
-                              width: 16,
-                            ),
-                          ),
+                          Text(
+                            "${Util.baseUrl.split(":").getRange(0, 2).join(":")}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.grey),
+                          )
                         ],
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: NeuButton(
-                        onPressed: () async {
-                          if (shutdowning) {
-                            return;
-                          }
-                          showCupertinoModalPopup(
-                            context: context,
-                            builder: (context) {
-                              return Material(
-                                color: Colors.transparent,
-                                child: NeuCard(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(22),
-                                  bevel: 5,
-                                  curveType: CurveType.emboss,
-                                  decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        "确认关机",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                      ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      Text(
-                                        "确认要关闭设备吗？",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                                      ),
-                                      SizedBox(
-                                        height: 22,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                power("shutdown", false);
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "确认关机",
-                                                style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 16,
-                                          ),
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "取消",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          children: [
-                            shutdowning
-                                ? CupertinoActivityIndicator(
-                                    radius: 20,
-                                  )
-                                : Image.asset(
-                                    "assets/icons/shutdown.png",
-                                    width: 40,
-                                  ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "关机",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
+                    NeuButton(
+                      onPressed: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) {
+                            return ConfirmLogout(otpEnable);
+                          },
+                        );
+                      },
+                      // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: EdgeInsets.all(10),
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      bevel: 20,
+                      child: Image.asset(
+                        "assets/icons/exit.png",
+                        width: 16,
                       ),
                     ),
                     SizedBox(
-                      width: 20,
+                      width: 10,
                     ),
-                    Expanded(
-                      child: NeuButton(
-                        onPressed: () async {
-                          if (rebooting) {
-                            return;
-                          }
-                          showCupertinoModalPopup(
-                            context: context,
-                            builder: (context) {
-                              return Material(
-                                color: Colors.transparent,
-                                child: NeuCard(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(22),
-                                  bevel: 5,
-                                  curveType: CurveType.emboss,
-                                  decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        "确认重启",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                      ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      Text(
-                                        "确认要重新启动设备？",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                                      ),
-                                      SizedBox(
-                                        height: 22,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                power("reboot", false);
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "确认重启",
-                                                style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 16,
-                                          ),
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "取消",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          children: [
-                            rebooting
-                                ? CupertinoActivityIndicator(
-                                    radius: 20,
-                                  )
-                                : Image.asset(
-                                    "assets/icons/reboot.png",
-                                    width: 40,
-                                  ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "重启",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
+                    NeuButton(
+                      onPressed: () {
+                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                          return Accounts();
+                        }));
+                      },
+                      // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: EdgeInsets.all(10),
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-                          if (ssh == null) {
-                            Util.toast("未获取到SSH状态，正在重试");
-                            getData();
-                          } else {
-                            setState(() {
-                              sshLoading = true;
-                            });
-                            await Api.setTerminal(!ssh, telnet, sshPort);
-                            await getData();
-                          }
-                        },
-                        onLongPress: () {
-                          Navigator.of(context).push(CupertinoPageRoute(
-                              builder: (context) {
-                                return SshSetting();
-                              },
-                              settings: RouteSettings(name: "ssh_setting")));
-                        },
-                        child: NeuCard(
-                          // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          curveType: ssh == null
-                              ? CurveType.convex
-                              : ssh
-                                  ? CurveType.emboss
-                                  : CurveType.flat,
-                          bevel: 20,
-                          child: Column(
-                            children: [
-                              sshLoading
-                                  ? CupertinoActivityIndicator(
-                                      radius: 20,
-                                    )
-                                  : Image.asset(
-                                      "assets/icons/ssh.png",
-                                      width: 40,
-                                    ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                "SSH${ssh == null ? "开关" : ssh ? "已开启" : "已关闭"}",
-                                style: TextStyle(fontSize: 16),
-                              )
-                            ],
-                          ),
-                        ),
+                      bevel: 20,
+                      child: Image.asset(
+                        "assets/icons/change.png",
+                        width: 16,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: NeuButton(
-                        onPressed: () async {
-                          showCupertinoModalPopup(
-                            context: context,
-                            builder: (context) {
-                              return Material(
-                                color: Colors.transparent,
-                                child: NeuCard(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(22),
-                                  bevel: 5,
-                                  curveType: CurveType.emboss,
-                                  decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        "主题颜色",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: NeuButton(
+                  onPressed: () async {
+                    if (shutdowning) {
+                      return;
+                    }
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: NeuCard(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(22),
+                            bevel: 5,
+                            curveType: CurveType.emboss,
+                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  "确认关机",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  "确认要关闭设备吗？",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                                ),
+                                SizedBox(
+                                  height: 22,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          power("shutdown", false);
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "确认关机",
+                                          style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                        ),
                                       ),
-                                      SizedBox(
-                                        height: 12,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                Provider.of<DarkModeProvider>(context, listen: false).changeMode(0);
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "亮色",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 16,
-                                          ),
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                Provider.of<DarkModeProvider>(context, listen: false).changeMode(1);
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "暗色",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 16,
-                                          ),
-                                          Expanded(
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                Provider.of<DarkModeProvider>(context, listen: false).changeMode(2);
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 5,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Text(
-                                                "跟随系统",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      NeuButton(
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: NeuButton(
                                         onPressed: () async {
                                           Navigator.of(context).pop();
                                         },
@@ -826,51 +493,418 @@ class _SettingState extends State<Setting> {
                                           style: TextStyle(fontSize: 18),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                          );
-                        },
-                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "assets/icons/theme.png",
+                                SizedBox(
+                                  height: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  child: Column(
+                    children: [
+                      shutdowning
+                          ? CupertinoActivityIndicator(
+                              radius: 20,
+                            )
+                          : Image.asset(
+                              "assets/icons/shutdown.png",
                               width: 40,
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "主题颜色",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
+                      SizedBox(
+                        height: 5,
                       ),
+                      Text(
+                        "关机",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: NeuButton(
+                  onPressed: () async {
+                    if (rebooting) {
+                      return;
+                    }
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: NeuCard(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(22),
+                            bevel: 5,
+                            curveType: CurveType.emboss,
+                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  "确认重启",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  "确认要重新启动设备？",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                                ),
+                                SizedBox(
+                                  height: 22,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          power("reboot", false);
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "确认重启",
+                                          style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "取消",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  child: Column(
+                    children: [
+                      rebooting
+                          ? CupertinoActivityIndicator(
+                              radius: 20,
+                            )
+                          : Image.asset(
+                              "assets/icons/reboot.png",
+                              width: 40,
+                            ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "重启",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () async {
+                    if (ssh == null) {
+                      Util.toast("未获取到SSH状态，正在重试");
+                      getData();
+                    } else {
+                      setState(() {
+                        sshLoading = true;
+                      });
+                      await Api.setTerminal(!ssh, telnet, sshPort);
+                      await getData();
+                    }
+                  },
+                  onLongPress: () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) {
+                          return SshSetting();
+                        },
+                        settings: RouteSettings(name: "ssh_setting")));
+                  },
+                  child: NeuCard(
+                    // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    SizedBox(
-                      width: 20,
+                    curveType: ssh == null
+                        ? CurveType.convex
+                        : ssh
+                            ? CurveType.emboss
+                            : CurveType.flat,
+                    bevel: 20,
+                    child: Column(
+                      children: [
+                        sshLoading
+                            ? CupertinoActivityIndicator(
+                                radius: 20,
+                              )
+                            : Image.asset(
+                                "assets/icons/ssh.png",
+                                width: 40,
+                              ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          "SSH${ssh == null ? "开关" : ssh ? "已开启" : "已关闭"}",
+                          style: TextStyle(fontSize: 16),
+                        )
+                      ],
                     ),
-                    Expanded(
-                      child: NeuButton(
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: NeuButton(
+                  onPressed: () async {
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: NeuCard(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(22),
+                            bevel: 5,
+                            curveType: CurveType.emboss,
+                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  "主题颜色",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          Provider.of<DarkModeProvider>(context, listen: false).changeMode(0);
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "亮色",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          Provider.of<DarkModeProvider>(context, listen: false).changeMode(1);
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "暗色",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: NeuButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          Provider.of<DarkModeProvider>(context, listen: false).changeMode(2);
+                                        },
+                                        decoration: NeumorphicDecoration(
+                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                          borderRadius: BorderRadius.circular(25),
+                                        ),
+                                        bevel: 5,
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "跟随系统",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                NeuButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  bevel: 5,
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    "取消",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/icons/theme.png",
+                        width: 40,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "主题颜色",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: NeuButton(
+                  onPressed: () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) {
+                          return SelectServer();
+                        },
+                        settings: RouteSettings(name: "select_server")));
+                  },
+                  // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/icons/ssh.png",
+                        width: 40,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        "终端",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: Platform.isAndroid
+                    ? NeuButton(
                         onPressed: () {
                           Navigator.of(context).push(CupertinoPageRoute(
                               builder: (context) {
-                                return SelectServer();
+                                return Backup();
                               },
-                              settings: RouteSettings(name: "select_server")));
+                              settings: RouteSettings(name: "backup")));
                         },
                         // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         padding: EdgeInsets.symmetric(vertical: 20),
@@ -882,158 +916,22 @@ class _SettingState extends State<Setting> {
                         child: Column(
                           children: [
                             Image.asset(
-                              "assets/icons/ssh.png",
+                              "assets/icons/upload.png",
                               width: 40,
                             ),
                             SizedBox(
                               height: 8,
                             ),
                             Text(
-                              "终端",
+                              "相册备份",
                               style: TextStyle(fontSize: 16),
                             )
                           ],
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Platform.isAndroid
-                          ? NeuButton(
-                              onPressed: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) {
-                                      return Backup();
-                                    },
-                                    settings: RouteSettings(name: "backup")));
-                              },
-                              // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              bevel: 20,
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    "assets/icons/upload.png",
-                                    width: 40,
-                                  ),
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    "相册备份",
-                                    style: TextStyle(fontSize: 16),
-                                  )
-                                ],
-                              ),
-                            )
-                          : Container(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                // Expanded(
-                //   child: ,
-                // ),
-                // SizedBox(
-                //   width: 20,
-                // ),
-                // Expanded(
-                //   child: NeuButton(
-                //     onPressed: () {
-                //       showCupertinoModalPopup(
-                //         context: context,
-                //         builder: (context) {
-                //           return Material(
-                //             color: Colors.transparent,
-                //             child: NeuCard(
-                //               width: double.infinity,
-                //               height: MediaQuery.of(context).size.height * 0.8,
-                //               bevel: 5,
-                //               curveType: CurveType.emboss,
-                //               decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                //               child: Padding(
-                //                 padding: EdgeInsets.symmetric(vertical: 20),
-                //                 child: Column(
-                //                   mainAxisSize: MainAxisSize.min,
-                //                   children: <Widget>[
-                //                     Text(
-                //                       "选择账号",
-                //                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                //                     ),
-                //                     SizedBox(
-                //                       height: 20,
-                //                     ),
-                //                     Expanded(
-                //                       child: ListView.builder(
-                //                         padding: EdgeInsets.all(20),
-                //                         itemBuilder: (context, i) {
-                //                           return _buildServerItem(servers[i]);
-                //                         },
-                //                         itemCount: servers.length,
-                //                       ),
-                //                     ),
-                //                     Padding(
-                //                       padding: EdgeInsets.symmetric(horizontal: 20),
-                //                       child: NeuButton(
-                //                         onPressed: () async {
-                //                           Navigator.of(context).pop();
-                //                         },
-                //                         decoration: NeumorphicDecoration(
-                //                           color: Theme.of(context).scaffoldBackgroundColor,
-                //                           borderRadius: BorderRadius.circular(25),
-                //                         ),
-                //                         bevel: 20,
-                //                         padding: EdgeInsets.symmetric(vertical: 10),
-                //                         child: Text(
-                //                           "取消",
-                //                           style: TextStyle(fontSize: 18),
-                //                         ),
-                //                       ),
-                //                     ),
-                //                     SizedBox(
-                //                       height: 8,
-                //                     ),
-                //                   ],
-                //                 ),
-                //               ),
-                //             ),
-                //           );
-                //         },
-                //       );
-                //     },
-                //     // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                //     padding: EdgeInsets.symmetric(vertical: 20),
-                //     decoration: NeumorphicDecoration(
-                //       color: Theme.of(context).scaffoldBackgroundColor,
-                //       borderRadius: BorderRadius.circular(20),
-                //     ),
-                //     bevel: 20,
-                //     child: Text(
-                //       "切换账号",
-                //       style: TextStyle(fontSize: 18),
-                //     ),
-                //   ),
-                // )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 30,
+                      )
+                    : Container(),
+              ),
+            ],
           ),
         ],
       ),

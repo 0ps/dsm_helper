@@ -46,6 +46,7 @@ class _AccountsState extends State<Accounts> {
       });
     }
     servers.forEach((server) {
+      server['loading'] = server['loading'] ?? true;
       server['is_login'] = server['is_login'] ?? false;
       if (server['is_login']) {
         serverInfo(server);
@@ -60,7 +61,7 @@ class _AccountsState extends State<Accounts> {
               serverInfo(server);
             } else {
               //登录失败，尝试重新登录
-              var res = await Api.login(host: host, account: server['account'], password: server['password'], otpCode: "", rememberDevice: server['remember_device'], cookie: server['smid']);
+              var res = await Api.login(host: host, account: server['account'], password: server['password'], otpCode: "", rememberDevice: false, cookie: server['smid']);
               if (res['success']) {
                 server['sid'] = res['data']['sid'];
               } else {
@@ -105,7 +106,20 @@ class _AccountsState extends State<Accounts> {
     server['write'] = server['write'] ?? 0.0;
     return GestureDetector(
       onTap: () {
-        if (server['is_login']) {}
+        if (server['is_login']) {
+          Util.baseUrl = "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}";
+          Util.checkSsl = server['check_ssl'];
+          Util.setStorage("https", server['https'] ? "1" : "0");
+          Util.setStorage("host", server['host']);
+          Util.setStorage("port", server['port']);
+          Util.setStorage("account", server['account']);
+          Util.setStorage("remember_password", server['remember_password'] ? "1" : "0");
+          Util.setStorage("auto_login", server['auto_login'] ? "1" : "0");
+          Util.setStorage("check_ssl", server['check_ssl'] ? "1" : "0");
+          Util.sid = server['sid'];
+          Util.cookie = server['smid'];
+          Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+        }
       },
       child: NeuCard(
         curveType: CurveType.flat,

@@ -156,6 +156,9 @@ class DashboardState extends State<Dashboard> {
     var res = await Api.systemInfo(widgets);
 
     if (res['success']) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         loading = false;
         success = true;
@@ -321,8 +324,7 @@ class DashboardState extends State<Dashboard> {
                           Text("散热状态："),
                           Text(
                             "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                            style: TextStyle(
-                                color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                            style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],

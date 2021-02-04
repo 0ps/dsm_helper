@@ -1,4 +1,5 @@
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:gesture_password/gesture_password.dart';
 import 'package:gesture_password/mini_gesture_password.dart';
@@ -22,6 +23,7 @@ class _GesturePasswordPageState extends State<GesturePasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text('设置密码'),
       ),
       body: Center(

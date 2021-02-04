@@ -2,6 +2,7 @@ import 'package:dsm_helper/pages/docker/detail.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
@@ -567,6 +568,7 @@ class _DockerState extends State<Docker> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("Docker"),
       ),
       body: Column(

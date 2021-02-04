@@ -1,6 +1,7 @@
 import 'package:dsm_helper/pages/download_station/select_file.dart';
 import 'package:dsm_helper/pages/file/select_folder.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _AddDownloadTaskState extends State<AddDownloadTask> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("创建下载任务"),
       ),
       body: ListView(

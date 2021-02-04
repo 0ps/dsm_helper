@@ -1,4 +1,5 @@
 import 'package:android_intent/android_intent.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -151,6 +152,7 @@ class _OpenSourceState extends State<OpenSource> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text(
           "开源插件",
         ),

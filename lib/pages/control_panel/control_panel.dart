@@ -4,7 +4,7 @@ import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
 import 'package:dsm_helper/pages/control_panel/users/users.dart';
 
 import 'shared_folders/shared_folders.dart';
-import 'package:dsm_helper/pages/system/info.dart';
+import 'package:dsm_helper/pages/control_panel/info/info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';

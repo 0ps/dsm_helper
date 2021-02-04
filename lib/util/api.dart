@@ -37,7 +37,7 @@ class Api {
 //    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
   }
 
-  static Future<Map> login({String host, String account, String password, String otpCode: "", CancelToken cancelToken, bool rememberDevice: false}) async {
+  static Future<Map> login({String host, String account, String password, String otpCode: "", CancelToken cancelToken, bool rememberDevice: false, String cookie}) async {
     var data = {
       "account": account,
       "passwd": password,
@@ -48,18 +48,18 @@ class Api {
       "session": "FileStation",
       "enable_device_token": rememberDevice ? "yes" : "no",
     };
-    print(data);
-    return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken);
+    return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken, cookie: cookie);
   }
 
-  static Future<Map> shareList({List<String> additional = const ["perm", "time", "size"], CancelToken cancelToken}) async {
+  static Future<Map> shareList({List<String> additional = const ["perm", "time", "size"], CancelToken cancelToken, String sid, bool checkSsl, String cookie, String host}) async {
+    print(host);
     return await Util.post(
       "entry.cgi",
       data: {
         "api": '"SYNO.FileStation.List"',
         "method": '"list_share"',
         "version": 2,
-        "_sid": Util.sid,
+        "_sid": sid ?? Util.sid,
         "offset": 0,
         "limit": 1000,
         "sort_by": '"name"',
@@ -67,6 +67,8 @@ class Api {
         "additional": jsonEncode(additional),
       },
       cancelToken: cancelToken,
+      cookie: cookie,
+      host: host,
     );
   }
 
@@ -976,7 +978,8 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data":
+          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -991,16 +994,16 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> utilization() async {
+  static Future<Map> utilization({String sid, bool checkSsl, String cookie, String host}) async {
     var data = {
       "api": "SYNO.Core.System.Utilization",
       "method": "get",
       "version": 1,
       "type": "current",
       "resource": ["cpu", "memory", "network", "lun", "disk", "space"],
-      "_sid": Util.sid,
+      "_sid": sid ?? Util.sid,
     };
-    return await Util.post("entry.cgi", data: data);
+    return await Util.post("entry.cgi", data: data, checkSsl: checkSsl, cookie: cookie, host: host);
   }
 
   //SYNO.Core.System.Process

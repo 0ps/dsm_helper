@@ -1,6 +1,7 @@
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -367,6 +368,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text(
           "信息中心",
         ),
@@ -682,7 +684,10 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                                   flex: 2,
                                   child: Text(
                                     "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
-                                    style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
+                                    style: TextStyle(
+                                        color: widget.system['temperature_warning'] == null
+                                            ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green)
+                                            : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

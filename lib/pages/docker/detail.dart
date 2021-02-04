@@ -1,6 +1,7 @@
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -334,6 +335,7 @@ class _ContainerDetailState extends State<ContainerDetail> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text(widget.name),
       ),
       body: loading
@@ -730,7 +732,7 @@ class _ContainerDetailState extends State<ContainerDetail> with SingleTickerProv
                               child: ListView.separated(
                                 padding: EdgeInsets.only(left: 10, right: 20, top: 20),
                                 itemBuilder: (context, i) {
-                                  return _buildLogItem(logs[i]);
+                                  return _buildLogItem(logs.reversed.toList()[i]);
                                 },
                                 separatorBuilder: (context, i) {
                                   return SizedBox(

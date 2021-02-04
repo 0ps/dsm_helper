@@ -1,8 +1,3 @@
-/*
- * 创建日期：23/12/19 下午 05:31
- * 版权所有：青岛人才在线企业服务管理有限公司
- */
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -110,7 +105,8 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   initGestureConfigHandler: (state) {
                     double initialScale = 1.0;
                     if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
-                      initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
+                      initialScale =
+                          initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
                     }
                     return GestureConfig(
                         inPageView: true,
@@ -162,7 +158,8 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   initGestureConfigHandler: (state) {
                     double initialScale = 1.0;
                     if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
-                      initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
+                      initialScale =
+                          initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
                     }
                     return GestureConfig(
                         inPageView: true,

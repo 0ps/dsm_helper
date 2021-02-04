@@ -1,3 +1,4 @@
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 
 class Users extends StatefulWidget {
@@ -10,6 +11,7 @@ class _UsersState extends State<Users> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("目前连接用户"),
       ),
       body: Center(

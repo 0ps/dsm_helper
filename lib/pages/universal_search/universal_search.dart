@@ -1,3 +1,4 @@
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 
 class UniversalSearch extends StatefulWidget {
@@ -10,6 +11,7 @@ class _UniversalSearchState extends State<UniversalSearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("Universal Search"),
       ),
       body: Center(

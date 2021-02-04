@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:dsm_helper/pages/login/accounts.dart';
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
@@ -346,6 +347,10 @@ class _LoginState extends State<Login> {
                     padding: EdgeInsets.all(10),
                     bevel: 5,
                     onPressed: () {
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                        return Accounts();
+                      }));
+                      return;
                       showCupertinoModalPopup(
                         context: context,
                         builder: (context) {

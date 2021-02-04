@@ -1,5 +1,6 @@
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,6 +40,7 @@ class _DownloadDetailState extends State<DownloadDetail> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("任务详情"),
         actions: [
           Padding(
@@ -363,7 +365,9 @@ class _DownloadDetailState extends State<DownloadDetail> with SingleTickerProvid
                             child: Row(
                               children: [
                                 Text("完成时间："),
-                                Text(task['additional']['detail']['completed_time'] > 0 ? DateTime.fromMillisecondsSinceEpoch(task['additional']['detail']['completed_time'] * 1000).format("Y-m-d H:i:s") : "无法取得"),
+                                Text(task['additional']['detail']['completed_time'] > 0
+                                    ? DateTime.fromMillisecondsSinceEpoch(task['additional']['detail']['completed_time'] * 1000).format("Y-m-d H:i:s")
+                                    : "无法取得"),
                               ],
                             ),
                           ),
@@ -624,7 +628,8 @@ class _DownloadDetailState extends State<DownloadDetail> with SingleTickerProvid
                             child: Row(
                               children: [
                                 Text("剩余时间："),
-                                Text("${task['additional']['transfer']['speed_download'] > 0 ? Util.timeRemaining(((task['size'] - task['additional']['transfer']['size_downloaded']) / task['additional']['transfer']['speed_download']).ceil()) : "无法取得"}"),
+                                Text(
+                                    "${task['additional']['transfer']['speed_download'] > 0 ? Util.timeRemaining(((task['size'] - task['additional']['transfer']['size_downloaded']) / task['additional']['transfer']['speed_download']).ceil()) : "无法取得"}"),
                               ],
                             ),
                           ),

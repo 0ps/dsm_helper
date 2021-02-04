@@ -3,6 +3,7 @@ import 'package:dsm_helper/pages/resource_monitor/setting.dart';
 import 'package:dsm_helper/pages/resource_monitor/speed_limit.dart';
 import 'package:dsm_helper/pages/resource_monitor/task_manager.dart';
 import 'package:dsm_helper/pages/resource_monitor/users.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -19,6 +20,7 @@ class _ResourceMonitorState extends State<ResourceMonitor> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("资源监控"),
       ),
       body: ListView(

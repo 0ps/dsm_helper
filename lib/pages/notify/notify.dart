@@ -1,5 +1,6 @@
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/util/strings.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
@@ -91,6 +92,7 @@ class _NotifyState extends State<Notify> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text(
           "消息",
         ),

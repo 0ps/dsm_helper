@@ -15,7 +15,7 @@ import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/security_scan/security_scan.dart';
 import 'package:dsm_helper/pages/storage_manager/storage_manager.dart';
-import 'package:dsm_helper/pages/system/info.dart';
+import 'package:dsm_helper/pages/control_panel/info/info.dart';
 import 'package:dsm_helper/pages/universal_search/universal_search.dart';
 import 'package:dsm_helper/pages/virtual_machine/virtual_machine.dart';
 import 'package:dsm_helper/util/badge.dart';
@@ -321,7 +321,8 @@ class DashboardState extends State<Dashboard> {
                           Text("散热状态："),
                           Text(
                             "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                            style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                            style: TextStyle(
+                                color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],

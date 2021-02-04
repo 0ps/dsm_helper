@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:xterm/flutter.dart';
 import 'package:xterm/theme/terminal_themes.dart';
@@ -66,12 +67,10 @@ class _SshState extends State<Ssh> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-          color: Colors.white,
-          onPressed: () {
-            FocusScope.of(context).requestFocus(FocusNode());
-            Navigator.of(context).pop();
-          },
+        leading: AppBackButton(
+          context,
+          color: Colors.black,
+          iconColor: Colors.white,
         ),
         title: Text(
           "终端",

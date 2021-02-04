@@ -1,5 +1,6 @@
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -53,6 +54,7 @@ class _RewardState extends State<Reward> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("打赏名单"),
       ),
       body: loading

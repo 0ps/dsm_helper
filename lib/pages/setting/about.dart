@@ -19,6 +19,7 @@ class About extends StatefulWidget {
 class _AboutState extends State<About> {
   bool checking = false;
   PackageInfo packageInfo;
+  String account = "challengerv";
   @override
   void initState() {
     getInfo();
@@ -26,6 +27,7 @@ class _AboutState extends State<About> {
   }
 
   getInfo() async {
+    Util.getStorage("account").then((value) => setState(() => account = value));
     packageInfo = await PackageInfo.fromPlatform();
     setState(() {});
   }
@@ -139,119 +141,121 @@ class _AboutState extends State<About> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                NeuCard(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20),
+                if (account != "challengerv") ...[
+                  SizedBox(
+                    height: 20,
                   ),
-                  curveType: CurveType.flat,
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          "assets/icons/wechat.png",
-                          width: 20,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "公众号：群晖助手",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Spacer(),
-                        NeuButton(
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                          onPressed: () {
-                            ClipboardData data = new ClipboardData(text: "群晖助手");
-                            Clipboard.setData(data);
-                            Util.toast("已复制到剪贴板");
-                          },
-                          child: Text("复制"),
-                        ),
-                      ],
+                  NeuCard(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                NeuCard(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  curveType: CurveType.flat,
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              "assets/icons/coffee.png",
-                              width: 20,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "给作者买杯咖啡",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Spacer(),
-                            NeuButton(
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                              onPressed: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) {
-                                    return Reward();
-                                  },
-                                  settings: RouteSettings(name: "reward"),
-                                ));
-                              },
-                              child: Text("打赏名单"),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: NeuCard(
+                    curveType: CurveType.flat,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            "assets/icons/wechat.png",
+                            width: 20,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "公众号：群晖助手",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Spacer(),
+                          NeuButton(
                             decoration: NeumorphicDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            curveType: CurveType.flat,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.asset(
-                                "assets/pay_qr.png",
-                                width: MediaQuery.of(context).size.width / 2 - 50,
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            onPressed: () {
+                              ClipboardData data = new ClipboardData(text: "群晖助手");
+                              Clipboard.setData(data);
+                              Util.toast("已复制到剪贴板");
+                            },
+                            child: Text("复制"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  NeuCard(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    curveType: CurveType.flat,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Image.asset(
+                                "assets/icons/coffee.png",
+                                width: 20,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "给作者买杯咖啡",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Spacer(),
+                              NeuButton(
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                onPressed: () {
+                                  Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (context) {
+                                      return Reward();
+                                    },
+                                    settings: RouteSettings(name: "reward"),
+                                  ));
+                                },
+                                child: Text("打赏名单"),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Center(
+                            child: NeuCard(
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              curveType: CurveType.flat,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  "assets/pay_qr.png",
+                                  width: MediaQuery.of(context).size.width / 2 - 50,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
                 SizedBox(
                   height: 20,
                 ),

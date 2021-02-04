@@ -1,3 +1,4 @@
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 
 class SpeedLimit extends StatefulWidget {
@@ -10,6 +11,7 @@ class _SpeedLimitState extends State<SpeedLimit> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("速度限制"),
       ),
       body: Center(

@@ -1,3 +1,4 @@
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 
 class MonitorSetting extends StatefulWidget {
@@ -10,6 +11,7 @@ class _MonitorSettingState extends State<MonitorSetting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("设置"),
       ),
       body: Center(

@@ -806,7 +806,7 @@ class Api {
       "polling_interval": 15,
       "force_set_params": true,
       "api": "SYNO.Core.Package",
-      "version": version,
+      "version": 1,
       "method": "list",
       "_sid": Util.sid,
     };

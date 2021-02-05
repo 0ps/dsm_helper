@@ -15,7 +15,8 @@ class Packages extends StatefulWidget {
 }
 
 class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin {
-  int version = 1;
+  int packagesVersion = 1;
+  int installedVersion = 1;
   TabController _tabController;
   List banners = [];
   List others = [];
@@ -40,11 +41,17 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     print(dsmVersion);
     List v = dsmVersion.split(".");
     if (v[0] == "6" && v[1] == "1") {
-      version = 1;
+      installedVersion = 1;
+      packagesVersion = 1;
     } else if (v[0] == "5") {
-      version = 1;
+      packagesVersion = 1;
+      installedVersion = 1;
+    } else if (v[0] == "6" && v[1] == "2" && v.length == 2) {
+      installedVersion = 1;
+      packagesVersion = 2;
     } else {
-      version = 2;
+      packagesVersion = 2;
+      installedVersion = 2;
     }
     _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
     getData();
@@ -52,7 +59,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   getData() async {
-    var res = await Api.packages(version: version);
+    var res = await Api.packages(version: packagesVersion);
     if (res['success']) {
       setState(() {
         banners = res['data']['banners'];
@@ -64,6 +71,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
 
         //
         categories = res['data']['categories'];
+        print(res['data']['categories']);
       });
       setState(() {
         loadingAll = false;
@@ -90,7 +98,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
 
   getOthers() async {
     print("获取第三方套件");
-    var res = await Api.packages(others: true, version: version);
+    var res = await Api.packages(others: true, version: packagesVersion);
     print("获取第三方套件end");
     if (res['success']) {
       setState(() {
@@ -125,7 +133,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     installedPackages = [];
     canUpdatePackages = [];
     print("获取已安装套件");
-    var res = await Api.installedPackages(version: version);
+    var res = await Api.installedPackages(version: installedVersion);
     print("获取已安装套件end");
     if (res['success']) {
       setState(() {
@@ -133,7 +141,10 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
         loadingInstalled = false;
       });
       calcInstalledPackage();
-    } else {}
+    } else {
+      print(res);
+      print("获取已安装套件失败");
+    }
   }
 
   calcInstalledPackage() {
@@ -453,10 +464,14 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   Widget _buildPackageItem(package, bool installed) {
-    String thumbnailUrl = package['thumbnail'].last;
-    if (!thumbnailUrl.startsWith("http")) {
-      thumbnailUrl = Util.baseUrl + thumbnailUrl;
+    String thumbnailUrl = "";
+    if (package['thumbnail'].length > 0) {
+      thumbnailUrl = package['thumbnail'].last;
+      if (!thumbnailUrl.startsWith("http")) {
+        thumbnailUrl = Util.baseUrl + thumbnailUrl;
+      }
     }
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)

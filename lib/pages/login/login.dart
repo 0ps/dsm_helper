@@ -40,7 +40,6 @@ class _LoginState extends State<Login> {
   CancelToken cancelToken = CancelToken();
   @override
   initState() {
-    _portController.value = TextEditingValue(text: port);
     Util.getStorage("servers").then((serverString) {
       if (serverString.isNotBlank) {
         servers = jsonDecode(serverString);
@@ -85,7 +84,7 @@ class _LoginState extends State<Login> {
     smid = await Util.getStorage("smid");
     String httpsString = await Util.getStorage("https");
     host = await Util.getStorage("host");
-    port = await Util.getStorage("port");
+    String portString = await Util.getStorage("port");
     account = await Util.getStorage("account");
     password = await Util.getStorage("password");
     String autoLoginString = await Util.getStorage("auto_login");
@@ -108,7 +107,8 @@ class _LoginState extends State<Login> {
       _hostController.value = TextEditingValue(text: host);
     }
     if (port.isNotBlank) {
-      _portController.value = TextEditingValue(text: port);
+      port = portString;
+      _portController.value = TextEditingValue(text: portString);
     }
     if (account.isNotBlank) {
       _accountController.value = TextEditingValue(text: account);

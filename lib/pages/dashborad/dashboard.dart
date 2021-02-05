@@ -556,7 +556,7 @@ class DashboardState extends State<Dashboard> {
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 50,
+                        width: 60,
                         child: Text("CPU："),
                       ),
                       Expanded(
@@ -598,7 +598,7 @@ class DashboardState extends State<Dashboard> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      SizedBox(width: 50, child: Text("RAM：")),
+                      SizedBox(width: 60, child: Text("RAM：")),
                       Expanded(
                         child: NeuCard(
                           curveType: CurveType.flat,
@@ -638,7 +638,7 @@ class DashboardState extends State<Dashboard> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      SizedBox(width: 50, child: Text("网络：")),
+                      SizedBox(width: 60, child: Text("网络：")),
                       Icon(
                         Icons.upload_sharp,
                         color: Colors.blue,

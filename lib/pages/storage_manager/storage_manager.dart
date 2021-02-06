@@ -115,14 +115,14 @@ class _StorageManagerState extends State<StorageManager> {
                           )
                         : volume['status'] == "background"
                             ? Label(
-                                "警告",
-                                Colors.orangeAccent,
+                                "正在检查硬盘",
+                                Colors.lightBlueAccent,
                                 fill: true,
                               )
                             : volume['status'] == "attention"
                                 ? Label(
-                                    "正在检查硬盘",
-                                    Colors.lightBlueAccent,
+                                    "注意",
+                                    Colors.orangeAccent,
                                     fill: true,
                                   )
                                 : Label(
@@ -182,14 +182,14 @@ class _StorageManagerState extends State<StorageManager> {
                       )
                     : pool['status'] == "background"
                         ? Label(
-                            "警告",
-                            Colors.orangeAccent,
+                            "正在检查硬盘",
+                            Colors.lightBlueAccent,
                             fill: true,
                           )
                         : pool['status'] == "attention"
                             ? Label(
-                                "正在检查硬盘",
-                                Colors.lightBlueAccent,
+                                "注意",
+                                Colors.orangeAccent,
                                 fill: true,
                               )
                             : Label(

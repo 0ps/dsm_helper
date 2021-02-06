@@ -193,6 +193,7 @@ class DashboardState extends State<Dashboard> {
               });
               break;
             case "SYNO.Storage.CGI.Storage":
+              print(item);
               setState(() {
                 ssdCaches = item['data']['ssdCaches'];
                 volumes = item['data']['volumes'];
@@ -1307,11 +1308,17 @@ class DashboardState extends State<Dashboard> {
                                 Colors.lightBlueAccent,
                                 fill: true,
                               )
-                            : Label(
-                                volume['status'],
-                                Colors.red,
-                                fill: true,
-                              ),
+                            : volume['status'] == "attention"
+                                ? Label(
+                                    "注意",
+                                    Colors.orangeAccent,
+                                    fill: true,
+                                  )
+                                : Label(
+                                    volume['status'],
+                                    Colors.red,
+                                    fill: true,
+                                  ),
                   ],
                 ),
                 SizedBox(

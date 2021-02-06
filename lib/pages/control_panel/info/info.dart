@@ -282,7 +282,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                 SizedBox(
                   height: 5,
                 ),
-                Text("${volume['desc']}"),
+                Text("${volume['desc'] ?? (volume['vol_desc'] ?? "-")}"),
                 SizedBox(
                   height: 5,
                 ),
@@ -684,10 +684,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                                   flex: 2,
                                   child: Text(
                                     "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
-                                    style: TextStyle(
-                                        color: widget.system['temperature_warning'] == null
-                                            ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green)
-                                            : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
+                                    style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),

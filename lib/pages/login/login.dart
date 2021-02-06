@@ -45,7 +45,6 @@ class _LoginState extends State<Login> {
         servers = jsonDecode(serverString);
       }
       if (widget.server != null) {
-        print(widget.server);
         setState(() {
           https = widget.server['https'];
           host = widget.server['host'];
@@ -71,6 +70,9 @@ class _LoginState extends State<Login> {
         });
         Util.cookie = widget.server['cookie'];
         Util.sid = widget.server['sid'];
+        if (widget.server['action'] == "login") {
+          _login();
+        }
       } else {
         getInfo();
       }
@@ -106,9 +108,11 @@ class _LoginState extends State<Login> {
     if (host.isNotBlank) {
       _hostController.value = TextEditingValue(text: host);
     }
-    if (port.isNotBlank) {
+    if (portString.isNotBlank) {
       port = portString;
       _portController.value = TextEditingValue(text: portString);
+    } else {
+      _portController.value = TextEditingValue(text: port);
     }
     if (account.isNotBlank) {
       _accountController.value = TextEditingValue(text: account);
@@ -149,6 +153,7 @@ class _LoginState extends State<Login> {
             });
           } else {
             //如果登录失效，尝试重新登录
+            print("尝试重新登录");
             _login();
             // var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken, rememberDevice: false);
             // if (loginRes['success'] == true) {
@@ -180,11 +185,7 @@ class _LoginState extends State<Login> {
   _login() async {
     Util.checkSsl = checkSsl;
     FocusScope.of(context).requestFocus(FocusNode());
-    if (login == true) {
-      cancelToken?.cancel("取消登录");
-      cancelToken = CancelToken();
-      return;
-    }
+
     if (host.trim() == "") {
       Util.toast("请输入网址/IP");
       return;
@@ -603,33 +604,34 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     width: 10,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      setState(() {
-                        rememberDevice = !rememberDevice;
-                      });
-                    },
-                    child: NeuCard(
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      curveType: rememberDevice ? CurveType.emboss : CurveType.flat,
-                      bevel: 12,
-                      height: 68,
-                      width: 120,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Row(
-                        children: [
-                          Text("记住设备"),
-                          Spacer(),
-                          if (rememberDevice)
-                            Icon(
-                              CupertinoIcons.checkmark_alt,
-                              color: Color(0xffff9813),
-                            ),
-                        ],
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        setState(() {
+                          rememberDevice = !rememberDevice;
+                        });
+                      },
+                      child: NeuCard(
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        curveType: rememberDevice ? CurveType.emboss : CurveType.flat,
+                        bevel: 12,
+                        height: 68,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Row(
+                          children: [
+                            Text("记住设备"),
+                            Spacer(),
+                            if (rememberDevice)
+                              Icon(
+                                CupertinoIcons.checkmark_alt,
+                                color: Color(0xffff9813),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -756,7 +758,18 @@ class _LoginState extends State<Login> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(20),
               ),
-              onPressed: _login,
+              onPressed: () {
+                if (login) {
+                  if (login == true) {
+                    print("取消登录");
+                    cancelToken?.cancel("取消登录");
+                    cancelToken = CancelToken();
+                    return;
+                  }
+                } else {
+                  _login();
+                }
+              },
               child: login
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,

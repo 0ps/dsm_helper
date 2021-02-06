@@ -1343,4 +1343,31 @@ class Api {
     print(data);
     return await Util.post("entry.cgi", data: data);
   }
+
+  static Future<Map> externalDevice() async {
+    List apis = [
+      // {
+      //   "api": "SYNO.Core.ExternalDevice.Storage.USB",
+      //   "method": "list",
+      //   "version": 1,
+      //   "additional": ["all"]
+      // },
+      {
+        "api": "SYNO.Core.ExternalDevice.Storage.eSATA",
+        "method": "list",
+        "version": 1,
+        "additional": ["all"]
+      },
+      // {"api": "SYNO.Core.ExternalDevice.Storage.EUnit", "method": "list", "version": 1},
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"sequential"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
 }

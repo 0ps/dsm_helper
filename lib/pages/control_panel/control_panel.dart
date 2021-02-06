@@ -1,7 +1,9 @@
+import 'package:dsm_helper/pages/control_panel/external_device/external_device.dart';
 import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
 import 'package:dsm_helper/pages/control_panel/users/users.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 
 import 'shared_folders/shared_folders.dart';
 import 'package:dsm_helper/pages/control_panel/info/info.dart';
@@ -23,6 +25,7 @@ class _ControlPanelState extends State<ControlPanel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text(
           "控制面板",
         ),
@@ -642,32 +645,41 @@ class _ControlPanelState extends State<ControlPanel> {
                           ],
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/external_devices.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "外接设备",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return ExternalDevice();
+                              },
+                              settings: RouteSettings(name: "external_device")));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/external_devices.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "外接设备",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       NeuCard(

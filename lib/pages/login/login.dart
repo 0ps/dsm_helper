@@ -139,7 +139,6 @@ class _LoginState extends State<Login> {
       Util.baseUrl = "${https ? "https" : "http"}://$host:$port";
       Util.sid = sid;
       //如果开启了自动登录，则判断当前登录状态
-      print("autoLogin:${autoLogin}");
       if (autoLogin) {
         setState(() {
           login = true;
@@ -270,6 +269,7 @@ class _LoginState extends State<Login> {
       Util.setStorage("servers", jsonEncode(servers));
       Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
     } else {
+      Util.vibrate(FeedbackType.warning);
       if (res['error']['code'] == 400) {
         Util.toast("用户名/密码有误");
       } else if (res['error']['code'] == 403) {

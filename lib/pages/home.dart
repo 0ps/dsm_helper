@@ -34,55 +34,27 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   bool password = false;
   bool biometrics = false;
   bool authPage = false;
-
-  StreamSubscription _intentDataStreamSubscription;
   List<SharedMediaFile> _sharedFiles;
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     getData();
     // For sharing images coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> value) {
-      // print("Shared:" + (_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
-      _sharedFiles = value;
-      if (_sharedFiles != null && _sharedFiles.length > 0) {
-        _sharedFiles.map((e) {
-          print(e.path);
-          print(File(e.path).lengthSync());
-        });
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return Upload(
-            "",
-            selectedFilesPath: _sharedFiles.map((e) => e.path).toList(),
-          );
-        }));
-      }
-      // Util.toast("Shared:" + (_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
+    ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> value) {
+      handleFiles(value);
     }, onError: (err) {
       print("getIntentDataStream error: $err");
     });
 
     // For sharing images coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      _sharedFiles = value;
-      if (_sharedFiles != null && _sharedFiles.length > 0) {
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return Upload(
-            "",
-            selectedFilesPath: _sharedFiles.map((e) => e.path).toList(),
-          );
-        }));
-      }
-      // Util.toast("Shared:" + (_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
+      handleFiles(value);
     });
     // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((String value) {
-      print(value);
+    ReceiveSharingIntent.getTextStream().listen((String value) {
       // Util.toast("getTextStream:$value");
       if (value != null) {
         handleTorrent(value);
-        // Util.toast("${File(filePath).lengthSync()}");
-
       }
     }, onError: (err) {
       print("getLinkStream error: $err");
@@ -90,10 +62,23 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntent.getInitialText().then((String value) {
-      // Util.toast("getInitialText:$value");
-      print(value);
+      if (value != null) {
+        handleTorrent(value);
+      }
     });
     super.initState();
+  }
+
+  handleFiles(List<SharedMediaFile> files) {
+    _sharedFiles = files;
+    if (_sharedFiles != null && _sharedFiles.length > 0) {
+      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+        return Upload(
+          "",
+          selectedFilesPath: _sharedFiles.map((e) => e.path).toList(),
+        );
+      }));
+    }
   }
 
   handleTorrent(String content) async {

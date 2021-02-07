@@ -9,6 +9,8 @@ import 'package:neumorphic/neumorphic.dart';
 import 'package:vibrate/vibrate.dart';
 
 class AddDownloadTask extends StatefulWidget {
+  final String torrentPath;
+  AddDownloadTask({this.torrentPath});
   @override
   _AddDownloadTaskState createState() => _AddDownloadTaskState();
 }
@@ -19,6 +21,11 @@ class _AddDownloadTaskState extends State<AddDownloadTask> {
   String url = "";
   @override
   void initState() {
+    if (widget.torrentPath != null) {
+      setState(() {
+        torrentPath = widget.torrentPath;
+      });
+    }
     getData();
     super.initState();
   }
@@ -29,6 +36,9 @@ class _AddDownloadTaskState extends State<AddDownloadTask> {
       setState(() {
         saveFolder = res['data']['default_destination'];
       });
+    } else {
+      Util.vibrate(FeedbackType.warning);
+      Util.toast("获取默认保存位置失败");
     }
   }
 

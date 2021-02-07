@@ -47,9 +47,21 @@ class FilesState extends State<Files> {
   bool searching = false;
   Timer timer;
   ListType listType = ListType.list;
+  Map scrollPosition = {};
   @override
   void initState() {
     getShareList();
+    _fileScrollController.addListener(() {
+      String path = "";
+      if (paths.length > 1) {
+        path = paths.join("/").substring(1);
+      } else {
+        path = "/";
+      }
+      print("$path --- ${_fileScrollController.offset}");
+      scrollPosition[path] = _fileScrollController.offset;
+      print(scrollPosition);
+    });
     super.initState();
   }
 
@@ -191,8 +203,9 @@ class FilesState extends State<Files> {
       await getFileList(path);
     }
     double offset = _pathScrollController.position.maxScrollExtent;
-    _pathScrollController.animateTo(offset, duration: Duration(milliseconds: 200), curve: Curves.ease);
-    _fileScrollController.jumpTo(0);
+    await _pathScrollController.animateTo(offset, duration: Duration(milliseconds: 200), curve: Curves.ease);
+    print(scrollPosition[path] ?? 0);
+    _fileScrollController.jumpTo(scrollPosition[path] ?? 0);
   }
 
   Widget _buildSortMenu(BuildContext context, StateSetter setState) {

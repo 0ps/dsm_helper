@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dsm_helper/pages/file/select_folder.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/file_icon.dart';
 import 'package:dsm_helper/widgets/label.dart';
@@ -7,29 +10,47 @@ import 'package:file_picker/file_picker.dart' hide FileType;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:vibrate/vibrate.dart';
 
 class Upload extends StatefulWidget {
   final String path;
-  Upload(this.path);
+  final List<String> selectedFilesPath;
+  Upload(this.path, {this.selectedFilesPath});
   @override
   _UploadState createState() => _UploadState();
 }
 
 class UploadItem {
-  PlatformFile file;
+  String path;
+  String name;
   int fileSize;
   int uploadSize;
   UploadStatus status;
   CancelToken cancelToken;
-  UploadItem(this.file, {this.fileSize = 0, this.uploadSize = 0, this.status = UploadStatus.wait}) {
+  UploadItem(this.path, this.name, {this.fileSize = 0, this.uploadSize = 0, this.status = UploadStatus.wait}) {
     cancelToken = CancelToken();
   }
 }
 
 class _UploadState extends State<Upload> {
+  String savePath = "";
   List<UploadItem> uploads = [];
   @override
   void initState() {
+    setState(() {
+      savePath = widget.path ?? "";
+    });
+    if (widget.selectedFilesPath != null) {
+      uploads = widget.selectedFilesPath.map((filePath) {
+        File file = File(filePath);
+        return UploadItem(
+          filePath,
+          filePath.split("/").last,
+          fileSize: file.lengthSync(),
+        );
+      }).toList();
+      setState(() {});
+    }
     super.initState();
   }
 
@@ -80,7 +101,7 @@ class _UploadState extends State<Upload> {
   }
 
   Widget _buildUploadItem(UploadItem upload) {
-    FileType fileType = Util.fileType(upload.file.name);
+    FileType fileType = Util.fileType(upload.path);
     // String path = file['path'];
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, left: 20, right: 20),
@@ -99,10 +120,10 @@ class _UploadState extends State<Upload> {
               width: 20,
             ),
             Hero(
-              tag: upload.file.path,
+              tag: upload.path,
               child: FileIcon(
                 fileType,
-                thumb: upload.file.path,
+                thumb: upload.path,
                 network: false,
               ),
             ),
@@ -114,7 +135,7 @@ class _UploadState extends State<Upload> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    upload.file.name,
+                    upload.name,
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -168,7 +189,7 @@ class _UploadState extends State<Upload> {
                                 bevel: 5,
                                 padding: EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
-                                  "删除",
+                                  "取消上传",
                                   style: TextStyle(fontSize: 18, color: Colors.redAccent),
                                 ),
                               ),
@@ -232,13 +253,59 @@ class _UploadState extends State<Upload> {
       ),
       body: Column(
         children: [
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, i) {
-                return _buildUploadItem(uploads[i]);
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: NeuButton(
+              onPressed: () {
+                showCupertinoModalPopup(
+                  context: context,
+                  builder: (context) {
+                    return SelectFolder(
+                      multi: false,
+                    );
+                  },
+                ).then((res) {
+                  if (res != null && res.length == 1) {
+                    setState(() {
+                      savePath = res[0];
+                    });
+                  }
+                });
               },
-              itemCount: uploads.length,
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "上传位置",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      Text(
+                        savePath == "" ? "请选择上传位置" : savePath,
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
+          ),
+          Expanded(
+            child: uploads.length > 0
+                ? ListView.builder(
+                    itemBuilder: (context, i) {
+                      return _buildUploadItem(uploads[i]);
+                    },
+                    itemCount: uploads.length,
+                  )
+                : Center(
+                    child: Text("暂无待上传文件"),
+                  ),
           ),
           Padding(
             padding: EdgeInsets.all(20),
@@ -256,14 +323,14 @@ class _UploadState extends State<Upload> {
                       if (result != null) {
                         setState(() {
                           uploads.addAll(result.files.map((file) {
-                            return UploadItem(file);
+                            return UploadItem(file.path, file.name, fileSize: file.size);
                           }).toList());
                         });
                       } else {
                         // User canceled the picker
                       }
                     },
-                    child: Text("选择文件"),
+                    child: Text("添加文件"),
                   ),
                 ),
                 SizedBox(
@@ -276,6 +343,11 @@ class _UploadState extends State<Upload> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     onPressed: () async {
+                      if (savePath.isBlank) {
+                        Util.vibrate(FeedbackType.warning);
+                        Util.toast("请选择上传位置");
+                        return;
+                      }
                       for (int i = 0; i < uploads.length; i++) {
                         UploadItem upload = uploads[i];
                         if (upload.status != UploadStatus.wait) {
@@ -285,7 +357,7 @@ class _UploadState extends State<Upload> {
                         setState(() {
                           upload.status = UploadStatus.running;
                         });
-                        var res = await Api.upload(widget.path, upload.file.path, upload.cancelToken, (progress, total) {
+                        var res = await Api.upload(savePath, upload.path, upload.cancelToken, (progress, total) {
                           // print("$progress,$total");
                           setState(() {
                             upload.uploadSize = progress;

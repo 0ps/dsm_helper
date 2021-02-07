@@ -193,7 +193,6 @@ class DashboardState extends State<Dashboard> {
               });
               break;
             case "SYNO.Storage.CGI.Storage":
-              print(item);
               setState(() {
                 ssdCaches = item['data']['ssdCaches'];
                 volumes = item['data']['volumes'];

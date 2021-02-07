@@ -553,6 +553,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.5"
+  receive_sharing_intent:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: ff6f9b043673e93efba00eb359564bb838bc22a1
+      url: "https://gitee.com/challengerV/receive_sharing_intent.git"
+    source: git
+    version: "1.4.3"
   shared_preferences:
     dependency: "direct main"
     description:

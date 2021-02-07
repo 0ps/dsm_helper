@@ -244,7 +244,6 @@ class _MyAppState extends State<MyApp> {
                   routes: {
                     "/login": (BuildContext context) => Login(),
                     "/home": (BuildContext context) => Home(),
-                    "/splash": (BuildContext context) => Home(),
                   },
                 ),
         );

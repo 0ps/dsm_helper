@@ -33,7 +33,6 @@ class _UserSettingState extends State<UserSetting> {
   getNormalUser() async {
     var res = await Api.normalUser("get");
     if (res['success']) {
-      print(res['data']);
       setState(() {
         loading = false;
         normalUser = res['data'];
@@ -225,7 +224,6 @@ class _UserSettingState extends State<UserSetting> {
                         data[key] = value;
                       }
                     });
-                    print(data);
                     var res = await Api.normalUser("set", changedData: data);
                     if (res['success']) {
                       Util.toast("保存成功");

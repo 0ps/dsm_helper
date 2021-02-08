@@ -58,9 +58,7 @@ class FilesState extends State<Files> {
       } else {
         path = "/";
       }
-      print("$path --- ${_fileScrollController.offset}");
       scrollPosition[path] = _fileScrollController.offset;
-      print(scrollPosition);
     });
     super.initState();
   }

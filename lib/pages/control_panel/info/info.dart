@@ -346,7 +346,7 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                 SizedBox(
                   height: 5,
                 ),
-                Text("${disk['model'].trim()}"),
+                Text("${disk['vendor'].trim()} ${disk['model'].trim()}"),
                 SizedBox(
                   height: 5,
                 ),

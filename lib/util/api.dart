@@ -624,8 +624,15 @@ class Api {
     return result;
   }
 
-  static Future<Map> info() async {
-    var result = await Util.get("http://pan.fmtol.com:5000/webman/modules/SystemInfoApp/SystemInfo.cgi?_dc=${DateTime.now().millisecond}&SynoToken=iu1Hd4LhasRz2&query=systemHealth");
+  static Future<Map> info({String query}) async {
+    Map<String, dynamic> data = {
+      "_dc": DateTime.now().millisecond,
+    };
+    if (query != null) {
+      data['query'] = query;
+    }
+
+    var result = await Util.get("http://pan.fmtol.com:5000/webman/modules/SystemInfoApp/SystemInfo.cgi", data: data);
     return result;
   }
 
@@ -722,27 +729,28 @@ class Api {
     File file = File(filePath);
     // var permission = await checkPermission(uploadPath, filePath);
     MultipartFile multipartFile = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last);
-    var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2&_sid=${Util.sid}";
-    // var url = "entry.cgi";
-    // var data = {
-    //   "api": "SYNO.FileStation.Upload",
-    //   "version": 2,
-    //   "method": "upload",
-    //   "_sid": Util.sid,
-    //   "overwrite": "false",
-    //   "path": uploadPath,
-    //   "mtime": DateTime.now().millisecondsSinceEpoch,
-    //   "size": await file.length(),
-    //   "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
-    // };
+    // var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2&_sid=${Util.sid}";
+    var url = "entry.cgi";
     var data = {
-      "_sid": Util.sid,
-      "mtime": DateTime.now().millisecondsSinceEpoch,
-      "overwrite": true,
+      "api": "SYNO.FileStation.Upload",
+      "method": "upload",
+      "version": 3,
       "path": uploadPath,
+      "create_parents": false,
       "size": file.lengthSync(),
-      "file": multipartFile,
+      "mtime": DateTime.now().millisecondsSinceEpoch,
+      "overwrite": "overwrite",
+      "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
+      "_sid": Util.sid,
     };
+    // var data = {
+    //   "_sid": Util.sid,
+    //   "mtime": DateTime.now().millisecondsSinceEpoch,
+    //   "overwrite": true,
+    //   "path": uploadPath,
+    //   "size": file.lengthSync(),
+    //   "file": multipartFile,
+    // };
     var result = await Util.upload(url, data: data, cancelToken: cancelToken, onSendProgress: onSendProgress);
     // print(result);
     return result;
@@ -1340,7 +1348,6 @@ class Api {
     if (changedData != null) {
       data.addAll(changedData);
     }
-    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -1369,5 +1376,32 @@ class Api {
       "_sid": Util.sid,
     });
     return result;
+  }
+
+  static Future<Map> smart(String device) async {
+    var data = {
+      "device": '"$device"',
+      "api": 'SYNO.Storage.CGI.Smart',
+      "method": "get_health_info",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> smartLog(String device) async {
+    var data = {
+      "sort_by": '"time"',
+      "sort_direction": '"DESC"',
+      "offset": 0,
+      "limit": 30,
+      "type": '"all"',
+      "device": '"$device"',
+      "api": 'SYNO.Core.Storage.Disk',
+      "method": "disk_test_log_get",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
   }
 }

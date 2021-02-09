@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:dsm_helper/pages/file/search.dart';
 import 'package:dsm_helper/pages/file/select_folder.dart';
 import 'package:dsm_helper/pages/file/share.dart';
@@ -191,6 +192,7 @@ class FilesState extends State<Files> {
   }
 
   goPath(String path) async {
+    Util.vibrate(FeedbackType.light);
     setState(() {
       success = true;
     });
@@ -201,8 +203,7 @@ class FilesState extends State<Files> {
       await getFileList(path);
     }
     double offset = _pathScrollController.position.maxScrollExtent;
-    await _pathScrollController.animateTo(offset, duration: Duration(milliseconds: 200), curve: Curves.ease);
-    print(scrollPosition[path] ?? 0);
+    _pathScrollController.animateTo(offset, duration: Duration(milliseconds: 200), curve: Curves.ease);
     _fileScrollController.jumpTo(scrollPosition[path] ?? 0);
   }
 
@@ -1417,7 +1418,6 @@ class FilesState extends State<Files> {
           }
         },
         onPressed: () async {
-          Util.vibrate(FeedbackType.light);
           if (multiSelect) {
             setState(() {
               if (selectedFiles.contains(file['path'])) {
@@ -2314,7 +2314,10 @@ class FilesState extends State<Files> {
                 ? Stack(
                     children: [
                       listType == ListType.list
-                          ? CupertinoScrollbar(
+                          ? DraggableScrollbar.semicircle(
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                              scrollbarTimeToFade: Duration(seconds: 1),
+                              controller: _fileScrollController,
                               child: ListView.builder(
                                 controller: _fileScrollController,
                                 padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: selectedFiles.length > 0 ? 140 : 20),

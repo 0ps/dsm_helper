@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
@@ -14,6 +16,7 @@ class Smart extends StatefulWidget {
 }
 
 class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
+  Timer timer;
   TabController _tabController;
   bool loading = true;
   Map history;
@@ -21,6 +24,12 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
   List smartInfo = [];
   List logs = [];
   bool logLoading = true;
+
+  bool testing = false;
+  String remain = "";
+  String quickLast = "";
+  String extendLast = "";
+  List testInfo = [];
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -30,11 +39,39 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
       }
     });
     getData();
+    getSmartLog();
     super.initState();
   }
 
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  doSmartTest(String type) async {
+    setState(() {
+      testing = true;
+    });
+    if (timer != null) {
+      return;
+    }
+    var res = await Api.doSmartTest(widget.disk['device'], type);
+    if (res['success']) {
+      getSmartLog();
+      timer = Timer.periodic(Duration(seconds: 4), (timer) {
+        getSmartLog();
+      });
+    } else {
+      Util.toast("执行检测失败，代码${res['error']['code']}");
+      setState(() {
+        testing = false;
+      });
+    }
+  }
+
   getLog() async {
-    var res = await Api.smartLog(widget.disk['device']);
+    var res = await Api.diskTestLog(widget.disk['device']);
     if (res['success']) {
       setState(() {
         logLoading = false;
@@ -54,6 +91,23 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
       });
     } else {
       Util.toast("获取失败");
+    }
+  }
+
+  getSmartLog() async {
+    var res = await Api.smartTestLog(widget.disk['device']);
+    print(res);
+    if (res['success']) {
+      setState(() {
+        quickLast = res['data']['quick_last'];
+        extendLast = res['data']['extend_last'];
+        testInfo = res['data']['testInfo'];
+        testing = res['data']['testInfo'].last['testing'];
+        remain = res['data']['testInfo'].last['remain'];
+        if (!testing) {
+          timer?.cancel();
+        }
+      });
     }
   }
 
@@ -226,11 +280,11 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        child: Text("S.M.A.R.T 状态"),
+                        child: Text("S.M.A.R.T. 检测"),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        child: Text("S.M.A.R.T 检测"),
+                        child: Text("S.M.A.R.T. 状态"),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
@@ -354,7 +408,7 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
                                           style: TextStyle(fontWeight: FontWeight.w600),
                                         ),
                                       ),
-                                      Text("${overview['idnf']}"),
+                                      Text("${overview['unc']}"),
                                     ],
                                   ),
                                   SizedBox(
@@ -369,7 +423,7 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
                                           style: TextStyle(fontWeight: FontWeight.w600),
                                         ),
                                       ),
-                                      Text("${overview['unc']}"),
+                                      Text("${overview['idnf']}"),
                                     ],
                                   ),
                                   SizedBox(
@@ -399,6 +453,262 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
                           )
                         ],
                       ),
+                      ListView(
+                        padding: EdgeInsets.all(20),
+                        children: [
+                          NeuCard(
+                            curveType: CurveType.flat,
+                            bevel: 20,
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "检测结果",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "上次快速检测结果",
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${quickLast.isNotBlank ? quickLast : "暂无快速检测结果"}",
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      if (quickLast.isNotBlank)
+                                        Label(
+                                          "${testInfo.last['quick_error_before'] == false ? "正常" : "错误"}",
+                                          testInfo.last['quick_error_before'] == false ? Colors.green : Colors.red,
+                                          fill: true,
+                                        ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "上次完整检测结果",
+                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${extendLast.isNotBlank ? extendLast : "暂无完整检测结果"}",
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      if (extendLast.isNotBlank)
+                                        Label(
+                                          "${testInfo.last['quick_error_before'] == false ? "正常" : "错误"}",
+                                          testInfo.last['quick_error_before'] == false ? Colors.green : Colors.red,
+                                          fill: true,
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          NeuCard(
+                            curveType: CurveType.flat,
+                            bevel: 20,
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "S.M.A.R.T. 测试",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "S.M.A.R.T. 测试是硬盘的内置测试程序，是专为检测机械和电气误差而设计的。",
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  if (testing) ...[
+                                    NeuCard(
+                                      curveType: CurveType.flat,
+                                      bevel: 20,
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text("检测进度：$remain"),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            NeuButton(
+                                              onPressed: () async {
+                                                doSmartTest("stop");
+                                              },
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.all(5),
+                                              bevel: 5,
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: Icon(
+                                                  CupertinoIcons.stop_circle,
+                                                  color: Color(0xffff9813),
+                                                  size: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    NeuCard(
+                                      curveType: CurveType.flat,
+                                      bevel: 20,
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "快速检测",
+                                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                                  ),
+                                                  Text("将执行基本诊断测试，以检测机械和电气误差。")
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            NeuButton(
+                                              onPressed: () async {
+                                                doSmartTest("quick");
+                                              },
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.all(5),
+                                              bevel: 5,
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: Icon(
+                                                  CupertinoIcons.play_arrow_solid,
+                                                  color: Color(0xffff9813),
+                                                  size: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    NeuCard(
+                                      curveType: CurveType.flat,
+                                      bevel: 20,
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "完整检测",
+                                                    style: TextStyle(fontWeight: FontWeight.w600),
+                                                  ),
+                                                  Text("将扫描整个硬盘以确保更准确的结果。"),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            NeuButton(
+                                              onPressed: () async {
+                                                doSmartTest("extend");
+                                              },
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.all(5),
+                                              bevel: 5,
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: Icon(
+                                                  CupertinoIcons.play_arrow_solid,
+                                                  color: Color(0xffff9813),
+                                                  size: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       ListView.separated(
                         padding: EdgeInsets.all(20),
                         itemBuilder: (context, i) {
@@ -410,9 +720,6 @@ class _SmartState extends State<Smart> with SingleTickerProviderStateMixin {
                             height: 20,
                           );
                         },
-                      ),
-                      Center(
-                        child: Text("待开发"),
                       ),
                       logLoading
                           ? Center(

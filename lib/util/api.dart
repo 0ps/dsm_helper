@@ -738,9 +738,9 @@ class Api {
       "path": uploadPath,
       "create_parents": false,
       "size": file.lengthSync(),
-      "mtime": DateTime.now().millisecondsSinceEpoch,
+      "mtime": file.lastModifiedSync().millisecondsSinceEpoch,
       "overwrite": "overwrite",
-      "file": MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("image/png")),
+      "file": multipartFile,
       "_sid": Util.sid,
     };
     // var data = {
@@ -1378,6 +1378,17 @@ class Api {
     return result;
   }
 
+  static Future<Map> ejectEsata(String id) async {
+    var data = {
+      "dev_id": '"$id"',
+      "api": 'SYNO.Core.ExternalDevice.Storage.eSATA',
+      "method": "eject",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
   static Future<Map> smart(String device) async {
     var data = {
       "device": '"$device"',
@@ -1389,7 +1400,7 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> smartLog(String device) async {
+  static Future<Map> diskTestLog(String device) async {
     var data = {
       "sort_by": '"time"',
       "sort_direction": '"DESC"',
@@ -1399,6 +1410,29 @@ class Api {
       "device": '"$device"',
       "api": 'SYNO.Core.Storage.Disk',
       "method": "disk_test_log_get",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> smartTestLog(String device) async {
+    var data = {
+      "device": '"$device"',
+      "api": 'SYNO.Core.Storage.Disk',
+      "method": "get_smart_test_log",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> doSmartTest(String device, String type) async {
+    var data = {
+      "device": '"$device"',
+      "type": '"$type"',
+      "api": 'SYNO.Core.Storage.Disk',
+      "method": "do_smart_test",
       "version": 1,
       "_sid": Util.sid,
     };

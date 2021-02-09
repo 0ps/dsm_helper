@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
+import 'package:dsm_helper/pages/control_panel/external_device/external_device.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/notify/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
@@ -50,6 +51,8 @@ class DashboardState extends State<Dashboard> {
   List widgets = [];
   List applications = [];
   List fileLogs = [];
+
+  List esatas = [];
   Map appNotify;
   Map system;
   Map restoreSizePos;
@@ -80,6 +83,23 @@ class DashboardState extends State<Dashboard> {
   closeDrawer() {
     if (_scaffoldKey.currentState.isDrawerOpen) {
       Navigator.of(context).pop();
+    }
+  }
+
+  getExternalDevice() async {
+    var res = await Api.externalDevice();
+    if (res['success']) {
+      List result = res['data']['result'];
+      result.forEach((item) {
+        if (item['success'] == true) {
+          switch (item['api']) {
+            case "SYNO.Core.ExternalDevice.Storage.eSATA":
+              setState(() {
+                esatas = item['data']['devices'];
+              });
+          }
+        }
+      });
     }
   }
 
@@ -152,7 +172,7 @@ class DashboardState extends State<Dashboard> {
         getData();
       });
     }
-
+    getExternalDevice();
     var res = await Api.systemInfo(widgets);
 
     if (res['success']) {
@@ -991,83 +1011,85 @@ class DashboardState extends State<Dashboard> {
                       color: Colors.transparent,
                       child: NeuCard(
                         width: double.infinity,
-                        padding: EdgeInsets.all(22),
                         bevel: 5,
                         curveType: CurveType.emboss,
                         decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              "终止连接",
-                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            Text(
-                              "确认要终止此连接？",
-                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
-                            ),
-                            SizedBox(
-                              height: 22,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: NeuButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        user['running'] = true;
-                                      });
-                                      var res = await Api.kickConnection({"who": user['who'], "from": user['from']});
-                                      setState(() {
-                                        user['running'] = false;
-                                      });
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                "终止连接",
+                                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Text(
+                                "确认要终止此连接？",
+                                style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
+                              ),
+                              SizedBox(
+                                height: 22,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          user['running'] = true;
+                                        });
+                                        var res = await Api.kickConnection({"who": user['who'], "from": user['from']});
+                                        setState(() {
+                                          user['running'] = false;
+                                        });
 
-                                      if (res['success']) {
-                                        Util.toast("连接已终止");
-                                      }
-                                    },
-                                    decoration: NeumorphicDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    bevel: 5,
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
-                                      "终止连接",
-                                      style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Expanded(
-                                  child: NeuButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                    },
-                                    decoration: NeumorphicDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    bevel: 5,
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
-                                      "取消",
-                                      style: TextStyle(fontSize: 18),
+                                        if (res['success']) {
+                                          Util.toast("连接已终止");
+                                        }
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      bevel: 5,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        "终止连接",
+                                        style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                          ],
+                                  SizedBox(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      bevel: 5,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Text(
+                                        "取消",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -2011,6 +2033,77 @@ class DashboardState extends State<Dashboard> {
     return apps;
   }
 
+  Widget _buildESataItem(esata) {
+    return NeuCard(
+      margin: EdgeInsets.only(bottom: 20),
+      curveType: CurveType.flat,
+      decoration: NeumorphicDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      bevel: 20,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  "${esata['dev_title']}",
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                esata['status'] == "normal"
+                    ? Label(
+                        "正常",
+                        Colors.green,
+                        fill: true,
+                      )
+                    : Label(
+                        esata['status'],
+                        Colors.red,
+                        fill: true,
+                      ),
+                SizedBox(
+                  width: 10,
+                ),
+                Spacer(),
+                NeuButton(
+                  onPressed: () async {
+                    var res = await Api.ejectEsata(esata['dev_id']);
+                    if (res['success']) {
+                      Util.toast("设备已退出");
+                      getData();
+                    } else {
+                      Util.toast("设备退出失败，代码${res['error']['code']}");
+                    }
+                  },
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(5),
+                  bevel: 5,
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Icon(
+                      CupertinoIcons.eject,
+                      color: Color(0xffff9813),
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -2019,8 +2112,12 @@ class DashboardState extends State<Dashboard> {
         title: Text(
           "控制台",
         ),
-        leading: showMainMenu
-            ? Padding(
+        leadingWidth: 120,
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (showMainMenu)
+              Padding(
                 padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
                 child: NeuButton(
                   decoration: NeumorphicDecoration(
@@ -2037,8 +2134,105 @@ class DashboardState extends State<Dashboard> {
                     width: 20,
                   ),
                 ),
-              )
-            : SizedBox(),
+              ),
+            if (esatas.length > 0)
+              Padding(
+                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                child: NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  bevel: 5,
+                  onPressed: () {
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: NeuCard(
+                            width: double.infinity,
+                            bevel: 5,
+                            curveType: CurveType.emboss,
+                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    "外接设备",
+                                    style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  ...esatas.map(_buildESataItem).toList(),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).push(CupertinoPageRoute(
+                                                builder: (context) {
+                                                  return ExternalDevice();
+                                                },
+                                                settings: RouteSettings(name: "external_device")));
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 5,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Text(
+                                            "查看详情",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      Expanded(
+                                        child: NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 5,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Text(
+                                            "取消",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Image.asset(
+                    "assets/icons/external_devices.png",
+                    width: 20,
+                  ),
+                ),
+              ),
+          ],
+        ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),

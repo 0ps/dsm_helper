@@ -172,6 +172,29 @@ class _UploadState extends State<Upload> {
                                 "选择操作",
                                 style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
                               ),
+                              if (upload.status == UploadStatus.failed) ...[
+                                SizedBox(
+                                  height: 22,
+                                ),
+                                NeuButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      upload.status = UploadStatus.wait;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  bevel: 5,
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    "重试",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ],
                               SizedBox(
                                 height: 22,
                               ),
@@ -358,7 +381,6 @@ class _UploadState extends State<Upload> {
                           upload.status = UploadStatus.running;
                         });
                         var res = await Api.upload(savePath, upload.path, upload.cancelToken, (progress, total) {
-                          // print("$progress,$total");
                           setState(() {
                             upload.uploadSize = progress;
                             upload.fileSize = total;

@@ -446,7 +446,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        Text("${disk['container']['str']}"),
+                        Text("${disk['unc']}"),
                       ],
                     ),
                     SizedBox(

@@ -22,7 +22,6 @@ class _ExternalDeviceState extends State<ExternalDevice> {
 
   getData() async {
     var res = await Api.externalDevice();
-    print(res);
     if (res['success']) {
       setState(() {
         loading = false;
@@ -201,6 +200,36 @@ class _ExternalDeviceState extends State<ExternalDevice> {
                         Colors.red,
                         fill: true,
                       ),
+                SizedBox(
+                  width: 10,
+                ),
+                Spacer(),
+                NeuButton(
+                  onPressed: () async {
+                    var res = await Api.ejectEsata(esata['dev_id']);
+                    if (res['success']) {
+                      Util.toast("设备已退出");
+                      getData();
+                    } else {
+                      Util.toast("设备退出失败，代码${res['error']['code']}");
+                    }
+                  },
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(5),
+                  bevel: 5,
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Icon(
+                      CupertinoIcons.eject,
+                      color: Color(0xffff9813),
+                      size: 16,
+                    ),
+                  ),
+                ),
               ],
             ),
             ...partitions.map(_buildPartitionItem).toList(),

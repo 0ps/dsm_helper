@@ -1486,4 +1486,13 @@ class Api {
     };
     return await Util.post("entry.cgi", data: data);
   }
+
+  static Future<Map> userQuota() async {
+    var data = {
+      "api": "SYNO.Core.PersonalSettings",
+      "method": "quota",
+      "version": 1,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
 }

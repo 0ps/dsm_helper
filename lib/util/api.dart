@@ -1338,7 +1338,7 @@ class Api {
   }
 
   //SYNO.Core.NormalUser
-  static Future<Map> normalUser(String method, {Map<String, String> changedData}) async {
+  static Future<Map> normalUser(String method, {Map<String, dynamic> changedData}) async {
     var data = {
       "api": 'SYNO.Core.NormalUser',
       "method": method,
@@ -1435,6 +1435,54 @@ class Api {
       "method": "do_smart_test",
       "version": 1,
       "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> saveMail(String mail) async {
+    var data = {
+      "mail": '"$mail"',
+      "api": 'SYNO.Core.OTP',
+      "method": "save_mail",
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> getQrCode(String account) async {
+    var data = {
+      "account": '"$account"',
+      "api": 'SYNO.Core.OTP',
+      "method": "get_qrcode",
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> authOtpCode(String code) async {
+    var data = {
+      "code": '"$code"',
+      "api": 'SYNO.Core.OTP',
+      "method": "auth_tmp_code",
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> currentConnect() async {
+    var data = {
+      "start": 0,
+      "limit": 50,
+      "offset": 0,
+      "action": "enum",
+      "api": "SYNO.Core.CurrentConnection",
+      "method": "get",
+      "sort_direction": "DESC",
+      "sort_by": "time",
+      "version": 1,
     };
     return await Util.post("entry.cgi", data: data);
   }

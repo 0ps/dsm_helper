@@ -116,6 +116,7 @@ class DashboardState extends State<Dashboard> {
         }
         if (init['data']['Session'] != null) {
           hostname = init['data']['Session']['hostname'];
+          Util.hostname = hostname;
         }
         if (init['data']['Strings'] != null) {
           Util.strings = init['data']['Strings'];

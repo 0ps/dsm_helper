@@ -26,21 +26,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
   List disks = [];
   List spaces = [];
   List luns = [];
-  List colors = [
-    Colors.red,
-    Colors.redAccent,
-    Colors.purpleAccent,
-    Colors.green,
-    Colors.amber,
-    Colors.orange,
-    Colors.teal,
-    Colors.indigoAccent,
-    Colors.cyanAccent,
-    Colors.yellow,
-    Colors.black,
-    Colors.lightGreenAccent,
-    Colors.pinkAccent
-  ];
+  List colors = [Colors.red, Colors.redAccent, Colors.purpleAccent, Colors.green, Colors.amber, Colors.orange, Colors.teal, Colors.indigoAccent, Colors.cyanAccent, Colors.yellow, Colors.black, Colors.lightGreenAccent, Colors.pinkAccent];
   Timer timer;
   int maxNetworkSpeed = 0;
   int maxDiskReadSpeed = 0;
@@ -1162,7 +1148,6 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(text: "${cpus.last['1min_load'] / 100}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-                                                    TextSpan(text: " %"),
                                                   ],
                                                 ),
                                               ),
@@ -1191,7 +1176,6 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(text: "${cpus.last['5min_load'] / 100}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-                                                    TextSpan(text: " %"),
                                                   ],
                                                 ),
                                               ),
@@ -1220,7 +1204,6 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(text: "${cpus.last['15min_load'] / 100}", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
-                                                    TextSpan(text: " %"),
                                                   ],
                                                 ),
                                               ),
@@ -1381,9 +1364,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                               Text.rich(
                                                 TextSpan(
                                                   children: [
-                                                    TextSpan(
-                                                        text: "${Util.formatSize((memories.last['memory_size'] - memories.last['total_real']) * 1024, fixed: 1)}",
-                                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                                                    TextSpan(text: "${Util.formatSize((memories.last['memory_size'] - memories.last['total_real']) * 1024, fixed: 1)}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                                                   ],
                                                 ),
                                                 style: TextStyle(color: Colors.grey),
@@ -1414,9 +1395,7 @@ class _PerformanceState extends State<Performance> with SingleTickerProviderStat
                                               Text.rich(
                                                 TextSpan(
                                                   children: [
-                                                    TextSpan(
-                                                        text: "${Util.formatSize(memories.last['real_usage'] * memories.last['memory_size'] * 10.24, fixed: 1)}",
-                                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                                                    TextSpan(text: "${Util.formatSize(memories.last['real_usage'] * memories.last['memory_size'] * 10.24, fixed: 1)}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                                                   ],
                                                 ),
                                                 style: TextStyle(color: Colors.orange),

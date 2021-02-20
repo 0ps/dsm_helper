@@ -181,6 +181,7 @@ class _AddDownloadTaskState extends State<AddDownloadTask> {
               }
               var res;
               if (torrentPath != "") {
+                print(Util.cookie);
                 res = await Api.downloadTaskCreate(saveFolder, "file", filePath: torrentPath);
                 if (res['success']) {
                   Navigator.of(context).push(CupertinoPageRoute(builder: (context) {

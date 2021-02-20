@@ -208,6 +208,7 @@ class Util {
   static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
+
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
     headers['origin'] = host ?? baseUrl;
     headers['referer'] = host ?? baseUrl;
@@ -328,11 +329,12 @@ class Util {
     headers = headers ?? {};
     headers['Cookie'] = Util.cookie;
     headers['Accept-Encoding'] = "gzip";
-    headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
-    headers['origin'] = host ?? baseUrl;
-    headers['referer'] = host ?? baseUrl;
-    // headers['host'] = host ?? baseUrl;
+    // headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
+    // headers['origin'] = host ?? baseUrl;
+    // headers['referer'] = host ?? baseUrl;
+    // headers['Host'] = host ?? baseUrl;
     headers['Connection'] = "keep-alive";
+    headers['User-Agent'] = "DS get 1.12.4 rv:168 (Dalvik/2.1.0 (Linux; U; Android 11; MI 9 Build/RKQ1.200826.002))";
     //Proxy-Connection: keep-alive
     Dio dio = new Dio(
       new BaseOptions(

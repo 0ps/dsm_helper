@@ -37,6 +37,11 @@ class Api {
 //    var res = await Util.post("base/update", data: {"platform": Platform.isAndroid ? "android" : "ios", "build": buildNumber});
   }
 
+  static Future<Map> payment() async {
+    var res = await Util.get("https://dsm.flutter.fit/payment", host: "https://dsm.flutter.fit");
+    return res;
+  }
+
   static Future<Map> login({String host, String account, String password, String otpCode: "", CancelToken cancelToken, bool rememberDevice: false, String cookie}) async {
     var data = {
       "account": account,
@@ -1265,13 +1270,11 @@ class Api {
       "create_list": true,
     };
     if (type == "file") {
-      // File file = File(filePath);
       MultipartFile torrent = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("application/octet-stream"));
       data['file'] = json.encode(["-1891550746"]);
       data['-1891550746'] = torrent;
-      // data['size'] = file.lengthSync();
-      // data['mtime'] = DateTime.now().millisecondsSinceEpoch;
       data['destination'] = '"$destination"';
+      print(data);
       return await Util.upload("entry.cgi", data: data);
     } else {
       List<String> urls = url.split("\n");
@@ -1321,6 +1324,56 @@ class Api {
       "id": json.encode([id]),
       "additional": json.encode(["detail", "transfer"]),
       "method": "get",
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadTracker(String id) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task.BT.Tracker',
+      "task_id": '"$id"',
+      "method": "list",
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadTrackerAdd(String id, List<String> trackers) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task.BT.Tracker',
+      "task_id": '"$id"',
+      "method": "add",
+      "tracker": json.encode(trackers),
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadPeer(String id) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task.BT.Peer',
+      "task_id": '"$id"',
+      "method": "list",
+      "version": 2,
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> downloadFile(String id) async {
+    var data = {
+      "api": 'SYNO.DownloadStation2.Task.BT.File',
+      "offset": 0,
+      "limit": 50,
+      "sort_by": "name",
+      "order": "ASC",
+      "query": "",
+      "task_id": '"$id"',
+      "method": "list",
       "version": 2,
       "_sid": Util.sid,
     };

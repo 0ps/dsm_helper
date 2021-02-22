@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dsm_helper/pages/home.dart';
 import 'package:dsm_helper/pages/login/auth_page.dart';
 import 'package:dsm_helper/pages/login/login.dart';
+import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +27,7 @@ void main() async {
   bool launchAuth = false;
   bool password = false;
   bool biometrics = false;
+  bool showShortcuts = true;
   String launchAuthStr = await Util.getStorage("launch_auth");
   String launchAuthPasswordStr = await Util.getStorage("launch_auth_password");
   String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
@@ -61,6 +63,10 @@ void main() async {
   String vibrateOn = await Util.getStorage("vibrate_on");
   String vibrateNormal = await Util.getStorage("vibrate_normal");
   String vibrateWarning = await Util.getStorage("vibrate_warning");
+  String showShortcutsStr = await Util.getStorage("show_shortcut");
+  if (showShortcutsStr.isNotBlank) {
+    showShortcuts = showShortcutsStr == "1";
+  }
   if (vibrateOn.isNotBlank) {
     Util.vibrateOn = vibrateOn == "1";
   } else {
@@ -87,6 +93,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: DarkModeProvider(darkMode)),
+        ChangeNotifierProvider.value(value: ShortcutProvider(showShortcuts)),
       ],
       child: MyApp(authPage),
     ),

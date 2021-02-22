@@ -381,9 +381,11 @@ packages:
   neumorphic:
     dependency: "direct main"
     description:
-      name: neumorphic
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f85e720c25eabd407b936f2ecc2dfe247e43afe1
+      url: "https://gitee.com/challengerV/neumorphic.git"
+    source: git
     version: "0.4.0"
   oktoast:
     dependency: "direct main"
@@ -806,7 +808,7 @@ packages:
     source: hosted
     version: "0.1.0"
   webview_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: webview_flutter
       url: "https://pub.flutter-io.cn"

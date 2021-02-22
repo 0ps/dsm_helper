@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:dsm_helper/pages/common/browser.dart';
 import 'package:dsm_helper/pages/setting/open_source.dart';
 import 'package:dsm_helper/pages/setting/reward.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -119,21 +120,7 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            if (Platform.isAndroid) {
-                              AndroidIntent intent = AndroidIntent(
-                                action: 'action_view',
-                                data:
-                                    'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5',
-                                arguments: {},
-                                // data: 'https://qm.qq.com/cgi-bin/qm/qr?k=Gf20e3f1FXrlIUfgp9IwzMnqPuFKRwVK&jump_from=webapi',
-                                // type: "video/*",
-                              );
-
-                              intent.launch();
-                            } else {
-                              launch(
-                                  'mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
-                            }
+                            launch('mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D4woOsiYfPZO4lZ08fX4el43n926mj1r5');
                           },
                           child: Text("加群"),
                         ),
@@ -289,17 +276,22 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            if (Platform.isAndroid) {
-                              AndroidIntent intent = AndroidIntent(
-                                action: 'action_view',
-                                data: 'https://gitee.com/challengerV/dsm_helper',
-                                arguments: {},
+                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                              return Browser(
+                                url: "https://gitee.com/challengerV/dsm_helper",
                               );
-
-                              intent.launch();
-                            } else {
-                              launch('https://gitee.com/challengerV/dsm_helper');
-                            }
+                            }));
+                            // if (Platform.isAndroid) {
+                            //   AndroidIntent intent = AndroidIntent(
+                            //     action: 'action_view',
+                            //     data: 'https://gitee.com/challengerV/dsm_helper',
+                            //     arguments: {},
+                            //   );
+                            //
+                            //   intent.launch();
+                            // } else {
+                            //   launch('https://gitee.com/challengerV/dsm_helper');
+                            // }
                           },
                           child: Text("查看"),
                         ),
@@ -339,17 +331,11 @@ class _AboutState extends State<About> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           onPressed: () {
-                            if (Platform.isAndroid) {
-                              AndroidIntent intent = AndroidIntent(
-                                action: 'action_view',
-                                data: 'https://flutter.dev',
-                                arguments: {},
+                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                              return Browser(
+                                url: "https://flutter.dev",
                               );
-
-                              intent.launch();
-                            } else {
-                              launch('https://flutter.dev');
-                            }
+                            }));
                           },
                           child: Text("官网"),
                         ),

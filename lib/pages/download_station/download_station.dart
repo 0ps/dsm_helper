@@ -230,7 +230,7 @@ class _DownloadStationState extends State<DownloadStation> {
                                                     style: TextStyle(fontSize: 12, color: Colors.blue),
                                                     textAlign: TextAlign.right,
                                                   )
-                                                : download['status'] == 11
+                                                : download['status'] == 12
                                                     ? Text(
                                                         "下载中",
                                                         style: TextStyle(fontSize: 12, color: Colors.blue),

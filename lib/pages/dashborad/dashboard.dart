@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:dsm_helper/pages/common/browser.dart';
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/control_panel/external_device/external_device.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
+import 'package:dsm_helper/pages/docker/detail.dart';
 import 'package:dsm_helper/pages/notify/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/docker/docker.dart';
@@ -12,6 +14,7 @@ import 'package:dsm_helper/pages/download_station/download_station.dart';
 import 'package:dsm_helper/pages/iscsi/iscsi.dart';
 import 'package:dsm_helper/pages/log_center/log_center.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
+import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/security_scan/security_scan.dart';
@@ -28,6 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
+import 'package:provider/provider.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({key}) : super(key: key);
@@ -51,7 +55,7 @@ class DashboardState extends State<Dashboard> {
   List widgets = [];
   List applications = [];
   List fileLogs = [];
-
+  List shortcutItems = [];
   List esatas = [];
   Map appNotify;
   Map system;
@@ -113,6 +117,12 @@ class DashboardState extends State<Dashboard> {
             restoreSizePos = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['restoreSizePos'];
           }
           applications = init['data']['UserSettings']['Desktop']['appview_order'] ?? init['data']['UserSettings']['Desktop']['valid_appview_order'];
+          print(init['data']['UserSettings']['Desktop']['ShortcutItems']);
+          if (init['data']['UserSettings']['Desktop']['ShortcutItems'] != null) {
+            setState(() {
+              shortcutItems = init['data']['UserSettings']['Desktop']['ShortcutItems'];
+            });
+          }
         }
         if (init['data']['Session'] != null) {
           hostname = init['data']['Session']['hostname'];
@@ -1539,7 +1549,7 @@ class DashboardState extends State<Dashboard> {
     //     ),
     //   );
     // }
-    if (applications.contains("SYNO.SDS.PkgManApp.Instance")) {
+    else if (applications.contains("SYNO.SDS.PkgManApp.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1591,9 +1601,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    }
-
-    if (applications.contains("SYNO.SDS.ResourceMonitor.Instance")) {
+    } else if (applications.contains("SYNO.SDS.ResourceMonitor.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1630,8 +1638,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    }
-    if (applications.contains("SYNO.SDS.StorageManager.Instance")) {
+    } else if (applications.contains("SYNO.SDS.StorageManager.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1668,9 +1675,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    }
-
-    if (applications.contains("SYNO.SDS.LogCenter.Instance")) {
+    } else if (applications.contains("SYNO.SDS.LogCenter.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1707,9 +1712,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    }
-
-    if (applications.contains("SYNO.SDS.SecurityScan.Instance")) {
+    } else if (applications.contains("SYNO.SDS.SecurityScan.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1791,7 +1794,7 @@ class DashboardState extends State<Dashboard> {
     //   );
     // }
 
-    if (applications.contains("SYNO.SDS.iSCSI.Application")) {
+    else if (applications.contains("SYNO.SDS.iSCSI.Application")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1859,7 +1862,7 @@ class DashboardState extends State<Dashboard> {
     //   );
     // }
 
-    if (applications.contains("SYNO.Finder.Application")) {
+    else if (applications.contains("SYNO.Finder.Application")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1896,8 +1899,7 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    }
-    if (applications.contains("SYNO.SDS.Virtualization.Application")) {
+    } else if (applications.contains("SYNO.SDS.Virtualization.Application")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -2103,6 +2105,165 @@ class DashboardState extends State<Dashboard> {
         ),
       ),
     );
+  }
+
+  Widget _buildShortcutItem(shortcut) {
+    String icon = "";
+    String name = "";
+    CupertinoPageRoute route;
+    int unread = 0;
+    switch (shortcut['className']) {
+      case "SYNO.SDS.PkgManApp.Instance":
+        icon = "assets/applications/package_center.png";
+        name = "套件中心";
+        route = CupertinoPageRoute(
+            builder: (context) {
+              return Packages(system['firmware_ver']);
+            },
+            settings: RouteSettings(name: "packages"));
+        if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null) {
+          unread = appNotify['SYNO.SDS.PkgManApp.Instance']['unread'];
+        }
+        break;
+      case "SYNO.SDS.AdminCenter.Application":
+        icon = "assets/applications/control_panel.png";
+        name = "控制面板";
+        route = CupertinoPageRoute(
+            builder: (context) {
+              return ControlPanel(system, volumes, disks);
+            },
+            settings: RouteSettings(name: "control_panel"));
+        if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null) {
+          unread = appNotify['SYNO.SDS.AdminCenter.Application']['unread'];
+        }
+        break;
+      case "SYNO.SDS.StorageManager.Instance":
+        icon = "assets/applications/storage_manager.png";
+        name = "存储空间管理员";
+        route = CupertinoPageRoute(
+            builder: (context) {
+              return StorageManager();
+            },
+            settings: RouteSettings(name: "storage_manager"));
+        break;
+      case "SYNO.SDS.Docker.Application":
+        icon = "assets/applications/docker.png";
+        name = "Docker";
+        route = CupertinoPageRoute(
+          builder: (context) {
+            return Docker();
+          },
+          settings: RouteSettings(name: "docker"),
+        );
+        break;
+      case "SYNO.SDS.Docker.ContainerDetail.Instance":
+        icon = "assets/applications/docker.png";
+        name = "${shortcut['param']['data']['name']}";
+        if (shortcut['type'] == 'url') {
+          route = CupertinoPageRoute(
+            builder: (context) {
+              return Browser(
+                url: shortcut['url'],
+                title: name,
+              );
+            },
+            settings: RouteSettings(name: "browser"),
+          );
+        } else {
+          route = CupertinoPageRoute(
+            builder: (context) {
+              return ContainerDetail(name);
+            },
+            settings: RouteSettings(name: "docker_container_detail"),
+          );
+        }
+
+        break;
+      case "SYNO.SDS.LogCenter.Instance":
+        icon = "assets/applications/log_center.png";
+        name = "日志中心";
+        route = CupertinoPageRoute(
+            builder: (context) {
+              return LogCenter();
+            },
+            settings: RouteSettings(name: "log_center"));
+        break;
+      case "SYNO.SDS.ResourceMonitor.Instance":
+        icon = "assets/applications/resource_monitor.png";
+        name = "资源监控";
+        route = CupertinoPageRoute(
+            builder: (context) {
+              return ResourceMonitor();
+            },
+            settings: RouteSettings(name: "resource_monitor"));
+
+        break;
+      // case "SYNO.SDS.SecurityScan.Instance":
+      //   icon = "assets/applications/security_scan.png";
+      //   break;
+      case "SYNO.SDS.Virtualization.Application":
+        icon = "assets/applications/virtual_machine.png";
+        name = "Virtual Machine Manager";
+        route = CupertinoPageRoute(
+          builder: (context) {
+            return VirtualMachine();
+          },
+          settings: RouteSettings(name: "virtual_machine_manager"),
+        );
+        break;
+      case "SYNO.SDS.DownloadStation.Application":
+        icon = "assets/applications/download_station.png";
+        name = "Download Station";
+        route = CupertinoPageRoute(
+          builder: (context) {
+            return DownloadStation();
+          },
+          settings: RouteSettings(name: "download_station"),
+        );
+        break;
+    }
+    if (icon != "") {
+      return Padding(
+        padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(route);
+          },
+          child: NeuCard(
+            bevel: 20,
+            width: 100,
+            curveType: CurveType.flat,
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Image.asset(
+                    icon,
+                    width: 50,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "$name",
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return SizedBox();
+    }
   }
 
   @override
@@ -2329,10 +2490,37 @@ class DashboardState extends State<Dashboard> {
               ? widgets != null && widgets.length > 0
                   ? ListView(
                       padding: EdgeInsets.symmetric(vertical: 20),
-                      children: widgets.map((widget) {
-                        return _buildWidgetItem(widget);
-                        // return Text(widget);
-                      }).toList(),
+                      children: [
+                        Consumer<ShortcutProvider>(
+                          builder: (context, shortcutProvider, _) {
+                            return shortcutProvider.showShortcut
+                                ? NeuCard(
+                                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                    bevel: 20,
+                                    curveType: CurveType.flat,
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Container(
+                                      height: 140,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, i) {
+                                          return _buildShortcutItem(shortcutItems[i]);
+                                        },
+                                        itemCount: shortcutItems.length,
+                                      ),
+                                    ),
+                                  )
+                                : Container();
+                          },
+                        ),
+                        ...widgets.map((widget) {
+                          return _buildWidgetItem(widget);
+                          // return Text(widget);
+                        }).toList(),
+                      ],
                     )
                   : Center(
                       child: Column(

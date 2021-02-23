@@ -1002,8 +1002,11 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  static Future<Map> mediaConverter() async {
-    var data = {"api": "SYNO.Core.MediaIndexing.MediaConverter", "method": "status", "version": 1};
+  static Future<Map> mediaConverter(String method, {int hours}) async {
+    var data = {"api": "SYNO.Core.MediaIndexing.MediaConverter", "method": method, "version": 1};
+    if (hours != null) {
+      data['delay_hours'] = hours;
+    }
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -1544,6 +1547,65 @@ class Api {
     var data = {
       "api": "SYNO.Core.PersonalSettings",
       "method": "quota",
+      "version": 1,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> fileService() async {
+    List apis = [
+      {"api": "SYNO.Core.FileServ.SMB", "method": "get", "version": 3},
+      {"api": "SYNO.Core.FileServ.AFP", "method": "get", "version": 1},
+      {"api": "SYNO.Core.FileServ.NFS", "method": "get", "version": 2},
+      {"api": "SYNO.Core.FileServ.FTP", "method": "get", "version": 3},
+      {"api": "SYNO.Core.FileServ.FTP.SFTP", "method": "get", "version": 1},
+      {"api": "SYNO.Core.BandwidthControl.Protocol", "method": "get", "version": 1, "protocol": "FTP"},
+      {"api": "SYNO.Core.TFTP", "method": "get", "version": 1},
+      {"api": "SYNO.Backup.Service.NetworkBackup", "method": "get", "version": 1},
+      {"api": "SYNO.Core.BandwidthControl.Protocol", "method": "get", "version": 1, "protocol": "NetworkBackup"},
+      {"api": "SYNO.Core.Directory.Domain", "method": "get", "version": 1},
+      {
+        "api": "SYNO.Core.Share",
+        "method": "list",
+        "version": 1,
+        "additional": ["is_service_share"],
+        "shareType": ["dec", "local", "usb", "sata", "cluster"]
+      },
+      {"api": "SYNO.Core.Service", "method": "get", "version": 1, "service_id": "pgsql"},
+      {"api": "SYNO.Core.FileServ.ServiceDiscovery", "method": "get", "version": 1},
+      {"api": "SYNO.Core.SyslogClient.FileTransfer", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Network", "method": "get", "version": 1},
+      {"api": "SYNO.Core.FileServ.ReflinkCopy", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Web.DSM", "method": "get", "version": 2},
+      {"api": "SYNO.Core.ExternalDevice.Printer.BonjourSharing", "method": "get", "version": 1},
+      {"api": "SYNO.Core.FileServ.ServiceDiscovery", "method": "get", "version": 1},
+      {"api": "SYNO.Core.FileServ.ServiceDiscovery.WSTransfer", "method": "get", "version": 1}
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"sequential"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> securityRule() async {
+    var data = {
+      "items": '"ALL"',
+      "api": "SYNO.Core.SecurityScan.Status",
+      "method": "rule_get",
+      "version": 1,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> securitySystem() async {
+    var data = {
+      "api": "SYNO.Core.SecurityScan.Status",
+      "method": "system_get",
       "version": 1,
     };
     return await Util.post("entry.cgi", data: data);

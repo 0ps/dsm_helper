@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dsm_helper/pages/common/gesture_password.dart';
 import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
-import 'package:dsm_helper/pages/setting/full.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';

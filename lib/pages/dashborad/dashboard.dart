@@ -6,6 +6,7 @@ import 'package:dsm_helper/pages/common/browser.dart';
 import 'package:dsm_helper/pages/control_panel/control_panel.dart';
 import 'package:dsm_helper/pages/control_panel/external_device/external_device.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
+import 'package:dsm_helper/pages/dashborad/media_converter.dart';
 import 'package:dsm_helper/pages/docker/detail.dart';
 import 'package:dsm_helper/pages/notify/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
@@ -60,6 +61,7 @@ class DashboardState extends State<Dashboard> {
   Map appNotify;
   Map system;
   Map restoreSizePos;
+  Map converter;
   bool loading = true;
   bool success = true;
   String hostname = "获取中";
@@ -107,6 +109,18 @@ class DashboardState extends State<Dashboard> {
     }
   }
 
+  getMediaConverter() async {
+    var res = await Api.mediaConverter("status");
+    if (res['success']) {
+      setState(() {
+        converter = res['data'];
+        if (converter != null && (converter['photo_remain'] + converter['thumb_remain'] + converter['video_remain'] > 0)) {
+          Future.delayed(Duration(seconds: 5)).then((value) => getMediaConverter());
+        }
+      });
+    }
+  }
+
   Future<void> getInfo() async {
     var init = await Api.initData();
     if (init['success']) {
@@ -117,7 +131,6 @@ class DashboardState extends State<Dashboard> {
             restoreSizePos = init['data']['UserSettings']['SYNO.SDS._Widget.Instance']['restoreSizePos'];
           }
           applications = init['data']['UserSettings']['Desktop']['appview_order'] ?? init['data']['UserSettings']['Desktop']['valid_appview_order'];
-          print(init['data']['UserSettings']['Desktop']['ShortcutItems']);
           if (init['data']['UserSettings']['Desktop']['ShortcutItems'] != null) {
             setState(() {
               shortcutItems = init['data']['UserSettings']['Desktop']['ShortcutItems'];
@@ -184,6 +197,7 @@ class DashboardState extends State<Dashboard> {
       });
     }
     getExternalDevice();
+    getMediaConverter();
     var res = await Api.systemInfo(widgets);
 
     if (res['success']) {
@@ -1549,7 +1563,7 @@ class DashboardState extends State<Dashboard> {
     //     ),
     //   );
     // }
-    else if (applications.contains("SYNO.SDS.PkgManApp.Instance")) {
+    if (applications.contains("SYNO.SDS.PkgManApp.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1601,7 +1615,8 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (applications.contains("SYNO.SDS.ResourceMonitor.Instance")) {
+    }
+    if (applications.contains("SYNO.SDS.ResourceMonitor.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1638,7 +1653,8 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (applications.contains("SYNO.SDS.StorageManager.Instance")) {
+    }
+    if (applications.contains("SYNO.SDS.StorageManager.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1675,7 +1691,8 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (applications.contains("SYNO.SDS.LogCenter.Instance")) {
+    }
+    if (applications.contains("SYNO.SDS.LogCenter.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1712,7 +1729,8 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (applications.contains("SYNO.SDS.SecurityScan.Instance")) {
+    }
+    if (applications.contains("SYNO.SDS.SecurityScan.Instance")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1794,7 +1812,7 @@ class DashboardState extends State<Dashboard> {
     //   );
     // }
 
-    else if (applications.contains("SYNO.SDS.iSCSI.Application")) {
+    if (applications.contains("SYNO.SDS.iSCSI.Application")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1862,7 +1880,7 @@ class DashboardState extends State<Dashboard> {
     //   );
     // }
 
-    else if (applications.contains("SYNO.Finder.Application")) {
+    if (applications.contains("SYNO.Finder.Application")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -1899,7 +1917,8 @@ class DashboardState extends State<Dashboard> {
           ),
         ),
       );
-    } else if (applications.contains("SYNO.SDS.Virtualization.Application")) {
+    }
+    if (applications.contains("SYNO.SDS.Virtualization.Application")) {
       apps.add(
         GestureDetector(
           onTap: () {
@@ -2274,7 +2293,7 @@ class DashboardState extends State<Dashboard> {
         title: Text(
           "控制台",
         ),
-        leadingWidth: 120,
+        leadingWidth: 180,
         leading: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -2389,6 +2408,29 @@ class DashboardState extends State<Dashboard> {
                   },
                   child: Image.asset(
                     "assets/icons/external_devices.png",
+                    width: 20,
+                  ),
+                ),
+              ),
+            if (converter != null && (converter['photo_remain'] + converter['thumb_remain'] + converter['video_remain'] > 0))
+              Padding(
+                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                child: NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  bevel: 5,
+                  onPressed: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) {
+                          return MediaConverter(converter);
+                        });
+                  },
+                  child: Image.asset(
+                    "assets/icons/converter.gif",
                     width: 20,
                   ),
                 ),

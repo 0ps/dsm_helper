@@ -3,7 +3,7 @@ import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
-import 'package:tobias/tobias.dart';
+// import 'package:tobias/tobias.dart';
 
 class Full extends StatefulWidget {
   @override
@@ -82,7 +82,7 @@ class _FullState extends State<Full> {
               var res = await Api.payment();
               if (res['code'] == 1) {
                 print(res['data']);
-                aliPay(res['data']);
+                // aliPay(res['data']);
               }
             },
             child: Text(

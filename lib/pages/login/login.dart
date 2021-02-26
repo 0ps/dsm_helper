@@ -144,7 +144,8 @@ class _LoginState extends State<Login> {
         Util.baseUrl = "${https ? "https" : "http"}://$host:$port";
       }
       //开始自动登录
-
+      print("BaseUrl:$baseUrl");
+      print("Util.BaseUrl:${Util.baseUrl}");
       Util.sid = sid;
       //如果开启了自动登录，则判断当前登录状态
       if (autoLogin) {
@@ -194,15 +195,20 @@ class _LoginState extends State<Login> {
       String baseUri = "${https ? "https" : "http"}://${host.trim()}:${port.trim()}";
       doLogin(baseUri);
     } else {
+      print("QuickConnectID:$host");
       var res = await Api.quickConnect(host);
       if (res['errno'] == 0) {
         var cnRes = await Api.quickConnectCn(host);
         if (cnRes['errno'] == 0) {
-          qcAddresses = [
-            "http://${res['service']['relay_ip']}:${res['service']['relay_port']}/",
-            "http://${res['server']['ddns']}:${res['service']['ext_port']}/",
-            "http://${res['server']['external']["ip"]}:${res['service']['ext_port']}/",
-          ];
+          if (res['server']['external']["ip"] != null) {
+            qcAddresses.add("http://${res['server']['external']["ip"]}:${res['service']['ext_port']}/");
+          }
+          if (res['service']['relay_ip'] != null) {
+            qcAddresses.add("http://${res['service']['relay_ip']}:${res['service']['relay_port']}/");
+          }
+          if (res['server']['ddns'] != "NULL") {
+            qcAddresses.add("http://${res['server']['ddns']}:${res['service']['ext_port']}/");
+          }
           if (res['server']['interface'].length > 0) {
             for (var interface in res['server']['interface']) {
               qcAddresses.add("http://${interface['ip']}:${res['service']['port']}/");
@@ -244,7 +250,7 @@ class _LoginState extends State<Login> {
       Util.setStorage("https", https ? "1" : "0");
       Util.setStorage("host", host.trim());
       Util.setStorage("port", port);
-      Util.setStorage("base_url", baseUrl);
+      Util.setStorage("base_url", baseUri);
       Util.setStorage("account", account);
       Util.setStorage("remember_password", rememberPassword ? "1" : "0");
       Util.setStorage("auto_login", autoLogin ? "1" : "0");

@@ -663,34 +663,35 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                               ],
                             ),
                           ),
-                          NeuCard(
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                            bevel: 10,
-                            curveType: CurveType.flat,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    "散热状态",
-                                    overflow: TextOverflow.ellipsis,
+                          if (widget.system['sys_temp'] != null)
+                            NeuCard(
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                              bevel: 10,
+                              curveType: CurveType.flat,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "散热状态",
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
-                                    style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
-                                    overflow: TextOverflow.ellipsis,
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      "${widget.system['sys_temp']}℃ ${widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? "警告" : "正常") : (widget.system['temperature_warning'] ? "警告" : "正常")}",
+                                      style: TextStyle(color: widget.system['temperature_warning'] == null ? (widget.system['sys_temp'] > 80 ? Colors.red : Colors.green) : (widget.system['temperature_warning'] ? Colors.red : Colors.green)),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                           SizedBox(
                             height: 20,
                           ),

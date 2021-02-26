@@ -113,10 +113,25 @@ class _SecurityScanState extends State<SecurityScan> with SingleTickerProviderSt
     }
   }
 
+  String getTitle(String strId, int status) {
+    if (webManagerStrings['rules']["${strId}_desc_${status == 2 ? "good" : status == 0 ? "running" : "bad"}"] !=
+        null) {
+      return webManagerStrings['rules']["${strId}_desc_${status == 2 ? "good" : status == 0 ? "running" : "bad"}"];
+    } else {
+      if (Util.strings['SYNO.SDS.SecurityScan.Instance'] != null && Util.strings['SYNO.SDS.SecurityScan.Instance']['rules'] != null) {
+        return (Util.strings['SYNO.SDS.SecurityScan.Instance']['rules']["${strId}_desc_${status == 2 ? "good" : status == 0 ? "running" : "bad"}"] ??
+            "$strId");
+      } else {
+        return strId;
+      }
+    }
+  }
+
   List<Widget> _buildItemList() {
     List<Widget> list = [];
 
     rules.forEach((value) {
+      value['strId'] = value['strId'].replaceAll("_v2", "");
       list.add(NeuCard(
         margin: EdgeInsets.only(bottom: 20),
         decoration: NeumorphicDecoration(
@@ -130,9 +145,7 @@ class _SecurityScanState extends State<SecurityScan> with SingleTickerProviderSt
           child: Row(
             children: [
               Expanded(
-                child: Text(webManagerStrings['rules']["${value['strId']}_desc_${value['status'] == 2 ? "good" : value['status'] == 0 ? "running" : "bad"}"] ??
-                    (Util.strings['SYNO.SDS.SecurityScan.Instance']['rules']["${value['strId']}_desc_${value['status'] == 2 ? "good" : value['status'] == 0 ? "running" : "bad"}"] ??
-                        "${value['strId']}")),
+                child: Text(getTitle(value['strId'], value['status'])),
               ),
               value['status'] == 2
                   ? Icon(
@@ -272,11 +285,11 @@ class _SecurityScanState extends State<SecurityScan> with SingleTickerProviderSt
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        texts[sysStatus]['title'],
+                                        texts[sysStatus] != null ? texts[sysStatus]['title'] : "未知状态",
                                         style: TextStyle(fontSize: 20, color: colors[sysStatus]),
                                       ),
                                       Text(
-                                        texts[sysStatus]['content'],
+                                        texts[sysStatus] != null ? texts[sysStatus]['content'] : "未知状态",
                                         style: TextStyle(fontSize: 14),
                                       ),
                                       if (lastScanTime.isNotBlank)

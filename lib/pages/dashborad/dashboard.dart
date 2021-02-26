@@ -12,7 +12,6 @@ import 'package:dsm_helper/pages/notify/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/docker/docker.dart';
 import 'package:dsm_helper/pages/download_station/download_station.dart';
-import 'package:dsm_helper/pages/iscsi/iscsi.dart';
 import 'package:dsm_helper/pages/log_center/log_center.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
 import 'package:dsm_helper/pages/provider/shortcut.dart';
@@ -142,7 +141,7 @@ class DashboardState extends State<Dashboard> {
           Util.hostname = hostname;
         }
         if (init['data']['Strings'] != null) {
-          Util.strings = init['data']['Strings'];
+          Util.strings = init['data']['Strings'] ?? {};
         }
       });
     }
@@ -230,6 +229,7 @@ class DashboardState extends State<Dashboard> {
             case "SYNO.Core.System":
               setState(() {
                 system = item['data'];
+                Util.systemVersion(system['firmware_ver']);
               });
               break;
             case "SYNO.Core.CurrentConnection":
@@ -1507,7 +1507,7 @@ class DashboardState extends State<Dashboard> {
                   child: Column(
                     children: [
                       Image.asset(
-                        "assets/applications/control_panel.png",
+                        "assets/applications/${Util.version}/control_panel.png",
                         height: 45,
                         width: 45,
                         fit: BoxFit.contain,
@@ -1590,7 +1590,7 @@ class DashboardState extends State<Dashboard> {
                   child: Column(
                     children: [
                       Image.asset(
-                        "assets/applications/package_center.png",
+                        "assets/applications/${Util.version}/package_center.png",
                         height: 45,
                         width: 45,
                         fit: BoxFit.contain,
@@ -1639,7 +1639,7 @@ class DashboardState extends State<Dashboard> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/applications/resource_monitor.png",
+                  "assets/applications/${Util.version}/resource_monitor.png",
                   height: 45,
                   width: 45,
                   fit: BoxFit.contain,
@@ -1677,7 +1677,7 @@ class DashboardState extends State<Dashboard> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/applications/storage_manager.png",
+                  "assets/applications/${Util.version}/storage_manager.png",
                   height: 45,
                   width: 45,
                   fit: BoxFit.contain,
@@ -1715,7 +1715,7 @@ class DashboardState extends State<Dashboard> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/applications/log_center.png",
+                  "assets/applications/${Util.version}/log_center.png",
                   height: 45,
                   width: 45,
                   fit: BoxFit.contain,
@@ -1757,7 +1757,7 @@ class DashboardState extends State<Dashboard> {
                   child: Column(
                     children: [
                       Image.asset(
-                        "assets/applications/security_scan.png",
+                        "assets/applications/${Util.version}/security_scan.png",
                         height: 45,
                         width: 45,
                         fit: BoxFit.contain,
@@ -1812,44 +1812,44 @@ class DashboardState extends State<Dashboard> {
     //   );
     // }
 
-    if (applications.contains("SYNO.SDS.iSCSI.Application")) {
-      apps.add(
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).push(CupertinoPageRoute(
-                builder: (context) {
-                  return ISCSIManger();
-                },
-                settings: RouteSettings(name: "iSCSI_manager")));
-          },
-          child: NeuCard(
-            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-            curveType: CurveType.flat,
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            bevel: 20,
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                Image.asset(
-                  "assets/applications/iSCSI_manager.png",
-                  height: 45,
-                  width: 45,
-                  fit: BoxFit.contain,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text("iSCSI Manager"),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    // if (applications.contains("SYNO.SDS.iSCSI.Application")) {
+    //   apps.add(
+    //     GestureDetector(
+    //       onTap: () {
+    //         Navigator.of(context).pop();
+    //         Navigator.of(context).push(CupertinoPageRoute(
+    //             builder: (context) {
+    //               return ISCSIManger();
+    //             },
+    //             settings: RouteSettings(name: "iSCSI_manager")));
+    //       },
+    //       child: NeuCard(
+    //         width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+    //         curveType: CurveType.flat,
+    //         decoration: NeumorphicDecoration(
+    //           color: Theme.of(context).scaffoldBackgroundColor,
+    //           borderRadius: BorderRadius.circular(20),
+    //         ),
+    //         bevel: 20,
+    //         padding: EdgeInsets.symmetric(vertical: 20),
+    //         child: Column(
+    //           children: [
+    //             Image.asset(
+    //               "assets/applications/iSCSI_manager.png",
+    //               height: 45,
+    //               width: 45,
+    //               fit: BoxFit.contain,
+    //             ),
+    //             SizedBox(
+    //               height: 5,
+    //             ),
+    //             Text("iSCSI Manager"),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     // if (applications.contains("SYNO.SDS.App.FileStation3.Instance")) {
     //   apps.add(
@@ -1903,7 +1903,7 @@ class DashboardState extends State<Dashboard> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/applications/search.png",
+                  "assets/applications/${Util.version}/universal_search.png",
                   height: 45,
                   width: 45,
                   fit: BoxFit.contain,
@@ -1942,7 +1942,7 @@ class DashboardState extends State<Dashboard> {
             child: Column(
               children: [
                 Image.asset(
-                  "assets/applications/virtual_machine.png",
+                  "assets/applications/${Util.version}/virtual_machine.png",
                   height: 45,
                   width: 45,
                   fit: BoxFit.contain,
@@ -2133,7 +2133,7 @@ class DashboardState extends State<Dashboard> {
     int unread = 0;
     switch (shortcut['className']) {
       case "SYNO.SDS.PkgManApp.Instance":
-        icon = "assets/applications/package_center.png";
+        icon = "assets/applications/${Util.version}/package_center.png";
         name = "套件中心";
         route = CupertinoPageRoute(
             builder: (context) {
@@ -2145,7 +2145,7 @@ class DashboardState extends State<Dashboard> {
         }
         break;
       case "SYNO.SDS.AdminCenter.Application":
-        icon = "assets/applications/control_panel.png";
+        icon = "assets/applications/${Util.version}/control_panel.png";
         name = "控制面板";
         route = CupertinoPageRoute(
             builder: (context) {
@@ -2157,7 +2157,7 @@ class DashboardState extends State<Dashboard> {
         }
         break;
       case "SYNO.SDS.StorageManager.Instance":
-        icon = "assets/applications/storage_manager.png";
+        icon = "assets/applications/${Util.version}/storage_manager.png";
         name = "存储空间管理员";
         route = CupertinoPageRoute(
             builder: (context) {
@@ -2199,7 +2199,7 @@ class DashboardState extends State<Dashboard> {
 
         break;
       case "SYNO.SDS.LogCenter.Instance":
-        icon = "assets/applications/log_center.png";
+        icon = "assets/applications/${Util.version}/log_center.png";
         name = "日志中心";
         route = CupertinoPageRoute(
             builder: (context) {
@@ -2208,7 +2208,7 @@ class DashboardState extends State<Dashboard> {
             settings: RouteSettings(name: "log_center"));
         break;
       case "SYNO.SDS.ResourceMonitor.Instance":
-        icon = "assets/applications/resource_monitor.png";
+        icon = "assets/applications/${Util.version}/resource_monitor.png";
         name = "资源监控";
         route = CupertinoPageRoute(
             builder: (context) {
@@ -2221,7 +2221,7 @@ class DashboardState extends State<Dashboard> {
       //   icon = "assets/applications/security_scan.png";
       //   break;
       case "SYNO.SDS.Virtualization.Application":
-        icon = "assets/applications/virtual_machine.png";
+        icon = "assets/applications/${Util.version}/virtual_machine.png";
         name = "Virtual Machine Manager";
         route = CupertinoPageRoute(
           builder: (context) {

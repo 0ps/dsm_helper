@@ -33,9 +33,10 @@ class _SettingState extends State<Setting> {
   List servers = [];
 
   String account = "";
-
+  String host = "";
   bool otpEnable = false;
   bool otpEnforced = false;
+
   String email = "";
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _SettingState extends State<Setting> {
     getServers();
     getNormalUser();
     Util.getStorage("account").then((value) => setState(() => account = value));
+    Util.getStorage("host").then((value) => setState(() => host = value));
     super.initState();
   }
 
@@ -282,7 +284,7 @@ class _SettingState extends State<Setting> {
                             height: 5,
                           ),
                           Text(
-                            "${Util.baseUrl.split(":").getRange(0, 2).join(":")}",
+                            "$host",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(color: Colors.grey),

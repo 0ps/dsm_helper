@@ -20,6 +20,7 @@ class _NotifyState extends State<Notify> {
   Widget _buildNotifyItem(notify) {
     // print(widget.strings[notify['className']]['common']['displayname']);
     String msg = notify['msg'].toString();
+    print(notify);
     String title = "";
     List<String> titles = notify['title'].split(":");
     //判断是否在string内
@@ -27,10 +28,14 @@ class _NotifyState extends State<Notify> {
       if (webManagerStrings[titles[0]][titles[1]] != null) {
         title = webManagerStrings[titles[0]][titles[1]];
       }
-    } else if (Util.strings[notify['className']][titles[0]] != null && Util.strings[notify['className']][titles[0]][titles[1]] != null) {
-      title = Util.strings[notify['className']][titles[0]][titles[1]];
-    } else if (Util.strings[notify['className']] != null && Util.strings[notify['className']]['common'] != null && Util.strings[notify['className']]['common']['displayname'] != null) {
-      title = Util.strings[notify['className']]['common']['displayname'];
+    } else if (Util.strings[notify['className']] != null) {
+      if (Util.strings[notify['className']][titles[0]] != null && Util.strings[notify['className']][titles[0]][titles[1]] != null) {
+        title = Util.strings[notify['className']][titles[0]][titles[1]];
+      } else if (Util.strings[notify['className']] != null && Util.strings[notify['className']]['common'] != null && Util.strings[notify['className']]['common']['displayname'] != null) {
+        title = Util.strings[notify['className']]['common']['displayname'];
+      }
+    } else {
+      title = notify['className'] == "" ? notify['title'] : notify['className'];
     }
     return NeuCard(
       decoration: NeumorphicDecoration(

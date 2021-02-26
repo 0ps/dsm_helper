@@ -817,12 +817,13 @@ class Api {
     var data = {
       "additional": jsonEncode(additional),
       "polling_interval": 15,
-      "force_set_params": true,
+      // "force_set_params": true,
       "api": "SYNO.Core.Package",
-      "version": 1,
+      "version": version,
       "method": "list",
       "_sid": Util.sid,
     };
+    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -1621,7 +1622,7 @@ class Api {
     String data = '''{
     "version":1,
     "command":"get_server_info",
-    "serverID":"${connectConnectID}",
+    "serverID":"$connectConnectID",
     "id":"dsm",
     "get_ca_fingerprints":true
 }''';
@@ -1673,7 +1674,7 @@ class Api {
     }
   }
 
-  static Future<Map> pingpong(String host, Function callback) async {
+  static Future<void> pingpong(String host, Function callback) async {
     var res = await Util.get("${host}webman/pingpong.cgi");
     if (res['success']) {
       callback(host);

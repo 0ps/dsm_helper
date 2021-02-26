@@ -49,19 +49,14 @@ class _AccountsState extends State<Accounts> {
     servers.forEach((server) {
       server['loading'] = server['loading'] ?? true;
       server['is_login'] = server['is_login'] ?? false;
+      server['base_url'] = server['base_url'] ?? "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}/";
       if (server['is_login']) {
         serverInfo(server);
       } else {
         //仅首次重新登录
         if (server['loading']) {
-          String host;
-          if (server['base_url'] != null && server['base_url'] != "") {
-            host = server['base_url'];
-          } else {
-            host = "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}";
-          }
-
-          print(server);
+          String host = server['base_url'];
+          print(host);
           Api.shareList(sid: server['sid'], checkSsl: server['check_ssl'], cookie: server['smid'], host: host).then((checkLogin) async {
             if (checkLogin['success']) {
               server['is_login'] = true;
@@ -97,6 +92,7 @@ class _AccountsState extends State<Accounts> {
       accounts.add({
         "https": server['https'],
         "host": server['host'],
+        "base_url": server['base_url'],
         "port": server['port'],
         "account": server['account'],
         "remember_password": server['remember_password'],
@@ -111,7 +107,7 @@ class _AccountsState extends State<Accounts> {
   }
 
   serverInfo(server) async {
-    var res = await Api.utilization(sid: server['sid'], checkSsl: server['check_ssl'], cookie: server['smid'], host: "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}");
+    var res = await Api.utilization(sid: server['sid'], checkSsl: server['check_ssl'], cookie: server['smid'], host: "${server['base_url']}");
     if (res['success']) {
       if (!mounted) {
         return;
@@ -144,7 +140,7 @@ class _AccountsState extends State<Accounts> {
     return GestureDetector(
       onTap: () {
         if (server['is_login']) {
-          Util.baseUrl = "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}";
+          Util.baseUrl = "${server['base_url']}";
           Util.checkSsl = server['check_ssl'];
           Util.setStorage("https", server['https'] ? "1" : "0");
           Util.setStorage("host", server['host']);
@@ -185,12 +181,23 @@ class _AccountsState extends State<Accounts> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "${server['account']}",
-                                style: TextStyle(fontSize: 18),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${server['account']}",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Label(server['https'] ? "https" : "http", server['https'] ? Colors.green : Colors.lightBlueAccent),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
                               ),
                               Text(
-                                "${server['https'] ? "https" : "http"}://${server['host']}",
+                                "${server['host']}",
                                 style: TextStyle(color: Colors.grey),
                               )
                             ],

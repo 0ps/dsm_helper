@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:android_intent/android_intent.dart';
 import 'package:dsm_helper/pages/common/browser.dart';
 import 'package:dsm_helper/pages/setting/open_source.dart';
 import 'package:dsm_helper/pages/setting/reward.dart';

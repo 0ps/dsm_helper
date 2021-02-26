@@ -53,6 +53,8 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       packagesVersion = 2;
       installedVersion = 2;
     }
+    print(packagesVersion);
+    print(installedVersion);
     _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
     getData();
     super.initState();
@@ -118,6 +120,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     launchedPackages = [];
     print("获取运行中套件");
     var res = await Api.launchedPackages();
+    print(res);
     print("获取运行中套件end");
     if (res['success']) {
       Map packages = res['data']['packages'];

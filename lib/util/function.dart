@@ -54,6 +54,7 @@ class Util {
   static String sid = "";
   static String baseUrl = "";
   static String hostname = "";
+  static int version = 0;
   static bool checkSsl = true;
   static bool vibrateOn = true;
   static bool vibrateWarning = true;
@@ -65,6 +66,12 @@ class Util {
   static String appName = "";
   static toast(String text) {
     showToast(text ?? "");
+  }
+
+  static String systemVersion(String version) {
+    version = version.replaceAll("DSM ", "");
+    Util.version = int.parse(version.split(".").first);
+    return version;
   }
 
   static vibrate(FeedbackType type) async {
@@ -158,7 +165,47 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
+    List<String> movie = [
+      "3gp",
+      "3g2",
+      "asf",
+      "dat",
+      "divx",
+      "dvr-ms",
+      "m2t",
+      "m2ts",
+      "m4v",
+      "mkv",
+      "mp4",
+      "mts",
+      "mov",
+      "qt",
+      "tp",
+      "trp",
+      "ts",
+      "vob",
+      "wmv",
+      "xvid",
+      "ac3",
+      "amr",
+      "rm",
+      "rmvb",
+      "ifo",
+      "mpeg",
+      "mpg",
+      "mpe",
+      "m1v",
+      "m2v",
+      "mpeg1",
+      "mpeg2",
+      "mpeg4",
+      "ogv",
+      "webm",
+      "flv",
+      "avi",
+      "swf",
+      "f4v"
+    ];
     List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
@@ -279,7 +326,7 @@ class Util {
       } else {
         code = error.message;
       }
-      print("请求出错:$url");
+      print("请求出错:${headers['origin']} $url");
       return {
         "success": false,
         "error": {"code": code},
@@ -321,7 +368,7 @@ class Util {
 
       return response.data;
     } on DioError catch (error) {
-      print("请求出错:$url 请求内容:$data");
+      print("请求出错:${headers['origin']} $url 请求内容:$data");
       return {
         "success": false,
         "error": {"code": error.message},

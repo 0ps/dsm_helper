@@ -18,6 +18,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   String host = "";
+  String baseUrl = '';
   String account = "";
   String password = "";
   String port = "5000";
@@ -37,6 +38,7 @@ class _LoginState extends State<Login> {
   TextEditingController _portController = TextEditingController();
   TextEditingController _otpController = TextEditingController();
   List servers = [];
+  List qcAddresses = [];
   CancelToken cancelToken = CancelToken();
   @override
   initState() {
@@ -86,6 +88,7 @@ class _LoginState extends State<Login> {
     smid = await Util.getStorage("smid");
     String httpsString = await Util.getStorage("https");
     host = await Util.getStorage("host");
+    baseUrl = await Util.getStorage("base_url");
     String portString = await Util.getStorage("port");
     account = await Util.getStorage("account");
     password = await Util.getStorage("password");
@@ -135,8 +138,13 @@ class _LoginState extends State<Login> {
 
   checkLogin() async {
     if (https != null && sid.isNotBlank && host.isNotBlank) {
+      if (baseUrl.isNotBlank) {
+        Util.baseUrl = baseUrl;
+      } else {
+        Util.baseUrl = "${https ? "https" : "http"}://$host:$port";
+      }
       //开始自动登录
-      Util.baseUrl = "${https ? "https" : "http"}://$host:$port";
+
       Util.sid = sid;
       //如果开启了自动登录，则判断当前登录状态
       if (autoLogin) {
@@ -154,24 +162,6 @@ class _LoginState extends State<Login> {
             //如果登录失效，尝试重新登录
             print("尝试重新登录");
             _login();
-            // var loginRes = await Api.login(host: Util.baseUrl, account: account, password: password, cancelToken: cancelToken, rememberDevice: false);
-            // if (loginRes['success'] == true) {
-            //   //重新登录成功
-            //   Util.setStorage("sid", loginRes['data']['sid']);
-            //   Util.sid = loginRes['data']['sid'];
-            //   Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
-            // } else {
-            //   if (loginRes['code'] == "用户取消") {
-            //     Util.toast("用户取消登录");
-            //   } else {
-            //     Util.toast("自动登录失败，请手动登录");
-            //     Util.vibrate(FeedbackType.warning);
-            //   }
-            //
-            //   setState(() {
-            //     login = false;
-            //   });
-            // }
           }
         } else {
           //登录有效，进入首页
@@ -186,7 +176,7 @@ class _LoginState extends State<Login> {
     FocusScope.of(context).requestFocus(FocusNode());
 
     if (host.trim() == "") {
-      Util.toast("请输入网址/IP");
+      Util.toast("请输入网址/IP/QuickConnect ID");
       return;
     }
     if (account == "") {
@@ -197,10 +187,53 @@ class _LoginState extends State<Login> {
       Util.toast("请输入密码");
       return;
     }
-    String baseUri = "${https ? "https" : "http"}://${host.trim()}:${port.trim()}";
     setState(() {
       login = true;
     });
+    if (host.contains(".")) {
+      String baseUri = "${https ? "https" : "http"}://${host.trim()}:${port.trim()}";
+      doLogin(baseUri);
+    } else {
+      var res = await Api.quickConnect(host);
+      if (res['errno'] == 0) {
+        var cnRes = await Api.quickConnectCn(host);
+        if (cnRes['errno'] == 0) {
+          qcAddresses = [
+            "http://${res['service']['relay_ip']}:${res['service']['relay_port']}/",
+            "http://${res['server']['ddns']}:${res['service']['ext_port']}/",
+            "http://${res['server']['external']["ip"]}:${res['service']['ext_port']}/",
+          ];
+          if (res['server']['interface'].length > 0) {
+            for (var interface in res['server']['interface']) {
+              qcAddresses.add("http://${interface['ip']}:${res['service']['port']}/");
+              if (interface['ipv6'].length > 0) {
+                for (var v6 in interface['ipv6']) {
+                  qcAddresses.add("http://[${v6['address']}]:${res['service']['port']}/");
+                }
+              }
+            }
+          }
+        }
+        bool finded = false;
+        for (var address in qcAddresses) {
+          Api.pingpong(address, (res) {
+            if (res != null) {
+              if (!finded) {
+                setState(() {
+                  finded = true;
+                });
+                doLogin(res);
+              }
+            }
+          });
+        }
+      } else {
+        Util.toast("无法连接到服务器，请检查QuickConnect ID是否正确");
+      }
+    }
+  }
+
+  doLogin(String baseUri) async {
     var res = await Api.login(host: baseUri, account: account, password: password, otpCode: otpCode, cancelToken: cancelToken, rememberDevice: rememberDevice);
     setState(() {
       login = false;
@@ -211,6 +244,7 @@ class _LoginState extends State<Login> {
       Util.setStorage("https", https ? "1" : "0");
       Util.setStorage("host", host.trim());
       Util.setStorage("port", port);
+      Util.setStorage("base_url", baseUrl);
       Util.setStorage("account", account);
       Util.setStorage("remember_password", rememberPassword ? "1" : "0");
       Util.setStorage("auto_login", autoLogin ? "1" : "0");
@@ -243,6 +277,7 @@ class _LoginState extends State<Login> {
           servers[i]['check_ssl'] = checkSsl;
           servers[i]['cookie'] = Util.cookie;
           servers[i]['sid'] = res['data']['sid'];
+          servers[i]['base_url'] = baseUri;
           exist = true;
         }
       }
@@ -251,6 +286,7 @@ class _LoginState extends State<Login> {
         Map server = {
           "https": https,
           "host": host,
+          "base_url": baseUri,
           "port": port,
           "account": account,
           "remember_password": rememberPassword,
@@ -476,8 +512,8 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Row(
                 children: [
-                  Expanded(
-                    flex: 1,
+                  SizedBox(
+                    width: 60,
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -513,24 +549,29 @@ class _LoginState extends State<Login> {
                     flex: 3,
                     child: NeuTextField(
                       controller: _hostController,
-                      onChanged: (v) => host = v,
+                      onChanged: (v) {
+                        setState(() {
+                          host = v;
+                        });
+                      },
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        labelText: '网址/IP',
+                        labelText: '网址/IP/QuickConnect ID',
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: NeuTextField(
-                      onChanged: (v) => port = v,
-                      controller: _portController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        labelText: '端口',
+                  if (host.contains("."))
+                    Expanded(
+                      flex: 1,
+                      child: NeuTextField(
+                        onChanged: (v) => port = v,
+                        controller: _portController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: '端口',
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),

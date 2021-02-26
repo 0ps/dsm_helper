@@ -54,7 +54,13 @@ class _AccountsState extends State<Accounts> {
       } else {
         //仅首次重新登录
         if (server['loading']) {
-          String host = "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}";
+          String host;
+          if (server['base_url'] != null && server['base_url'] != "") {
+            host = server['base_url'];
+          } else {
+            host = "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}";
+          }
+
           print(server);
           Api.shareList(sid: server['sid'], checkSsl: server['check_ssl'], cookie: server['smid'], host: host).then((checkLogin) async {
             if (checkLogin['success']) {

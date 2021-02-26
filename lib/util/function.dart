@@ -205,17 +205,19 @@ class Util {
     }
   }
 
-  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie}) async {
+  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
 
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
     headers['origin'] = host ?? baseUrl;
     headers['referer'] = host ?? baseUrl;
+    print(headers);
     Dio dio = new Dio(
       BaseOptions(
         baseUrl: (host ?? baseUrl) + "/webapi/",
         headers: headers,
+        // connectTimeout: timeout,
       ),
     );
     //忽略Https校验
@@ -266,6 +268,8 @@ class Util {
         return json.decode(response.data);
       } else if (response.data is Map) {
         return response.data;
+      } else {
+        return response.data;
       }
     } on DioError catch (error) {
       print(error.message);
@@ -284,7 +288,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers, bool checkSsl, String cookie}) async {
+  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers, bool checkSsl, String cookie, int timeout = 20}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
@@ -292,6 +296,7 @@ class Util {
     headers['referer'] = host ?? baseUrl;
     Dio dio = new Dio(
       new BaseOptions(
+        // connectTimeout: timeout,
         baseUrl: (host ?? baseUrl) + "/webapi/",
         contentType: "application/x-www-form-urlencoded",
         headers: headers,

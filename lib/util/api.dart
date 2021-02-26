@@ -1610,4 +1610,75 @@ class Api {
     };
     return await Util.post("entry.cgi", data: data);
   }
+
+  static Future<Map> quickConnect(String connectConnectID) async {
+    Dio dio = new Dio(
+      new BaseOptions(
+        baseUrl: "https://global.quickconnect.cn/",
+        contentType: "text/plain",
+      ),
+    );
+    String data = '''{
+    "version":1,
+    "command":"get_server_info",
+    "serverID":"${connectConnectID}",
+    "id":"dsm",
+    "get_ca_fingerprints":true
+}''';
+    Response response;
+    try {
+      response = await dio.post("Serv.php", data: data);
+      if (response.data is String) {
+        return json.decode(response.data);
+      } else if (response.data is Map) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } on DioError catch (error) {
+      print("请求出错");
+      return {
+        "success": false,
+        "error": {"code": error.message},
+        "data": null
+      };
+    }
+  }
+
+  static Future<Map> quickConnectCn(String connectConnectID) async {
+    Dio dio = new Dio(
+      new BaseOptions(
+        baseUrl: "https://cnc.quickconnect.cn/",
+        contentType: "text/plain",
+      ),
+    );
+    String data = '''{"version":1,"command":"request_tunnel","serverID":"zxazxa1998","id":"dsm","location":"cn","platform":"Android 11"}''';
+    Response response;
+    try {
+      response = await dio.post("Serv.php", data: data);
+      if (response.data is String) {
+        return json.decode(response.data);
+      } else if (response.data is Map) {
+        return response.data;
+      } else {
+        return response.data;
+      }
+    } on DioError catch (error) {
+      print("请求出错");
+      return {
+        "success": false,
+        "error": {"code": error.message},
+        "data": null
+      };
+    }
+  }
+
+  static Future<Map> pingpong(String host, Function callback) async {
+    var res = await Util.get("${host}webman/pingpong.cgi");
+    if (res['success']) {
+      callback(host);
+    } else {
+      callback(null);
+    }
+  }
 }

@@ -87,7 +87,7 @@ class _LoginState extends State<Login> {
     sid = await Util.getStorage("sid");
     smid = await Util.getStorage("smid");
     String httpsString = await Util.getStorage("https");
-    host = await Util.getStorage("host");
+    host = await Util.getStorage("host") ?? "";
     baseUrl = await Util.getStorage("base_url");
     String portString = await Util.getStorage("port");
     account = await Util.getStorage("account");

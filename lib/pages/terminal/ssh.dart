@@ -29,7 +29,6 @@ class _SshState extends State<Ssh> {
 
   @override
   void dispose() {
-    terminal.close();
     super.dispose();
   }
 

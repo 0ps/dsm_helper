@@ -761,6 +761,143 @@ class FilesState extends State<Files> {
     );
   }
 
+  extractFile(file, {String password}) async {
+    var res = await Api.extractTask(file['path'], paths.join("/").substring(1), password: password);
+    if (res['success']) {
+      //获取解压进度
+      timer = Timer.periodic(Duration(seconds: 1), (_) async {
+        //获取加压进度
+        var result = await Api.extractResult(res['data']['taskid']);
+        if (result['success'] != null && result['success']) {
+          if (result['data']['finished']) {
+            if (result['data']['errors'] != null && result['data']['errors'].length > 0) {
+              if (result['data']['errors'][0]['code'] == 1403) {
+                String password = "";
+                showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return Material(
+                        color: Colors.transparent,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            NeuCard(
+                              width: double.infinity,
+                              margin: EdgeInsets.symmetric(horizontal: 50),
+                              curveType: CurveType.emboss,
+                              bevel: 20,
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "解压密码",
+                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                    ),
+                                    SizedBox(
+                                      height: 16,
+                                    ),
+                                    NeuCard(
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      bevel: 20,
+                                      curveType: CurveType.flat,
+                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                      child: NeuTextField(
+                                        onChanged: (v) => password = v,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "请输入解压密码",
+                                          labelText: "解压密码",
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: NeuButton(
+                                            onPressed: () async {
+                                              if (password == "") {
+                                                Util.toast("请输入解压密码");
+                                                return;
+                                              }
+                                              Navigator.of(context).pop();
+                                              extractFile(file, password: password);
+                                            },
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(25),
+                                            ),
+                                            bevel: 20,
+                                            padding: EdgeInsets.symmetric(vertical: 10),
+                                            child: Text(
+                                              "确定",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 16,
+                                        ),
+                                        Expanded(
+                                          child: NeuButton(
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                            },
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(25),
+                                            ),
+                                            bevel: 20,
+                                            padding: EdgeInsets.symmetric(vertical: 10),
+                                            child: Text(
+                                              "取消",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              }
+            } else {
+              Util.toast("文件解压完成");
+            }
+            timer.cancel();
+            timer = null;
+
+            refresh();
+            Future.delayed(Duration(seconds: 5)).then((value) {
+              setState(() {
+                processing.remove(res['data']['taskid']);
+              });
+            });
+          } else {
+            setState(() {
+              processing[res['data']['taskid']] = result['data'];
+            });
+          }
+        }
+      });
+    }
+  }
+
   compressFile(List<String> file) {
     String zipName = "";
     String destPath = "";
@@ -975,7 +1112,8 @@ class FilesState extends State<Files> {
                                   child: NeuButton(
                                     onPressed: () async {
                                       Navigator.of(context).pop();
-                                      String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
+                                      String url = Util.baseUrl +
+                                          "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
                                       String filename = "";
                                       if (file['isdir']) {
                                         filename = file['name'] + ".zip";
@@ -1012,31 +1150,7 @@ class FilesState extends State<Files> {
                                     child: NeuButton(
                                       onPressed: () async {
                                         Navigator.of(context).pop();
-                                        var res = await Api.extractTask(file['path'], paths.join("/").substring(1));
-                                        if (res['success']) {
-                                          //获取解压进度
-                                          timer = Timer.periodic(Duration(seconds: 1), (_) async {
-                                            //获取加压进度
-                                            var result = await Api.extractResult(res['data']['taskid']);
-                                            if (result['success'] != null && result['success']) {
-                                              setState(() {
-                                                processing[res['data']['taskid']] = result['data'];
-                                              });
-                                              if (result['data']['finished']) {
-                                                Util.toast("文件解压完成");
-                                                timer.cancel();
-                                                timer = null;
-
-                                                refresh();
-                                                Future.delayed(Duration(seconds: 5)).then((value) {
-                                                  setState(() {
-                                                    processing.remove(res['data']['taskid']);
-                                                  });
-                                                });
-                                              }
-                                            }
-                                          });
-                                        }
+                                        extractFile(file);
                                       },
                                       decoration: NeumorphicDecoration(
                                         color: Theme.of(context).scaffoldBackgroundColor,
@@ -1437,7 +1551,8 @@ class FilesState extends State<Files> {
                   int index = 0;
                   for (int i = 0; i < files.length; i++) {
                     if (Util.fileType(files[i]['name']) == FileType.image) {
-                      images.add(Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
+                      images.add(
+                          Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
                       if (files[i]['name'] == file['name']) {
                         index = images.length - 1;
                       }
@@ -1535,7 +1650,8 @@ class FilesState extends State<Files> {
                             height: 5,
                           ),
                           Text(
-                            (file['isdir'] ? "" : "${Util.formatSize(file['additional']['size'])}" + " | ") + DateTime.fromMillisecondsSinceEpoch(file['additional']['time']['crtime'] * 1000).format("Y/m/d H:i:s"),
+                            (file['isdir'] ? "" : "${Util.formatSize(file['additional']['size'])}" + " | ") +
+                                DateTime.fromMillisecondsSinceEpoch(file['additional']['time']['crtime'] * 1000).format("Y/m/d H:i:s"),
                             style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.headline5.color),
                           ),
                         ],

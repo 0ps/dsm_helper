@@ -47,7 +47,7 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - "permission_handler (5.0.1+1)":
+  - "permission_handler (5.1.0+2)":
     - Flutter
   - photo_manager (0.0.1):
     - Flutter
@@ -155,7 +155,7 @@ SPEC CHECKSUMS:
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
+  permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
   receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
   SDWebImage: 0b2ba0d56479bf6a45ecddbfd5558bea93150d25
@@ -169,6 +169,6 @@ SPEC CHECKSUMS:
   wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa
+PODFILE CHECKSUM: 9828fffc41ae4a815de6cef10f10fc51fd8222fe
 
 COCOAPODS: 1.8.4

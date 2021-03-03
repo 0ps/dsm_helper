@@ -258,6 +258,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
   }
 
   Widget _buildDiskItem(disk, {bool full: false}) {
+    print(disk);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(CupertinoPageRoute(
@@ -302,7 +303,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                       Row(
                         children: [
                           Text(
-                            "${disk['longName']}",
+                            "${disk['longName'].replaceAll("Cache device", "缓存设备")}",
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                           SizedBox(
@@ -380,7 +381,10 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}"),
+                        if (storagePools.where((pool) => pool['id'] == disk['used_by']).toList().length > 0)
+                          Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}")
+                        else if (ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList().length > 0)
+                          Text("${ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList()[0]['id'].toString().replaceFirst("ssd_", "SSD 缓存 ")}")
                       ],
                     ),
                     SizedBox(
@@ -396,8 +400,8 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           ),
                         ),
                         Text(
-                          "${disk['portType'] == "normal" ? "正常" : disk['status']}",
-                          style: TextStyle(color: disk['portType'] == "normal" ? Colors.green : Colors.red),
+                          "${disk['status'] == "normal" ? "正常" : "${disk['status']}"}",
+                          style: TextStyle(color: disk['status'] == "normal" ? Colors.green : Colors.red),
                         ),
                       ],
                     ),
@@ -414,8 +418,8 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           ),
                         ),
                         Text(
-                          "${disk['status'] == "normal" ? "正常" : disk['status']}",
-                          style: TextStyle(color: disk['status'] == "normal" ? Colors.green : Colors.red),
+                          "${disk['smart_status'] == "normal" ? "正常" : disk['smart_status']}",
+                          style: TextStyle(color: disk['smart_status'] == "normal" ? Colors.green : Colors.red),
                         ),
                       ],
                     ),
@@ -437,21 +441,23 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                     SizedBox(
                       height: 5,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            "坏扇区数量",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                    if (disk['unc'] > -1) ...[
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              "坏扇区数量",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Text("${disk['unc']}"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
+                          Text("${disk['unc']}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
                     Row(
                       children: [
                         SizedBox(

@@ -258,7 +258,6 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
   }
 
   Widget _buildDiskItem(disk, {bool full: false}) {
-    print(disk);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(CupertinoPageRoute(
@@ -317,11 +316,12 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           SizedBox(
                             width: 5,
                           ),
-                          Label(
-                            "${disk['temp']}℃",
-                            Colors.lightBlueAccent,
-                            height: 23,
-                          ),
+                          if (disk['temp'] != null && disk['temp'] > -1)
+                            Label(
+                              "${disk['temp']}℃",
+                              Colors.lightBlueAccent,
+                              height: 23,
+                            ),
                         ],
                       ),
                       SizedBox(
@@ -385,6 +385,8 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}")
                         else if (ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList().length > 0)
                           Text("${ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList()[0]['id'].toString().replaceFirst("ssd_", "SSD 缓存 ")}")
+                        else
+                          Text("-"),
                       ],
                     ),
                     SizedBox(
@@ -400,7 +402,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           ),
                         ),
                         Text(
-                          "${disk['status'] == "normal" ? "正常" : "${disk['status']}"}",
+                          "${disk['status'] == "normal" ? "正常" : disk['status'] == "not_use" ? "未初始化" : "${disk['status']}"}",
                           style: TextStyle(color: disk['status'] == "normal" ? Colors.green : Colors.red),
                         ),
                       ],
@@ -426,22 +428,24 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                     SizedBox(
                       height: 5,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            "预计寿命",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                    if (disk['remain_life'] != null) ...[
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              "预计寿命",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Text("${disk['remain_life'] == -1 ? "-" : disk['remain_life']}"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    if (disk['unc'] > -1) ...[
+                          Text("${disk['remain_life'] == -1 ? "-" : disk['remain_life']}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                    if (disk['unc'] != null && disk['unc'] > -1) ...[
                       Row(
                         children: [
                           SizedBox(
@@ -458,63 +462,70 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                         height: 5,
                       ),
                     ],
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            "温度",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                    if (disk['temp'] != null) ...[
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              "温度",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Text("${disk['temp']} ℃"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            "序列号",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          Text("${disk['temp'] > -1 ? "${disk['temp']} ℃" : "-"}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                    if (disk['serial'] != null) ...[
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              "序列号",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Text("${disk['serial']}"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            "固件版本",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          Text("${disk['serial']}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                    if (disk['firm'] != null) ...[
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              "固件版本",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Text("${disk['firm']}"),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            "4K原生硬盘",
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                          Text("${disk['firm']}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ],
+                    if (disk['is4Kn'] != null)
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: Text(
+                              "4K原生硬盘",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
                           ),
-                        ),
-                        Text("${disk['is4Kn'] ? "是" : "否"}"),
-                      ],
-                    ),
+                          Text("${disk['is4Kn'] ? "是" : "否"}"),
+                        ],
+                      ),
                   ],
                 ),
               ),

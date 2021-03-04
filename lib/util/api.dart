@@ -749,7 +749,7 @@ class Api {
       "mtime": file.lastModifiedSync().millisecondsSinceEpoch,
       "overwrite": "overwrite",
       "file": multipartFile,
-      "_sid": Util.sid,
+      // "_sid": Util.sid,
     };
     // var data = {
     //   "_sid": Util.sid,
@@ -996,8 +996,7 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data":
-          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -1270,18 +1269,20 @@ class Api {
 
   //delete_condition  delete
   static Future<Map> downloadTaskCreate(String destination, String type, {String url, String filePath}) async {
+    destination = destination.substring(1);
     var data = {
       "api": 'SYNO.DownloadStation2.Task',
       "method": "create",
       "version": 1,
-      "type": '"$type"',
-      "create_list": true,
     };
     if (type == "file") {
       MultipartFile torrent = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("application/octet-stream"));
       data['file'] = json.encode(["-1891550746"]);
-      data['-1891550746'] = torrent;
+      data["type"] = '"$type"';
+      data["create_list"] = true;
+
       data['destination'] = '"$destination"';
+      data['-1891550746'] = torrent;
       print(data);
       return await Util.upload("entry.cgi", data: data);
     } else {
@@ -1312,6 +1313,7 @@ class Api {
   }
 
   static Future<Map> downloadCreate(String listId, String destination, List selectedFile) async {
+    destination = destination.substring(1);
     var data = {
       "api": 'SYNO.DownloadStation2.Task.List.Polling',
       "destination": '"$destination"',

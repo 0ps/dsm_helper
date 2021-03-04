@@ -11,6 +11,7 @@ class CupertinoExtendedImage extends StatelessWidget {
   final double height;
   final BoxShape boxShape;
   final BorderRadius borderRadius;
+  final Widget placeholder;
   CupertinoExtendedImage(
     this.url, {
     this.fit,
@@ -18,6 +19,7 @@ class CupertinoExtendedImage extends StatelessWidget {
     this.height,
     this.boxShape: BoxShape.rectangle,
     this.borderRadius: BorderRadius.zero,
+    this.placeholder,
   });
   @override
   Widget build(BuildContext context) {
@@ -35,16 +37,17 @@ class CupertinoExtendedImage extends StatelessWidget {
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
-            return Container(
-              width: width,
-              height: height,
-              alignment: Alignment.center,
-              child: Image.asset(
-                "assets/icons/image.png",
-                width: 40,
-                height: 40,
-              ),
-            );
+            return placeholder ??
+                Container(
+                  width: width,
+                  height: height,
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    "assets/icons/image.png",
+                    width: 40,
+                    height: 40,
+                  ),
+                );
             break;
           case LoadState.completed:
             return ExtendedRawImage(

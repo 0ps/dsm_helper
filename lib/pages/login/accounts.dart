@@ -142,11 +142,18 @@ class _AccountsState extends State<Accounts> {
         if (server['is_login']) {
           Util.baseUrl = "${server['base_url']}";
           Util.checkSsl = server['check_ssl'];
+          Util.setStorage("base_url", Util.baseUrl);
+
           Util.setStorage("https", server['https'] ? "1" : "0");
           Util.setStorage("host", server['host']);
           Util.setStorage("port", server['port']);
           Util.setStorage("account", server['account']);
           Util.setStorage("remember_password", server['remember_password'] ? "1" : "0");
+          if (server['remember_password']) {
+            Util.setStorage("password", server['password']);
+          } else {
+            Util.setStorage("password", "");
+          }
           Util.setStorage("auto_login", server['auto_login'] ? "1" : "0");
           Util.setStorage("check_ssl", server['check_ssl'] ? "1" : "0");
           Util.setStorage("sid", server['sid']);

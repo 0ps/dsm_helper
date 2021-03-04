@@ -8,12 +8,14 @@ import 'package:dsm_helper/pages/control_panel/external_device/external_device.d
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/dashborad/media_converter.dart';
 import 'package:dsm_helper/pages/docker/detail.dart';
+import 'package:dsm_helper/pages/moments/moments.dart';
 import 'package:dsm_helper/pages/notify/notify.dart';
 import 'package:dsm_helper/pages/dashborad/widget_setting.dart';
 import 'package:dsm_helper/pages/docker/docker.dart';
 import 'package:dsm_helper/pages/download_station/download_station.dart';
 import 'package:dsm_helper/pages/log_center/log_center.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
+import 'package:dsm_helper/pages/photo_station/photo_station.dart';
 import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
@@ -2049,7 +2051,53 @@ class DashboardState extends State<Dashboard> {
         ),
       );
     }
-    //.Application,SYNO.Photo.AppInstance,
+    if (applications.contains("SYNO.Photo.AppInstance")) {
+      apps.add(
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return Moments();
+              },
+              settings: RouteSettings(name: "moments"),
+            ));
+          },
+          child: NeuCard(
+            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+            curveType: CurveType.flat,
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            bevel: 20,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                Image.asset(
+                  "assets/applications/6/moments.png",
+                  height: 45,
+                  width: 45,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "Moments",
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    //SYNO.SDS.PhotoStation  6.0 photo station
+    //SYNO.Foto.AppInstance  7.0 photo
+    // print(applications);
     return apps;
   }
 
@@ -2138,7 +2186,7 @@ class DashboardState extends State<Dashboard> {
               return Packages(system['firmware_ver']);
             },
             settings: RouteSettings(name: "packages"));
-        if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null) {
+        if (appNotify != null && appNotify['SYNO.SDS.PkgManApp.Instance'] != null) {
           unread = appNotify['SYNO.SDS.PkgManApp.Instance']['unread'];
         }
         break;
@@ -2254,26 +2302,41 @@ class DashboardState extends State<Dashboard> {
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Image.asset(
-                    icon,
-                    width: 50,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          icon,
+                          width: 50,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "$name",
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    height: 5,
+                ),
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: Badge(
+                    unread,
+                    size: 20,
                   ),
-                  Text(
-                    "$name",
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

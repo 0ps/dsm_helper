@@ -12,8 +12,9 @@ class PreviewPage extends StatefulWidget {
   final List<String> images;
   final int index;
   final bool network;
+  final Object tag;
   final PageController pageController;
-  PreviewPage(this.images, this.index, {this.network = true}) : this.pageController = PageController(initialPage: index);
+  PreviewPage(this.images, this.index, {this.network = true, this.tag}) : this.pageController = PageController(initialPage: index);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
@@ -94,7 +95,7 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   mode: ExtendedImageMode.gesture,
                   heroBuilderForSlidingPage: (Widget result) {
                     return Hero(
-                      tag: item,
+                      tag: widget.tag ?? item,
                       child: result,
                       flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
                         final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
@@ -105,8 +106,7 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   initGestureConfigHandler: (state) {
                     double initialScale = 1.0;
                     if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
-                      initialScale =
-                          initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
+                      initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
                     }
                     return GestureConfig(
                         inPageView: true,
@@ -158,8 +158,7 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   initGestureConfigHandler: (state) {
                     double initialScale = 1.0;
                     if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
-                      initialScale =
-                          initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
+                      initialScale = initScale(size: size, initialScale: initialScale, imageSize: Size(state.extendedImageInfo.image.width.toDouble(), state.extendedImageInfo.image.height.toDouble()));
                     }
                     return GestureConfig(
                         inPageView: true,

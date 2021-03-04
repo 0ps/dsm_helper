@@ -381,12 +381,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        if (storagePools.where((pool) => pool['id'] == disk['used_by']).toList().length > 0)
-                          Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}")
-                        else if (ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList().length > 0)
-                          Text("${ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList()[0]['id'].toString().replaceFirst("ssd_", "SSD 缓存 ")}")
-                        else
-                          Text("-"),
+                        if (storagePools.where((pool) => pool['id'] == disk['used_by']).toList().length > 0) Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}") else if (ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList().length > 0) Text("${ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList()[0]['id'].toString().replaceFirst("ssd_", "SSD 缓存 ")}") else Text("-"),
                       ],
                     ),
                     SizedBox(
@@ -402,7 +397,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           ),
                         ),
                         Text(
-                          "${disk['status'] == "normal" ? "正常" : disk['status'] == "not_use" ? "未初始化" : "${disk['status']}"}",
+                          "${disk['status'] == "normal" ? "正常" : disk['status'] == "not_use" ? "未初始化" : disk['status'] == "sys_partition_normal" ? "已初始化" : "${disk['status']}"}",
                           style: TextStyle(color: disk['status'] == "normal" ? Colors.green : Colors.red),
                         ),
                       ],

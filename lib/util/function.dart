@@ -54,7 +54,7 @@ class Util {
   static String sid = "";
   static String baseUrl = "";
   static String hostname = "";
-  static int version = 0;
+  static int version = 6;
   static bool checkSsl = true;
   static bool vibrateOn = true;
   static bool vibrateWarning = true;
@@ -165,47 +165,7 @@ class Util {
 
   static FileType fileType(String name) {
     List<String> image = ["png", "jpg", "jpeg", "gif", "bmp", "ico"];
-    List<String> movie = [
-      "3gp",
-      "3g2",
-      "asf",
-      "dat",
-      "divx",
-      "dvr-ms",
-      "m2t",
-      "m2ts",
-      "m4v",
-      "mkv",
-      "mp4",
-      "mts",
-      "mov",
-      "qt",
-      "tp",
-      "trp",
-      "ts",
-      "vob",
-      "wmv",
-      "xvid",
-      "ac3",
-      "amr",
-      "rm",
-      "rmvb",
-      "ifo",
-      "mpeg",
-      "mpg",
-      "mpe",
-      "m1v",
-      "m2v",
-      "mpeg1",
-      "mpeg2",
-      "mpeg4",
-      "ogv",
-      "webm",
-      "flv",
-      "avi",
-      "swf",
-      "f4v"
-    ];
+    List<String> movie = ["3gp", "3g2", "asf", "dat", "divx", "dvr-ms", "m2t", "m2ts", "m4v", "mkv", "mp4", "mts", "mov", "qt", "tp", "trp", "ts", "vob", "wmv", "xvid", "ac3", "amr", "rm", "rmvb", "ifo", "mpeg", "mpg", "mpe", "m1v", "m2v", "mpeg1", "mpeg2", "mpeg4", "ogv", "webm", "flv", "avi", "swf", "f4v"];
     List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];

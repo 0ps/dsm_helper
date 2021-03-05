@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:vibrate/vibrate.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class Upload extends StatefulWidget {
   final String path;
@@ -341,17 +342,110 @@ class _UploadState extends State<Upload> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     onPressed: () async {
-                      FilePickerResult result = await FilePicker.platform.pickFiles(allowMultiple: true);
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) {
+                          return Material(
+                            color: Colors.transparent,
+                            child: NeuCard(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(22),
+                              bevel: 5,
+                              curveType: CurveType.emboss,
+                              decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    "选择添加方式",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  NeuButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
+                                      if (assets != null && assets.length > 0) {
+                                        assets.forEach((asset) {
+                                          asset.file.then((file) {
+                                            setState(() {
+                                              uploads.add(UploadItem(file.path, file.path.split("/").last));
+                                            });
+                                          });
+                                        });
+                                      } else {
+                                        print("未选择文件");
+                                      }
+                                    },
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    bevel: 5,
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      "上传图片",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  NeuButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      FilePickerResult result = await FilePicker.platform.pickFiles(allowMultiple: true);
 
-                      if (result != null) {
-                        setState(() {
-                          uploads.addAll(result.files.map((file) {
-                            return UploadItem(file.path, file.name, fileSize: file.size);
-                          }).toList());
-                        });
-                      } else {
-                        // User canceled the picker
-                      }
+                                      if (result != null) {
+                                        setState(() {
+                                          uploads.addAll(result.files.map((file) {
+                                            return UploadItem(file.path, file.name, fileSize: file.size);
+                                          }).toList());
+                                        });
+                                      } else {
+                                        // User canceled the picker
+                                      }
+                                    },
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    bevel: 5,
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      "上传文件",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  NeuButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                    },
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    bevel: 5,
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      "取消",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
                     child: Text("添加文件"),
                   ),
@@ -371,6 +465,9 @@ class _UploadState extends State<Upload> {
                         Util.toast("请选择上传位置");
                         return;
                       }
+                      final RegExp _asciiOnly = RegExp(r'^[\x00-\x7F]+$');
+                      print(_asciiOnly.hasMatch(savePath));
+                      // return;
                       for (int i = 0; i < uploads.length; i++) {
                         UploadItem upload = uploads[i];
                         if (upload.status != UploadStatus.wait) {
@@ -380,6 +477,7 @@ class _UploadState extends State<Upload> {
                         setState(() {
                           upload.status = UploadStatus.running;
                         });
+
                         var res = await Api.upload(savePath, upload.path, upload.cancelToken, (progress, total) {
                           setState(() {
                             upload.uploadSize = progress;

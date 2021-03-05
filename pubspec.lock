@@ -500,7 +500,7 @@ packages:
     source: hosted
     version: "3.1.0"
   photo_manager:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: photo_manager
       url: "https://pub.flutter-io.cn"
@@ -807,6 +807,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.7"
+  wechat_assets_picker:
+    dependency: "direct main"
+    description:
+      name: wechat_assets_picker
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.2.2"
   win32:
     dependency: transitive
     description:

@@ -827,40 +827,41 @@ class _SettingState extends State<Setting> {
                 width: 20,
               ),
               Expanded(
-                child: Platform.isAndroid
-                    ? NeuButton(
-                        onPressed: () {
-                          Navigator.of(context).push(CupertinoPageRoute(
-                              builder: (context) {
-                                return Backup();
-                              },
-                              settings: RouteSettings(name: "backup")));
-                        },
-                        // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              "assets/icons/upload.png",
-                              width: 40,
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              "相册备份",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                      )
-                    : Container(),
-              ),
+                  child:
+                      // Platform.isAndroid?
+                      NeuButton(
+                onPressed: () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) {
+                        return Backup();
+                      },
+                      settings: RouteSettings(name: "backup")));
+                },
+                // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 20),
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                bevel: 20,
+                child: Column(
+                  children: [
+                    Image.asset(
+                      "assets/icons/upload.png",
+                      width: 40,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "相册备份",
+                      style: TextStyle(fontSize: 16),
+                    )
+                  ],
+                ),
+              )
+                  // : Container(),
+                  ),
             ],
           ),
         ],

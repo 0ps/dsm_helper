@@ -32,7 +32,6 @@ dependencies:
 #  fluttertoast: ^7.1.6
   oktoast: ^2.3.2
   package_info: ^0.4.3+4
-  dio: ^3.0.10
   pull_to_refresh: ^1.6.4
   shared_preferences: ^0.5.12+4
   permission_handler: ^5.1.0+2
@@ -61,8 +60,11 @@ dependencies:
   http: ^0.12.2
   local_auth: ^0.6.3+4
   gesture_password: ^0.0.6
-  draggable_scrollbar: ^0.0.4
+  draggable_scrollbar:
+    git: https://gitee.com/challengerV/draggable_scrollbar.git
   wechat_assets_picker: ^4.2.2
+  dio:
+    git: https://gitee.com/challengerV/dio.git
   neumorphic:
     git: https://gitee.com/challengerV/neumorphic.git
   receive_sharing_intent:

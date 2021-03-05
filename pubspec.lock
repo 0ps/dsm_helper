@@ -130,16 +130,20 @@ packages:
   dio:
     dependency: "direct main"
     description:
-      name: dio
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f7cb07fa2bf91ba233d2814a96cf0c0a2e6638a0
+      url: "https://gitee.com/challengerV/dio.git"
+    source: git
     version: "3.0.10"
   draggable_scrollbar:
     dependency: "direct main"
     description:
-      name: draggable_scrollbar
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "162d7ef846ecd35963f8b57e42720b8875e044b9"
+      url: "https://gitee.com/challengerV/draggable_scrollbar.git"
+    source: git
     version: "0.0.4"
   equatable:
     dependency: transitive

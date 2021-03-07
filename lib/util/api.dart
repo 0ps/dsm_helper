@@ -769,7 +769,7 @@ class Api {
     MultipartFile multipartFile = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last);
     var url = "entry.cgi?api=SYNO.FileStation.Upload&method=upload&version=2";
     var data = {
-      "mtime": 1614922764000, //file.lastModifiedSync().millisecondsSinceEpoch,
+      "mtime": file.lastModifiedSync().millisecondsSinceEpoch,
       "overwrite": true,
       "path": uploadPath, //使用英文路径成功，中文路径失败
       "size": file.lengthSync(),

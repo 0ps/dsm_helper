@@ -15,7 +15,6 @@ import 'package:dsm_helper/pages/docker/docker.dart';
 import 'package:dsm_helper/pages/download_station/download_station.dart';
 import 'package:dsm_helper/pages/log_center/log_center.dart';
 import 'package:dsm_helper/pages/packages/packages.dart';
-import 'package:dsm_helper/pages/photo_station/photo_station.dart';
 import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/pages/resource_monitor/performance.dart';
 import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
@@ -2085,6 +2084,50 @@ class DashboardState extends State<Dashboard> {
                 ),
                 Text(
                   "Moments",
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    if (applications.contains("SYNO.Foto.AppInstance")) {
+      apps.add(
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).push(CupertinoPageRoute(
+              builder: (context) {
+                return Moments();
+              },
+              settings: RouteSettings(name: "moments"),
+            ));
+          },
+          child: NeuCard(
+            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+            curveType: CurveType.flat,
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            bevel: 20,
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                Image.asset(
+                  "assets/applications/7/synology_photos.png",
+                  height: 45,
+                  width: 45,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "Synology Photos",
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,

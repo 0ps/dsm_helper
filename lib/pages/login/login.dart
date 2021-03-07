@@ -235,6 +235,9 @@ class _LoginState extends State<Login> {
         }
       } else {
         Util.toast("无法连接到服务器，请检查QuickConnect ID是否正确");
+        setState(() {
+          login = false;
+        });
       }
     }
   }

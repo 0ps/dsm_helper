@@ -23,6 +23,8 @@ class _MomentsState extends State<Moments> {
   List album = [];
   double photoWidth;
   double albumWidth;
+  bool loadingTimeline = true;
+  bool loadingAlbum = true;
   @override
   void initState() {
     getData();
@@ -35,7 +37,15 @@ class _MomentsState extends State<Moments> {
     var res = await MomentsApi.timeline();
     if (res['success'] && mounted) {
       setState(() {
-        timeline = res['data']['list'];
+        timeline = [];
+        if (Util.version == 7) {
+          for (var section in res['data']['section']) {
+            timeline.addAll(section['list']);
+          }
+        } else {
+          timeline = res['data']['list'];
+        }
+
         for (int i = 0; i < timeline.length; i++) {
           int lines = (timeline[i]['item_count'] / 4).ceil();
           double height = 40 + lines * photoWidth + (lines - 1) * 2;
@@ -48,6 +58,9 @@ class _MomentsState extends State<Moments> {
             timeline[i]['position']['end'] = timeline[i]['position']['start'] + height;
           }
         }
+        setState(() {
+          loadingTimeline = false;
+        });
       });
     }
   }
@@ -63,9 +76,11 @@ class _MomentsState extends State<Moments> {
 
   getAlbum() async {
     var res = await MomentsApi.album();
+    print(res);
     if (res['success'] && mounted) {
       setState(() {
         album = res['data']['list'];
+        loadingAlbum = false;
       });
     }
   }
@@ -74,9 +89,6 @@ class _MomentsState extends State<Moments> {
     if (line['items'] == null) {
       line['items'] = [];
       MomentsApi.photos(year: line['year'], month: line['month'], day: line['day']).then((res) {
-        if (line['year'] == 2019 && line['month'] == 10 && line['day'] >= 24) {
-          print(res['data']['list'][0]['type']);
-        }
         if (res['success'] && mounted) {
           setState(() {
             line['items'] = res['data']['list'];
@@ -97,8 +109,8 @@ class _MomentsState extends State<Moments> {
   }
 
   Widget _buildPhotoItem(photo) {
-    String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
-    String originalUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
+    String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
+    String originalUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(TransparentMaterialPageRoute(
@@ -120,7 +132,7 @@ class _MomentsState extends State<Moments> {
             Hero(
               tag: "photo-${photo['additional']['thumbnail']['unit_id']}",
               child: CupertinoExtendedImage(
-                // "http://pan.fmtol.com:5000/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key=%22${photo['additional']['thumbnail']['cache_key']}%22&type=%22unit%22&size=%22sm%22&api=%22SYNO.Photo.Thumbnail%22&method=%22get%22&version=1&_sid=${Util.sid}",
+                // "http://pan.fmtol.com:5000/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key=%22${photo['additional']['thumbnail']['cache_key']}%22&type=%22unit%22&size=%22sm%22&api=%22${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail%22&method=%22get%22&version=1&_sid=${Util.sid}",
                 thumbUrl,
                 width: photoWidth,
                 height: photoWidth,
@@ -197,7 +209,7 @@ class _MomentsState extends State<Moments> {
   }
 
   Widget _buildAlbumItem(album) {
-    String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${album['additional']['thumbnail']['unit_id']}&cache_key="${album['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
+    String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${album['additional']['thumbnail']['unit_id']}&cache_key="${album['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
     String tag = "album-${album['additional']['thumbnail']['unit_id']}";
     return GestureDetector(
       onTap: () {
@@ -216,7 +228,7 @@ class _MomentsState extends State<Moments> {
             child: Hero(
               tag: "album-${album['additional']['thumbnail']['unit_id']}",
               child: CupertinoExtendedImage(
-                // "http://pan.fmtol.com:5000/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key=%22${photo['additional']['thumbnail']['cache_key']}%22&type=%22unit%22&size=%22sm%22&api=%22SYNO.Photo.Thumbnail%22&method=%22get%22&version=1&_sid=${Util.sid}",
+                // "http://pan.fmtol.com:5000/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key=%22${photo['additional']['thumbnail']['cache_key']}%22&type=%22unit%22&size=%22sm%22&api=%22SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail%22&method=%22get%22&version=1&_sid=${Util.sid}",
                 thumbUrl,
                 width: albumWidth,
                 height: albumWidth,
@@ -277,55 +289,95 @@ class _MomentsState extends State<Moments> {
       body: IndexedStack(
         index: currentIndex,
         children: [
-          DraggableScrollbar.semicircle(
-            labelTextBuilder: (position) {
-              var line = timeline.where((element) => element['position']['start'] <= position && element['position']['end'] >= position).toList();
-              if (line.length > 0) {
-                return Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        "${line[0]['month']}月",
-                        style: TextStyle(fontSize: 30),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("${line[0]['day'].toString().padLeft(2, "0")}日"),
-                          Text("${line[0]['year']}"),
-                        ],
-                      )
-                    ],
+          loadingTimeline
+              ? Center(
+                  child: NeuCard(
+                    padding: EdgeInsets.all(50),
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    child: CupertinoActivityIndicator(
+                      radius: 14,
+                    ),
                   ),
-                );
-              } else {
-                return null;
-              }
-            },
-            labelConstraints: BoxConstraints(minHeight: 60, maxHeight: 60, minWidth: 140, maxWidth: 140),
-            controller: _scrollController,
-            child: ListView.builder(
-              controller: _scrollController,
-              itemBuilder: (context, i) {
-                return _buildTimelineItem(timeline[i]);
-              },
-              itemCount: timeline.length,
-            ),
-          ),
-          ListView(
-            padding: EdgeInsets.all(20),
-            children: [
-              Wrap(
-                runSpacing: 20,
-                spacing: 20,
-                children: [
-                  ...album.map(_buildAlbumItem).toList(),
-                ],
-              )
-            ],
-          ),
+                )
+              : timeline.length > 0
+                  ? DraggableScrollbar.semicircle(
+                      labelTextBuilder: (position) {
+                        var line = timeline.where((element) => element['position']['start'] <= position && element['position']['end'] >= position).toList();
+                        if (line.length > 0) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "${line[0]['month']}月",
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("${line[0]['day'].toString().padLeft(2, "0")}日"),
+                                    Text("${line[0]['year']}"),
+                                  ],
+                                )
+                              ],
+                            ),
+                          );
+                        } else {
+                          return null;
+                        }
+                      },
+                      labelConstraints: BoxConstraints(minHeight: 60, maxHeight: 60, minWidth: 140, maxWidth: 140),
+                      controller: _scrollController,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemBuilder: (context, i) {
+                          return _buildTimelineItem(timeline[i]);
+                        },
+                        itemCount: timeline.length,
+                      ),
+                    )
+                  : Center(
+                      child: Text("无项目"),
+                    ),
+          loadingAlbum
+              ? Center(
+                  child: NeuCard(
+                    padding: EdgeInsets.all(50),
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    child: CupertinoActivityIndicator(
+                      radius: 14,
+                    ),
+                  ),
+                )
+              : Container(
+                  child: album.length > 0
+                      ? ListView(
+                          padding: EdgeInsets.all(20),
+                          children: [
+                            Wrap(
+                              runSpacing: 20,
+                              spacing: 20,
+                              children: [
+                                ...album.map(_buildAlbumItem).toList(),
+                              ],
+                            )
+                          ],
+                        )
+                      : Center(
+                          child: Text("无手动创建的相册"),
+                        ),
+                ),
         ],
       ),
     );

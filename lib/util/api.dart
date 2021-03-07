@@ -47,10 +47,10 @@ class Api {
       "account": account,
       "passwd": password,
       "otp_code": otpCode,
-      "version": 6,
+      "version": 4,
       "api": "SYNO.API.Auth",
       "method": "login",
-      "session": "FileStation",
+      "session": "webui",
       "enable_device_token": rememberDevice ? "yes" : "no",
     };
     return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken, cookie: cookie);
@@ -1011,8 +1011,7 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data":
-          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,

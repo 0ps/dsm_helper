@@ -61,16 +61,23 @@ class _BackupState extends State<Backup> {
     setState(() {});
     String backupAlbumStr = await Util.getStorage("backup_album");
     List backupAlbums = [];
-    if (backupAlbumStr.isNotBlank) {
-      backupAlbums = json.decode(backupAlbumStr);
-      List<AssetPathEntity> list = await PhotoManager.getAssetPathList();
-      list.forEach((album) {
-        if (backupAlbums.contains(album.id)) {
-          albums.add(album);
-        }
-      });
-      setState(() {});
+    if (await PhotoManager.requestPermission()) {
+      if (backupAlbumStr.isNotBlank) {
+        backupAlbums = json.decode(backupAlbumStr);
+
+        List<AssetPathEntity> list = await PhotoManager.getAssetPathList();
+        list.forEach((album) {
+          if (backupAlbums.contains(album.id)) {
+            albums.add(album);
+          }
+        });
+        setState(() {});
+      }
+    } else {
+      Util.vibrate(FeedbackType.warning);
+      Util.toast("请先允许群晖助手访问相册");
     }
+
     getAssetCount();
     // if (Platform.isAndroid) {
     //   String last = await Util.getStorage("last_backup_time");

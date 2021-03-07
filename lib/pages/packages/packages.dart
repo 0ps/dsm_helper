@@ -2,6 +2,7 @@ import 'package:dsm_helper/pages/packages/detail.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/cupertino_image.dart';
+import 'package:dsm_helper/widgets/label.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +15,15 @@ class Packages extends StatefulWidget {
   _PackagesState createState() => _PackagesState();
 }
 
-class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin {
+class _PackagesState extends State<Packages> with TickerProviderStateMixin {
   int packagesVersion = 1;
   int installedVersion = 1;
   TabController _tabController;
   List banners = [];
   List others = [];
   List packages = [];
+  List betas = [];
+
   List categories = [];
   List installedPackages = [];
   List canUpdatePackages = [];
@@ -33,6 +36,10 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   bool loadingAll = true;
   bool loadingInstalled = true;
   bool loadingOthers = true;
+  List get allPackages {
+    return packages + betas + others;
+  }
+
   @override
   void initState() {
     String ver = widget.version;
@@ -53,8 +60,6 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       packagesVersion = 2;
       installedVersion = 2;
     }
-    print(packagesVersion);
-    print(installedVersion);
     _tabController = TabController(initialIndex: 1, length: 3, vsync: this);
     getData();
     super.initState();
@@ -70,7 +75,10 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
         } else {
           packages = res['data']['data'];
         }
-
+        if (res['data']['beta_packages'] != null) {
+          betas = res['data']['beta_packages'];
+          _tabController = TabController(length: 4, vsync: this);
+        }
         //
         categories = res['data']['categories'];
         print(res['data']['categories']);
@@ -117,6 +125,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   getLaunchedPackages() async {
+    return;
     launchedPackages = [];
     print("获取运行中套件");
     var res = await Api.launchedPackages();
@@ -134,9 +143,10 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
 
   getInstalledPackages() async {
     installedPackages = [];
-    canUpdatePackages = [];
+
     print("获取已安装套件");
     var res = await Api.installedPackages(version: installedVersion);
+    print(res);
     print("获取已安装套件end");
     if (res['success']) {
       setState(() {
@@ -151,8 +161,9 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
   }
 
   calcInstalledPackage() {
+    canUpdatePackages = [];
     installedPackagesInfo.forEach((installedPackageInfo) {
-      packages.forEach((package) {
+      allPackages.forEach((package) {
         package['installed'] = package['installed'] ?? false;
         package['installed_version'] = package['installed_version'] ?? "";
         package['can_update'] = package['can_update'] ?? false;
@@ -160,7 +171,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
         if (installedPackageInfo['id'] == package['id']) {
           package['installed'] = true;
           package['installed_version'] = installedPackageInfo['version'];
-          package['can_update'] = Util.versionCompare(package['installed_version'], package['version']) > 0;
+          package['can_update'] = Util.versionCompare(package['installed_version'], package['version']) < 0;
           package['additional'] = installedPackageInfo['additional'];
           if (package['installed']) {
             installedPackages.add(package);
@@ -168,33 +179,12 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
           if (package['can_update']) {
             canUpdatePackages.add(package);
           }
-          if (launchedPackages.contains(package['id'])) {
+          if (package['additional'] != null && package['additional']['status'] == "running") {
+            package['launched'] = true;
+          } else if (launchedPackages.contains(package['id'])) {
             package['launched'] = true;
           }
         }
-        setState(() {});
-      });
-      others.forEach((package) {
-        package['installed'] = package['installed'] ?? false;
-        package['installed_version'] = package['installed_version'] ?? "";
-        package['can_update'] = package['can_update'] ?? false;
-        package['launched'] = package['launched'] ?? false;
-        if (installedPackageInfo['id'] == package['id']) {
-          package['installed'] = true;
-          package['installed_version'] = installedPackageInfo['version'];
-          package['can_update'] = Util.versionCompare(package['version'], package['installed_version']) > 0;
-          package['additional'] = installedPackageInfo['additional'];
-          if (package['installed']) {
-            installedPackages.add(package);
-          }
-          if (package['can_update']) {
-            canUpdatePackages.add(package);
-          }
-          if (launchedPackages.contains(package['id'])) {
-            package['launched'] = true;
-          }
-        }
-
         setState(() {});
       });
     });
@@ -241,7 +231,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
       );
     } else if (package['installed']) {
       String text = "";
-      if (package['launched']) {
+      if (package['launched'] && package['additional'] != null && package['additional']['startable']) {
         text = "停用";
       } else if (package['additional'] != null && package['additional']['startable']) {
         text = "启动";
@@ -466,7 +456,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildPackageItem(package, bool installed) {
+  Widget _buildPackageItem(package, bool installed, {bool isBeta: false}) {
     String thumbnailUrl = "";
     if (package['thumbnail'].length > 0) {
       thumbnailUrl = package['thumbnail'].last;
@@ -509,12 +499,28 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                   SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
-                    height: 80,
-                    child: CupertinoExtendedImage(
-                      thumbnailUrl,
-                      width: 80,
-                    ),
+                  Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: 80,
+                          child: CupertinoExtendedImage(
+                            thumbnailUrl,
+                            width: 80,
+                          ),
+                        ),
+                      ),
+                      if (isBeta || (package['additional'] != null && package['additional']['beta']))
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Label(
+                            "Beta",
+                            Colors.lightBlueAccent,
+                            fill: true,
+                          ),
+                        ),
+                    ],
                   ),
                   SizedBox(
                     height: 10,
@@ -568,7 +574,7 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                 curveType: CurveType.flat,
                 bevel: 10,
                 child: TabBar(
-                  isScrollable: false,
+                  isScrollable: true,
                   controller: _tabController,
                   indicatorSize: TabBarIndicatorSize.label,
                   labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
@@ -590,6 +596,11 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                       child: Text("社群"),
                     ),
+                    if (betas.length > 0)
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        child: Text("Beta"),
+                      ),
                   ],
                 ),
               ),
@@ -692,6 +703,19 @@ class _PackagesState extends State<Packages> with SingleTickerProviderStateMixin
                               ],
                             ),
                     ),
+                    if (betas.length > 0)
+                      ListView(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        children: [
+                          Wrap(
+                            runSpacing: 20,
+                            spacing: 20,
+                            children: betas.map((package) {
+                              return _buildPackageItem(package, false, isBeta: true);
+                            }).toList(),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),

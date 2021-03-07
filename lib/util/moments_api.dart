@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'function.dart';
-import 'package:http_parser/http_parser.dart';
 
 class MomentsApi {
   static Future<Map> timeline() async {
     Map<String, dynamic> data = {
       "timeline_group_unit": '"day"',
-      "api": '"SYNO.Photo.Browse.Timeline"',
+      "api": '"SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Browse.Timeline"',
       "method": '"get"',
-      "version": 1,
+      "version": Util.version == 7 ? 2 : 1,
       "_sid": Util.sid,
     };
     var res = await Util.post("entry.cgi", data: data);
@@ -24,10 +19,10 @@ class MomentsApi {
     Map<String, dynamic> data = {
       "offset": 0,
       "limit": 5000,
-      "additional": '["thumbnail","resolution","orientation","video_convert","video_meta"]',
-      "api": '"SYNO.Photo.Browse.Item"',
+      "additional": '["thumbnail","resolution","orientation","video_convert","video_meta","address"]',
+      "api": '"SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Browse.Item"',
       "method": '"list"',
-      "version": 3,
+      "version": Util.version == 7 ? 1 : 2,
       "_sid": Util.sid,
     };
     if (year != null && month != null && day != null) {
@@ -45,7 +40,7 @@ class MomentsApi {
 
   static Future<Map> category() async {
     Map<String, dynamic> data = {
-      "api": '"SYNO.Photo.Browse.Category"',
+      "api": '"SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Browse.Category"',
       "method": '"get"',
       "version": 1,
       "_sid": Util.sid,
@@ -68,9 +63,9 @@ class MomentsApi {
       "shared": shared,
       "sort_by": '"$sortBy"',
       "sort_direction": '"$sortDirection"',
-      "api": '"SYNO.Photo.Browse.Album"',
+      "api": '"SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Browse.Album"',
       "method": '"list"',
-      "version": 2,
+      "version": Util.version == 7 ? 1 : 2,
       "_sid": Util.sid,
     };
     var res = await Util.post("entry.cgi", data: data);
@@ -84,7 +79,7 @@ class MomentsApi {
     Map<String, dynamic> data = {
       "start_time": start,
       "end_time": end,
-      "api": '"SYNO.Photo.Browse.Timeline"',
+      "api": '"SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Browse.Timeline"',
       "method": '"get_geocoding"',
       "version": 1,
       "_sid": Util.sid,

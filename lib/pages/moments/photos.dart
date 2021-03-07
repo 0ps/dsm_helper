@@ -33,8 +33,8 @@ class _PhotosState extends State<Photos> {
   }
 
   Widget _buildPhotoItem(photo) {
-    String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
-    String originalUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
+    String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
+    String originalUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(TransparentMaterialPageRoute(
@@ -42,7 +42,7 @@ class _PhotosState extends State<Photos> {
             return PreviewPage(
               [originalUrl],
               0,
-              tag: "photo-${photo['additional']['thumbnail']['unit_id']}",
+              tag: "photo-ablum-${photo['additional']['thumbnail']['unit_id']}",
             );
           },
           fullscreenDialog: true,
@@ -54,9 +54,9 @@ class _PhotosState extends State<Photos> {
         child: Stack(
           children: [
             Hero(
-              tag: "photo-${photo['additional']['thumbnail']['unit_id']}",
+              tag: "photo-ablum-${photo['additional']['thumbnail']['unit_id']}",
               child: CupertinoExtendedImage(
-                // "http://pan.fmtol.com:5000/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key=%22${photo['additional']['thumbnail']['cache_key']}%22&type=%22unit%22&size=%22sm%22&api=%22SYNO.Photo.Thumbnail%22&method=%22get%22&version=1&_sid=${Util.sid}",
+                // "http://pan.fmtol.com:5000/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key=%22${photo['additional']['thumbnail']['cache_key']}%22&type=%22unit%22&size=%22sm%22&api=%22SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail%22&method=%22get%22&version=1&_sid=${Util.sid}",
                 thumbUrl,
                 width: photoWidth,
                 height: photoWidth,
@@ -115,11 +115,11 @@ class _PhotosState extends State<Photos> {
                 background: Hero(
                   tag: widget.tag,
                   child: CupertinoExtendedImage(
-                    '${Util.baseUrl}/webapi/entry.cgi?id=${widget.album['additional']['thumbnail']['unit_id']}&cache_key="${widget.album['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}',
+                    '${Util.baseUrl}/webapi/entry.cgi?id=${widget.album['additional']['thumbnail']['unit_id']}&cache_key="${widget.album['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}',
                     fit: BoxFit.cover,
                     height: 200,
                     placeholder: CupertinoExtendedImage(
-                      '${Util.baseUrl}/webapi/entry.cgi?id=${widget.album['additional']['thumbnail']['unit_id']}&cache_key="${widget.album['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.Photo.Thumbnail"&method="get"&version=1&_sid=${Util.sid}',
+                      '${Util.baseUrl}/webapi/entry.cgi?id=${widget.album['additional']['thumbnail']['unit_id']}&cache_key="${widget.album['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}',
                       fit: BoxFit.cover,
                     ),
                   ),

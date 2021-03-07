@@ -381,7 +381,12 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
-                        if (storagePools.where((pool) => pool['id'] == disk['used_by']).toList().length > 0) Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}") else if (ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList().length > 0) Text("${ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList()[0]['id'].toString().replaceFirst("ssd_", "SSD 缓存 ")}") else Text("-"),
+                        if (storagePools != null && storagePools.where((pool) => pool['id'] == disk['used_by']).toList().length > 0)
+                          Text("存储池 ${storagePools.where((pool) => pool['id'] == disk['used_by']).toList()[0]['num_id']}")
+                        else if (ssdCaches != null && ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList().length > 0)
+                          Text("${ssdCaches.where((ssd) => ssd['id'] == disk['used_by']).toList()[0]['id'].toString().replaceFirst("ssd_", "SSD 缓存 ")}")
+                        else
+                          Text("-"),
                       ],
                     ),
                     SizedBox(
@@ -964,7 +969,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           ),
                         ],
                       ),
-                      volumes.length > 0
+                      volumes != null && volumes.length > 0
                           ? ListView.separated(
                               itemBuilder: (context, i) {
                                 return _buildVolumeItem(volumes.reversed.toList()[i]);
@@ -979,7 +984,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           : Center(
                               child: Text("无存储空间"),
                             ),
-                      storagePools.length > 0
+                      storagePools != null && storagePools.length > 0
                           ? ListView.separated(
                               padding: EdgeInsets.all(20),
                               itemBuilder: (context, i) {
@@ -995,7 +1000,7 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                           : Center(
                               child: Text("无存储池"),
                             ),
-                      disks.length > 0
+                      disks != null && disks.length > 0
                           ? ListView.separated(
                               padding: EdgeInsets.all(20),
                               itemBuilder: (context, i) {
@@ -1012,9 +1017,9 @@ class _StorageManagerState extends State<StorageManager> with SingleTickerProvid
                               child: Text("无HDD/SSD"),
                             ),
                       Center(
-                        child: Text("${hotSpares.length > 0 ? "暂不支持显示，共${hotSpares.length}个" : "无备援装置"}"),
+                        child: Text("${hotSpares != null && hotSpares.length > 0 ? "暂不支持显示，共${hotSpares.length}个" : "无备援装置"}"),
                       ),
-                      ssdCaches.length > 0
+                      ssdCaches != null && ssdCaches.length > 0
                           ? ListView.separated(
                               itemBuilder: (context, i) {
                                 return _buildSSDCacheItem(ssdCaches[i]);

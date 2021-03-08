@@ -25,7 +25,6 @@ class _HelperSettingState extends State<HelperSetting> {
   bool launchAuth = false;
   bool password = false;
   bool biometrics = false;
-  bool showShortcut = true;
   bool canCheckBiometrics = false;
 
   BiometricType biometricsType = BiometricType.fingerprint;
@@ -39,7 +38,6 @@ class _HelperSettingState extends State<HelperSetting> {
     String launchAuthStr = await Util.getStorage("launch_auth");
     String launchAuthPasswordStr = await Util.getStorage("launch_auth_password");
     String launchAuthBiometricsStr = await Util.getStorage("launch_auth_biometrics");
-    String showShortcutStr = await Util.getStorage("show_shortcut");
     if (launchAuthStr != null) {
       launchAuth = launchAuthStr == "1";
     } else {
@@ -54,11 +52,6 @@ class _HelperSettingState extends State<HelperSetting> {
       biometrics = launchAuthBiometricsStr == "1";
     } else {
       biometrics = false;
-    }
-    if (showShortcutStr != null) {
-      showShortcut = showShortcutStr == "1";
-    } else {
-      showShortcut = true;
     }
     canCheckBiometrics = await auth.canCheckBiometrics;
     setState(() {});
@@ -236,55 +229,7 @@ class _HelperSettingState extends State<HelperSetting> {
           SizedBox(
             height: 20,
           ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                setState(() {
-                  showShortcut = !showShortcut;
-                  Provider.of<ShortcutProvider>(context, listen: false).changeMode(showShortcut);
-                });
-              });
-            },
-            child: NeuCard(
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              curveType: showShortcut ? CurveType.emboss : CurveType.flat,
-              bevel: 20,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          "assets/icons/shortcut.png",
-                          width: 30,
-                        ),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          "控制台快捷方式",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Spacer(),
-                        if (showShortcut)
-                          Icon(
-                            CupertinoIcons.checkmark_alt,
-                            color: Color(0xffff9813),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
+
           GestureDetector(
             onTap: () {
               setState(() {

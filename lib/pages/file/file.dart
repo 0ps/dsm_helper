@@ -20,6 +20,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:vibrate/vibrate.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 enum ListType { list, icon }
 
@@ -1090,7 +1092,7 @@ class FilesState extends State<Files> {
                                     },
                                     decoration: NeumorphicDecoration(
                                       color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     bevel: 20,
                                     padding: EdgeInsets.symmetric(vertical: 10),
@@ -1113,8 +1115,7 @@ class FilesState extends State<Files> {
                                   child: NeuButton(
                                     onPressed: () async {
                                       Navigator.of(context).pop();
-                                      String url = Util.baseUrl +
-                                          "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
+                                      String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
                                       String filename = "";
                                       if (file['isdir']) {
                                         filename = file['name'] + ".zip";
@@ -1127,7 +1128,7 @@ class FilesState extends State<Files> {
                                     },
                                     decoration: NeumorphicDecoration(
                                       color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     bevel: 20,
                                     padding: EdgeInsets.symmetric(vertical: 10),
@@ -1155,7 +1156,7 @@ class FilesState extends State<Files> {
                                       },
                                       decoration: NeumorphicDecoration(
                                         color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(25),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       bevel: 20,
                                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -1183,7 +1184,7 @@ class FilesState extends State<Files> {
                                       },
                                       decoration: NeumorphicDecoration(
                                         color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(25),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       bevel: 20,
                                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -1214,7 +1215,7 @@ class FilesState extends State<Files> {
                                     },
                                     decoration: NeumorphicDecoration(
                                       color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     bevel: 20,
                                     padding: EdgeInsets.symmetric(vertical: 10),
@@ -1249,7 +1250,7 @@ class FilesState extends State<Files> {
                                       },
                                       decoration: NeumorphicDecoration(
                                         color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(25),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       bevel: 20,
                                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -1424,7 +1425,7 @@ class FilesState extends State<Files> {
                                     },
                                     decoration: NeumorphicDecoration(
                                       color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     bevel: 20,
                                     padding: EdgeInsets.symmetric(vertical: 10),
@@ -1452,7 +1453,7 @@ class FilesState extends State<Files> {
                                       },
                                       decoration: NeumorphicDecoration(
                                         color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(20),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       bevel: 20,
                                       padding: EdgeInsets.symmetric(vertical: 10),
@@ -1552,8 +1553,7 @@ class FilesState extends State<Files> {
                   int index = 0;
                   for (int i = 0; i < files.length; i++) {
                     if (Util.fileType(files[i]['name']) == FileType.image) {
-                      images.add(
-                          Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
+                      images.add(Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
                       if (files[i]['name'] == file['name']) {
                         index = images.length - 1;
                       }
@@ -1567,9 +1567,11 @@ class FilesState extends State<Files> {
                   ));
                   break;
                 case FileType.movie:
+                  List<int> utf8Str = utf8.encode(file['path']);
+                  String encodedPath = utf8Str.map((e) => e.toRadixString(16)).join("");
                   AndroidIntent intent = AndroidIntent(
                     action: 'action_view',
-                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    data: Util.baseUrl + "/fbdownload/${file['name']}?dlink=%22$encodedPath%22&_sid=%22${Util.sid}%22&mode=open",
                     arguments: {},
                     type: "video/*",
                   );
@@ -1651,8 +1653,7 @@ class FilesState extends State<Files> {
                             height: 5,
                           ),
                           Text(
-                            (file['isdir'] ? "" : "${Util.formatSize(file['additional']['size'])}" + " | ") +
-                                DateTime.fromMillisecondsSinceEpoch(file['additional']['time']['crtime'] * 1000).format("Y/m/d H:i:s"),
+                            (file['isdir'] ? "" : "${Util.formatSize(file['additional']['size'])}" + " | ") + DateTime.fromMillisecondsSinceEpoch(file['additional']['time']['crtime'] * 1000).format("Y/m/d H:i:s"),
                             style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.headline5.color),
                           ),
                         ],
@@ -1889,45 +1890,77 @@ class FilesState extends State<Files> {
         title: Text(
           "文件",
         ),
-        leading: Padding(
-          padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-          child: NeuButton(
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(10),
+        leading: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+              child: NeuButton(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(10),
+                bevel: 5,
+                onPressed: () async {
+                  if (multiSelect) {
+                    setState(() {
+                      multiSelect = false;
+                      selectedFiles = [];
+                    });
+                  } else {
+                    _scaffoldKey.currentState.openDrawer();
+                    setState(() {
+                      favoriteLoading = true;
+                    });
+                    var res = await Api.favoriteList();
+                    setState(() {
+                      favoriteLoading = false;
+                    });
+                    if (res['success']) {
+                      setState(() {
+                        favorites = res['data']['favorites'];
+                      });
+                    }
+                  }
+                },
+                child: multiSelect
+                    ? Icon(Icons.close)
+                    : Image.asset(
+                        "assets/icons/collect.png",
+                        width: 20,
+                      ),
+              ),
             ),
-            padding: EdgeInsets.all(10),
-            bevel: 5,
-            onPressed: () async {
-              if (multiSelect) {
-                setState(() {
-                  multiSelect = false;
-                  selectedFiles = [];
-                });
-              } else {
-                _scaffoldKey.currentState.openDrawer();
-                setState(() {
-                  favoriteLoading = true;
-                });
-                var res = await Api.favoriteList();
-                setState(() {
-                  favoriteLoading = false;
-                });
-                if (res['success']) {
-                  setState(() {
-                    favorites = res['data']['favorites'];
-                  });
-                }
-              }
-            },
-            child: multiSelect
-                ? Icon(Icons.close)
-                : Image.asset(
-                    "assets/icons/collect.png",
+            if (paths.length != 1 && !multiSelect)
+              Padding(
+                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                child: NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  bevel: 5,
+                  onPressed: () async {
+                    Navigator.of(context)
+                        .push(CupertinoPageRoute(
+                            builder: (context) {
+                              return Upload(paths.join("/").substring(1));
+                            },
+                            settings: RouteSettings(name: "upload")))
+                        .then((value) {
+                      refresh();
+                    });
+                  },
+                  child: Image.asset(
+                    "assets/icons/upload.png",
                     width: 20,
                   ),
-          ),
+                ),
+              )
+          ],
         ),
+        leadingWidth: 100,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
@@ -2170,7 +2203,7 @@ class FilesState extends State<Files> {
                                           },
                                           decoration: NeumorphicDecoration(
                                             color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(25),
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                           bevel: 20,
                                           padding: EdgeInsets.symmetric(vertical: 10),
@@ -2204,7 +2237,7 @@ class FilesState extends State<Files> {
                                           },
                                           decoration: NeumorphicDecoration(
                                             color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(25),
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                           bevel: 20,
                                           padding: EdgeInsets.symmetric(vertical: 10),
@@ -2236,7 +2269,7 @@ class FilesState extends State<Files> {
                                         },
                                         decoration: NeumorphicDecoration(
                                           color: Theme.of(context).scaffoldBackgroundColor,
-                                          borderRadius: BorderRadius.circular(25),
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
                                         bevel: 20,
                                         padding: EdgeInsets.symmetric(vertical: 10),
@@ -2274,7 +2307,7 @@ class FilesState extends State<Files> {
                                           },
                                           decoration: NeumorphicDecoration(
                                             color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(25),
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
                                           bevel: 20,
                                           padding: EdgeInsets.symmetric(vertical: 10),
@@ -2723,33 +2756,6 @@ class FilesState extends State<Files> {
       //   ),
       // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: paths.length == 1 || multiSelect
-          ? null
-          : SizedBox(
-              width: 60,
-              height: 60,
-              child: NeuButton(
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(CupertinoPageRoute(
-                          builder: (context) {
-                            return Upload(paths.join("/").substring(1));
-                          },
-                          settings: RouteSettings(name: "upload")))
-                      .then((value) {
-                    refresh();
-                  });
-                },
-                child: Image.asset(
-                  "assets/icons/upload.png",
-                  width: 40,
-                ),
-              ),
-            ),
     );
   }
 }

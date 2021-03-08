@@ -16,7 +16,6 @@ class _FavoriteState extends State<Favorite> {
   List favorites = [];
   @override
   void initState() {
-    print("init");
     getData();
     super.initState();
   }
@@ -26,7 +25,6 @@ class _FavoriteState extends State<Favorite> {
       favoriteLoading = true;
     });
     var res = await Api.favoriteList();
-    print(res);
     setState(() {
       favoriteLoading = false;
     });

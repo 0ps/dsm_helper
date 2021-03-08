@@ -76,6 +76,7 @@ class DashboardState extends State<Dashboard> {
         showMainMenu = value != "challengerv";
       });
     });
+    getNotifyStrings();
     getInfo().then((_) {
       getData();
     });
@@ -89,6 +90,15 @@ class DashboardState extends State<Dashboard> {
   closeDrawer() {
     if (_scaffoldKey.currentState.isDrawerOpen) {
       Navigator.of(context).pop();
+    }
+  }
+
+  getNotifyStrings() async {
+    var res = await Api.notifyStrings();
+    if (res['success']) {
+      setState(() {
+        Util.notifyStrings = res['data'];
+      });
     }
   }
 
@@ -367,7 +377,8 @@ class DashboardState extends State<Dashboard> {
                           Text("散热状态："),
                           Text(
                             "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                            style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                            style: TextStyle(
+                                color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],
@@ -743,8 +754,8 @@ class DashboardState extends State<Dashboard> {
                                     fitInsideVertically: true,
                                     getTooltipItems: (items) {
                                       return [
-                                        LineTooltipItem("上传：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.blue)),
-                                        LineTooltipItem("下载：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.green)),
+                                        LineTooltipItem("上传：${Util.formatSize(items[0].y.floor())}", TextStyle(color: Colors.blue)),
+                                        LineTooltipItem("下载：${Util.formatSize(items[1].y.floor())}", TextStyle(color: Colors.green)),
                                       ];
                                     }),
                               ),

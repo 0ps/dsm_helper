@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 class Favorite extends StatefulWidget {
+  final Function callback;
+  Favorite(this.callback);
   @override
   _FavoriteState createState() => _FavoriteState();
 }
@@ -14,6 +16,7 @@ class _FavoriteState extends State<Favorite> {
   List favorites = [];
   @override
   void initState() {
+    print("init");
     getData();
     super.initState();
   }
@@ -43,6 +46,7 @@ class _FavoriteState extends State<Favorite> {
             Util.toast("文件或目录不存在");
           } else {
             Navigator.of(context).pop(favorite['path']);
+            widget.callback(favorite['path']);
           }
         },
         child: Padding(
@@ -89,34 +93,41 @@ class _FavoriteState extends State<Favorite> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: favoriteLoading
-          ? Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
-              child: Center(
-                child: NeuCard(
-                  padding: EdgeInsets.all(50),
-                  curveType: CurveType.flat,
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  bevel: 20,
-                  child: CupertinoActivityIndicator(
-                    radius: 14,
-                  ),
+    return favoriteLoading
+        ? Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: MediaQuery.of(context).size.height,
+            color: Colors.white,
+            child: Center(
+              child: NeuCard(
+                padding: EdgeInsets.all(50),
+                curveType: CurveType.flat,
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                bevel: 20,
+                child: CupertinoActivityIndicator(
+                  radius: 14,
                 ),
               ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              itemBuilder: (context, i) {
-                return _buildFavoriteItem(favorites[i]);
-              },
-              itemCount: favorites.length,
             ),
-    );
+          )
+        : Container(
+            height: double.infinity,
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: favorites.length > 0
+                ? ListView.builder(
+                    padding: EdgeInsets.only(left: 20, right: 20, top: MediaQuery.of(context).padding.top),
+                    itemBuilder: (context, i) {
+                      return _buildFavoriteItem(favorites[i]);
+                    },
+                    itemCount: favorites.length,
+                  )
+                : Center(
+                    child: Text("暂无收藏"),
+                  ),
+          );
   }
 }

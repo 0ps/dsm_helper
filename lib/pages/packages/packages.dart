@@ -45,7 +45,6 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
     String ver = widget.version;
     int end = ver.indexOf("-");
     var dsmVersion = ver.substring(4, end);
-    print(dsmVersion);
     List v = dsmVersion.split(".");
     if (v[0] == "6" && v[1] == "1") {
       installedVersion = 1;
@@ -77,11 +76,10 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
         }
         if (res['data']['beta_packages'] != null) {
           betas = res['data']['beta_packages'];
-          _tabController = TabController(length: 4, vsync: this);
+          _tabController = TabController(initialIndex: 1, length: 4, vsync: this);
         }
         //
         categories = res['data']['categories'];
-        print(res['data']['categories']);
       });
       setState(() {
         loadingAll = false;
@@ -146,7 +144,6 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
 
     print("获取已安装套件");
     var res = await Api.installedPackages(version: installedVersion);
-    print(res);
     print("获取已安装套件end");
     if (res['success']) {
       setState(() {

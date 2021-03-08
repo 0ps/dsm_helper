@@ -576,6 +576,16 @@ class Api {
     return result;
   }
 
+  static Future<Map> notifyStrings() async {
+    var result = await Util.post("entry.cgi", data: {
+      "pkgName": '""',
+      "api": "SYNO.Core.DSMNotify.Strings",
+      "method": "get",
+      "version": 1,
+    });
+    return result;
+  }
+
   static Future<Map> notify() async {
     var result = await Util.post("entry.cgi", data: {
       "action": "load",
@@ -841,7 +851,6 @@ class Api {
       "method": "list",
       "_sid": Util.sid,
     };
-    print(data);
     return await Util.post("entry.cgi", data: data);
   }
 
@@ -1011,7 +1020,8 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data":
+          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -1284,11 +1294,10 @@ class Api {
 
   //delete_condition  delete
   static Future<Map> downloadTaskCreate(String destination, String type, {String url, String filePath}) async {
-    destination = destination.substring(1);
     var data = {
       "api": 'SYNO.DownloadStation2.Task',
       "method": "create",
-      "version": 1,
+      "version": 2,
     };
     if (type == "file") {
       MultipartFile torrent = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("application/octet-stream"));
@@ -1298,7 +1307,6 @@ class Api {
 
       data['destination'] = '"$destination"';
       data['-1891550746'] = torrent;
-      print(data);
       return await Util.upload("entry.cgi", data: data);
     } else {
       List<String> urls = url.split("\n");
@@ -1308,8 +1316,10 @@ class Api {
           validUrls.add(url.trim());
         }
       }
+      data['type'] = '"$type"';
+      data["create_list"] = true;
       data["url"] = json.encode(validUrls);
-      data['destination'] = '"$destination"'; //"destination": '"$destination"',
+      data['destination'] = '"$destination"';
       data['_sid'] = Util.sid;
       return await Util.post("entry.cgi", data: data);
     }

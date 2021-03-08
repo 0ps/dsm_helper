@@ -11,7 +11,8 @@ import 'package:vibrate/vibrate.dart';
 
 class Login extends StatefulWidget {
   final Map server;
-  Login({this.server});
+  final String type;
+  Login({this.server, this.type: "login"});
   @override
   _LoginState createState() => _LoginState();
 }
@@ -76,7 +77,9 @@ class _LoginState extends State<Login> {
           _login();
         }
       } else {
-        getInfo();
+        if (widget.type == "login") {
+          getInfo();
+        }
       }
     });
 
@@ -312,7 +315,11 @@ class _LoginState extends State<Login> {
         servers.add(server);
       }
       Util.setStorage("servers", jsonEncode(servers));
-      Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+      if (widget.type == "login") {
+        Navigator.of(context).pushNamedAndRemoveUntil("/home", (route) => false);
+      } else {
+        Navigator.of(context).pop(true);
+      }
     } else {
       Util.vibrate(FeedbackType.warning);
       if (res['error']['code'] == 400) {
@@ -415,7 +422,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "账号登录",
+          widget.type == "login" ? "账号登录" : "添加账号",
         ),
         actions: servers.length > 0
             ? [
@@ -811,7 +818,6 @@ class _LoginState extends State<Login> {
               onPressed: () {
                 if (login) {
                   if (login == true) {
-                    print("取消登录");
                     cancelToken?.cancel("取消登录");
                     cancelToken = CancelToken();
                     return;
@@ -837,7 +843,7 @@ class _LoginState extends State<Login> {
                       ],
                     )
                   : Text(
-                      ' 登录 ',
+                      widget.type == "login" ? ' 登录 ' : ' 添加 ',
                       style: TextStyle(fontSize: 18),
                     ),
             ),

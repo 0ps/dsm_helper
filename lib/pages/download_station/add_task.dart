@@ -65,7 +65,7 @@ class _AddDownloadTaskState extends State<AddDownloadTask> {
               ).then((res) {
                 if (res != null && res.length == 1) {
                   setState(() {
-                    saveFolder = res[0];
+                    saveFolder = res[0].substring(1);
                   });
                 }
               });
@@ -181,7 +181,6 @@ class _AddDownloadTaskState extends State<AddDownloadTask> {
               }
               var res;
               if (torrentPath != "") {
-                print(Util.cookie);
                 res = await Api.downloadTaskCreate(saveFolder, "file", filePath: torrentPath);
                 if (res['success']) {
                   Navigator.of(context).push(CupertinoPageRoute(builder: (context) {

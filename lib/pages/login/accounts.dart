@@ -238,7 +238,6 @@ class _AccountsState extends State<Accounts> {
                         ),
                         NeuButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
                             setState(() {
                               servers.remove(server);
                             });
@@ -443,6 +442,30 @@ class _AccountsState extends State<Accounts> {
       appBar: AppBar(
         leading: AppBackButton(context),
         title: Text("选择账号"),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return Login(
+                    type: "add",
+                  );
+                })).then((_) {
+                  getData();
+                });
+                return;
+              },
+              child: Icon(Icons.add),
+            ),
+          )
+        ],
       ),
       body: ListView.separated(
         padding: EdgeInsets.all(20),

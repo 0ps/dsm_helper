@@ -61,6 +61,7 @@ class Util {
   static bool vibrateNormal = true;
   static String cookie = "";
   static Map strings = {};
+  static Map notifyStrings = {};
   static bool isAuthPage = false;
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static String appName = "";
@@ -206,7 +207,38 @@ class Util {
       "swf",
       "f4v"
     ];
-    List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
+    List<String> music = [
+      "aac",
+      "flac",
+      "m4a",
+      "m4b",
+      "aif",
+      "ogg",
+      "pcm",
+      "wav",
+      "cda",
+      "mid",
+      "mp2",
+      "mka",
+      "mpc",
+      "ape",
+      "ra",
+      "ac3",
+      "dts",
+      "wma",
+      "mp3",
+      "mp1",
+      "mp2",
+      "mpa",
+      "ram",
+      "m4p",
+      "aiff",
+      "dsf",
+      "dff",
+      "m3u",
+      "wpl",
+      "aiff"
+    ];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];
@@ -252,7 +284,8 @@ class Util {
     }
   }
 
-  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20}) async {
+  static Future<dynamic> get(String url,
+      {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
 
@@ -335,7 +368,8 @@ class Util {
     }
   }
 
-  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers, bool checkSsl, String cookie, int timeout = 20}) async {
+  static Future<dynamic> post(String url,
+      {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers, bool checkSsl, String cookie, int timeout = 20}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
@@ -377,7 +411,8 @@ class Util {
     }
   }
 
-  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
+  static Future<dynamic> upload(String url,
+      {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
     headers = headers ?? {};
     headers['Cookie'] = Util.cookie;
     headers['Accept-Encoding'] = "gzip, deflate";

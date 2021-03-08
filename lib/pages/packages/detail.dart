@@ -548,125 +548,126 @@ class _PackageDetailState extends State<PackageDetail> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: widget.package['launched']
-                          ? NeuButton(
-                              onPressed: () {
-                                showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (context) {
-                                    return Material(
-                                      color: Colors.transparent,
-                                      child: NeuCard(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.all(22),
-                                        bevel: 5,
-                                        curveType: CurveType.emboss,
-                                        decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Text(
-                                              "停用套件",
-                                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                            ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            Text(
-                                              "确认要停用此套件？",
-                                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                                            ),
-                                            SizedBox(
-                                              height: 22,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: NeuButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context).pop();
-                                                      var res = await Api.launchPackage(widget.package['id'], widget.package['dsm_apps'], "stop");
-                                                      if (res['success']) {
-                                                        Util.toast("已停用");
-                                                        setState(() {
-                                                          widget.package['launched'] = false;
-                                                        });
-                                                      }
-                                                    },
-                                                    decoration: NeumorphicDecoration(
-                                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                                      borderRadius: BorderRadius.circular(25),
-                                                    ),
-                                                    bevel: 5,
-                                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                                    child: Text(
-                                                      "停用",
-                                                      style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 20,
-                                                ),
-                                                Expanded(
-                                                  child: NeuButton(
-                                                    onPressed: () async {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                    decoration: NeumorphicDecoration(
-                                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                                      borderRadius: BorderRadius.circular(25),
-                                                    ),
-                                                    bevel: 20,
-                                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                                    child: Text(
-                                                      "取消",
-                                                      style: TextStyle(fontSize: 18),
+                  if (widget.package['launched'] && widget.package['additional'] != null && widget.package['additional']['startable'])
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: widget.package['launched']
+                            ? NeuButton(
+                                onPressed: () {
+                                  showCupertinoModalPopup(
+                                    context: context,
+                                    builder: (context) {
+                                      return Material(
+                                        color: Colors.transparent,
+                                        child: NeuCard(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.all(22),
+                                          bevel: 5,
+                                          curveType: CurveType.emboss,
+                                          decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                "停用套件",
+                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                              ),
+                                              SizedBox(
+                                                height: 12,
+                                              ),
+                                              Text(
+                                                "确认要停用此套件？",
+                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                                              ),
+                                              SizedBox(
+                                                height: 22,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: NeuButton(
+                                                      onPressed: () async {
+                                                        Navigator.of(context).pop();
+                                                        var res = await Api.launchPackage(widget.package['id'], widget.package['dsm_apps'], "stop");
+                                                        if (res['success']) {
+                                                          Util.toast("已停用");
+                                                          setState(() {
+                                                            widget.package['launched'] = false;
+                                                          });
+                                                        }
+                                                      },
+                                                      decoration: NeumorphicDecoration(
+                                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                                        borderRadius: BorderRadius.circular(25),
+                                                      ),
+                                                      bevel: 5,
+                                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                                      child: Text(
+                                                        "停用",
+                                                        style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                          ],
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Expanded(
+                                                    child: NeuButton(
+                                                      onPressed: () async {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      decoration: NeumorphicDecoration(
+                                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                                        borderRadius: BorderRadius.circular(25),
+                                                      ),
+                                                      bevel: 20,
+                                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                                      child: Text(
+                                                        "取消",
+                                                        style: TextStyle(fontSize: 18),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 8,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(50),
+                                      );
+                                    },
+                                  );
+                                },
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Text("停用"),
+                              )
+                            : NeuButton(
+                                onPressed: () async {
+                                  var res = await Api.launchPackage(widget.package['id'], widget.package['dsm_apps'], "start");
+                                  print(res);
+                                  if (res['success']) {
+                                    Util.toast("已启动");
+                                    setState(() {
+                                      widget.package['launched'] = true;
+                                    });
+                                  }
+                                },
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                decoration: NeumorphicDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Text("启动"),
                               ),
-                              child: Text("停用"),
-                            )
-                          : NeuButton(
-                              onPressed: () async {
-                                var res = await Api.launchPackage(widget.package['id'], widget.package['dsm_apps'], "start");
-                                print(res);
-                                if (res['success']) {
-                                  Util.toast("已启动");
-                                  setState(() {
-                                    widget.package['launched'] = true;
-                                  });
-                                }
-                              },
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Text("启动"),
-                            ),
+                      ),
                     ),
-                  ),
                 ] else
                   Expanded(
                     child: Padding(

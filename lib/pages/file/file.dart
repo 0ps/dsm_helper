@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:android_intent/android_intent.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:dsm_helper/pages/file/favorite.dart';
 import 'package:dsm_helper/pages/file/search.dart';
 import 'package:dsm_helper/pages/file/select_folder.dart';
 import 'package:dsm_helper/pages/file/share.dart';
@@ -2674,52 +2675,53 @@ class FilesState extends State<Files> {
           ),
         ],
       ),
-      drawer: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: SafeArea(
-          child: favoriteLoading
-              ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
-                  child: Center(
-                    child: NeuCard(
-                      padding: EdgeInsets.all(50),
-                      curveType: CurveType.flat,
-                      decoration: NeumorphicDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      bevel: 20,
-                      child: CupertinoActivityIndicator(
-                        radius: 14,
-                      ),
-                    ),
-                  ),
-                )
-              : Column(
-                  children: [
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Text(
-                      "收藏夹",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        itemBuilder: (context, i) {
-                          return _buildFavoriteItem(favorites[i]);
-                        },
-                        itemCount: favorites.length,
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-      ),
+      drawer: Favorite(goPath),
+      // drawer: Container(
+      //   width: MediaQuery.of(context).size.width * 0.8,
+      //   color: Theme.of(context).scaffoldBackgroundColor,
+      //   child: SafeArea(
+      //     child: favoriteLoading
+      //         ? Container(
+      //             width: MediaQuery.of(context).size.width,
+      //             height: MediaQuery.of(context).size.height,
+      //             color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
+      //             child: Center(
+      //               child: NeuCard(
+      //                 padding: EdgeInsets.all(50),
+      //                 curveType: CurveType.flat,
+      //                 decoration: NeumorphicDecoration(
+      //                   color: Theme.of(context).scaffoldBackgroundColor,
+      //                   borderRadius: BorderRadius.circular(20),
+      //                 ),
+      //                 bevel: 20,
+      //                 child: CupertinoActivityIndicator(
+      //                   radius: 14,
+      //                 ),
+      //               ),
+      //             ),
+      //           )
+      //         : Column(
+      //             children: [
+      //               SizedBox(
+      //                 height: 16,
+      //               ),
+      //               Text(
+      //                 "收藏夹",
+      //                 style: TextStyle(fontSize: 18),
+      //               ),
+      //               Expanded(
+      //                 child: ListView.builder(
+      //                   padding: EdgeInsets.symmetric(horizontal: 20),
+      //                   itemBuilder: (context, i) {
+      //                     return _buildFavoriteItem(favorites[i]);
+      //                   },
+      //                   itemCount: favorites.length,
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //   ),
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: paths.length == 1 || multiSelect
           ? null

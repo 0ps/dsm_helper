@@ -1654,9 +1654,13 @@ class Api {
   static Future<Map> mediaIndexStatus() async {
     List apis = [
       {"api": "SYNO.Core.MediaIndexing.ThumbnailQuality", "method": "get", "version": 1},
-      {"api": "SYNO.Core.MediaIndexing.MobileEnabled", "method": "get", "version": 1},
       {"api": "SYNO.Core.MediaIndexing", "method": "status", "version": 1}
     ];
+    if (Util.version == 6) {
+      apis.add(
+        {"api": "SYNO.Core.MediaIndexing.MobileEnabled", "method": "get", "version": 1},
+      );
+    }
     var result = await Util.post("entry.cgi", data: {
       "api": 'SYNO.Entry.Request',
       "method": 'request',
@@ -1668,11 +1672,13 @@ class Api {
     return result;
   }
 
-  static Future<Map> mediaIndexSet() async {
+  static Future<Map> mediaIndexSet(String thumbQuality, bool mobileEnabled) async {
     List apis = [
-      {"api": "SYNO.Core.MediaIndexing.ThumbnailQuality", "method": "set", "version": "1", "thumbnail_quality": "normal"},
-      {"api": "SYNO.Core.MediaIndexing.MobileEnabled", "method": "set", "version": "1", "mobile_profile_enabled": false}
+      {"api": "SYNO.Core.MediaIndexing.ThumbnailQuality", "method": "set", "version": "1", "thumbnail_quality": '$thumbQuality'},
     ];
+    if (Util.version == 6) {
+      apis.add({"api": "SYNO.Core.MediaIndexing.MobileEnabled", "method": "set", "version": "1", "mobile_profile_enabled": mobileEnabled});
+    }
     var result = await Util.post("entry.cgi", data: {
       "api": 'SYNO.Entry.Request',
       "method": 'request',
@@ -1753,5 +1759,27 @@ class Api {
     } else {
       callback(null);
     }
+  }
+
+  static Future<Map> powerStatus() async {
+    List apis = [
+      {"api": "SYNO.Core.Hardware.ZRAM", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Hardware.PowerRecovery", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Hardware.BeepControl", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Hardware.FanSpeed", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Hardware.Hibernation", "method": "get", "version": 1},
+      {"api": "SYNO.Core.ExternalDevice.UPS", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Hardware.PowerSchedule", "method": "load", "version": 1}
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "stop_when_error": false,
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"sequential"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
   }
 }

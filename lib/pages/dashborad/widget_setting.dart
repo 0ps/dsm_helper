@@ -1,4 +1,5 @@
 import 'package:dsm_helper/pages/provider/shortcut.dart';
+import 'package:dsm_helper/pages/provider/wallpaper.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +17,7 @@ class WidgetSetting extends StatefulWidget {
 
 class _WidgetSettingState extends State<WidgetSetting> {
   bool showShortcut = true;
-
+  bool showWallpaper = true;
   List<String> allWidgets = [
     // "SYNO.SDS.SystemInfoApp.FileChangeLogWidget",
     "SYNO.SDS.SystemInfoApp.SystemHealthWidget",
@@ -41,11 +42,22 @@ class _WidgetSettingState extends State<WidgetSetting> {
   @override
   void initState() {
     Util.getStorage("show_shortcut").then((showShortcutStr) {
-      if (showShortcutStr != null) {
-        showShortcut = showShortcutStr == "1";
-      } else {
-        showShortcut = true;
-      }
+      setState(() {
+        if (showShortcutStr != null) {
+          showShortcut = showShortcutStr == "1";
+        } else {
+          showShortcut = true;
+        }
+      });
+    });
+    Util.getStorage("show_wallpaper").then((showWallpaperStr) {
+      setState(() {
+        if (showWallpaperStr != null) {
+          showWallpaper = showWallpaperStr == "1";
+        } else {
+          showWallpaper = true;
+        }
+      });
     });
     setState(() {
       selectedWidgets.addAll(widget.widgets);
@@ -155,6 +167,58 @@ class _WidgetSettingState extends State<WidgetSetting> {
                 ),
               ),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  setState(() {
+                    showWallpaper = !showWallpaper;
+                    Provider.of<WallpaperProvider>(context, listen: false).changeMode(showWallpaper);
+                  });
+                });
+              },
+              child: NeuCard(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                curveType: showWallpaper ? CurveType.emboss : CurveType.flat,
+                bevel: 20,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            "assets/icons/wallpaper.png",
+                            width: 30,
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "系统状态显示壁纸",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Spacer(),
+                          if (showWallpaper)
+                            Icon(
+                              CupertinoIcons.checkmark_alt,
+                              color: Color(0xffff9813),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
           ),
           Expanded(
             child: ReorderableListView(

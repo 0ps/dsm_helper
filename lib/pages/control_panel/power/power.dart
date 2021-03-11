@@ -1,9 +1,11 @@
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:vibrate/vibrate.dart';
 
 class Power extends StatefulWidget {
   @override
@@ -34,6 +36,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
         });
         List result = res['data']['result'];
         result.forEach((item) {
+          print(item['data']);
           if (item['success'] == true) {
             switch (item['api']) {
               case "SYNO.Core.Hardware.ZRAM":
@@ -74,6 +77,39 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         leading: AppBackButton(context),
         title: Text("硬件和电源"),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () async {
+                var res = await Api.powerSet(enableZram, powerRecovery, beepControl, fanSpeed);
+                if (res['success']) {
+                  if (res['data']['has_fail'] == false) {
+                    Util.vibrate(FeedbackType.light);
+                    Util.toast("保存成功");
+                  } else {
+                    Util.vibrate(FeedbackType.warning);
+                    Util.toast("设置未完全保存成功");
+                  }
+                  getData();
+                } else {
+                  Util.toast("保存失败,代码${res['error']['code']}");
+                }
+              },
+              child: Image.asset(
+                "assets/icons/save.png",
+                width: 20,
+                height: 20,
+              ),
+            ),
+          ),
+        ],
       ),
       body: loading
           ? Center(
@@ -245,37 +281,39 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () async {
-                                          setState(() {
-                                            powerRecovery['wol1'] = !powerRecovery['wol1'];
-                                          });
-                                        },
-                                        child: NeuCard(
-                                          decoration: NeumorphicDecoration(
-                                            color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          padding: EdgeInsets.all(10),
-                                          bevel: 10,
-                                          curveType: powerRecovery['wol1'] ? CurveType.emboss : CurveType.flat,
-                                          child: Row(
-                                            children: [
-                                              Text("启用局域网 ${powerRecovery['internal_lan_num']} 的局域网唤醒"),
-                                              Spacer(),
-                                              if (powerRecovery['wol1'])
-                                                Icon(
-                                                  CupertinoIcons.checkmark_alt,
-                                                  color: Color(0xffff9813),
-                                                  size: 22,
-                                                ),
-                                            ],
+                                      if (powerRecovery['wol1'] != null) ...[
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            setState(() {
+                                              powerRecovery['wol1'] = !powerRecovery['wol1'];
+                                            });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: powerRecovery['wol1'] ? CurveType.emboss : CurveType.flat,
+                                            child: Row(
+                                              children: [
+                                                Text("启用局域网 ${powerRecovery['internal_lan_num']} 的局域网唤醒"),
+                                                Spacer(),
+                                                if (powerRecovery['wol1'])
+                                                  Icon(
+                                                    CupertinoIcons.checkmark_alt,
+                                                    color: Color(0xffff9813),
+                                                    size: 22,
+                                                  ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ],
                                   ),
                                 ],
@@ -568,7 +606,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                       GestureDetector(
                                         onTap: () async {
                                           setState(() {
-                                            enableZram = !enableZram;
+                                            fanSpeed['dual_fan_speed'] = "fullfan";
                                           });
                                         },
                                         child: NeuCard(
@@ -578,7 +616,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                           ),
                                           padding: EdgeInsets.all(10),
                                           bevel: 10,
-                                          curveType: enableZram ? CurveType.emboss : CurveType.flat,
+                                          curveType: fanSpeed['dual_fan_speed'] == "fullfan" ? CurveType.emboss : CurveType.flat,
                                           child: Row(
                                             children: [
                                               Expanded(
@@ -598,7 +636,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                               ),
                                               SizedBox(
                                                 width: 22,
-                                                child: enableZram
+                                                child: fanSpeed['dual_fan_speed'] == "fullfan"
                                                     ? Icon(
                                                         CupertinoIcons.checkmark_alt,
                                                         color: Color(0xffff9813),
@@ -616,7 +654,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                       GestureDetector(
                                         onTap: () async {
                                           setState(() {
-                                            enableZram = !enableZram;
+                                            fanSpeed['dual_fan_speed'] = "coolfan";
                                           });
                                         },
                                         child: NeuCard(
@@ -626,7 +664,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                           ),
                                           padding: EdgeInsets.all(10),
                                           bevel: 10,
-                                          curveType: enableZram ? CurveType.emboss : CurveType.flat,
+                                          curveType: fanSpeed['dual_fan_speed'] == "coolfan" ? CurveType.emboss : CurveType.flat,
                                           child: Row(
                                             children: [
                                               Expanded(
@@ -646,7 +684,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                               ),
                                               SizedBox(
                                                 width: 22,
-                                                child: enableZram
+                                                child: fanSpeed['dual_fan_speed'] == "coolfan"
                                                     ? Icon(
                                                         CupertinoIcons.checkmark_alt,
                                                         color: Color(0xffff9813),
@@ -664,7 +702,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                       GestureDetector(
                                         onTap: () async {
                                           setState(() {
-                                            enableZram = !enableZram;
+                                            fanSpeed['dual_fan_speed'] = 'quietfan';
                                           });
                                         },
                                         child: NeuCard(
@@ -674,7 +712,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                           ),
                                           padding: EdgeInsets.all(10),
                                           bevel: 10,
-                                          curveType: enableZram ? CurveType.emboss : CurveType.flat,
+                                          curveType: fanSpeed['dual_fan_speed'] == 'quietfan' ? CurveType.emboss : CurveType.flat,
                                           child: Row(
                                             children: [
                                               Expanded(
@@ -694,7 +732,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                               ),
                                               SizedBox(
                                                 width: 22,
-                                                child: enableZram
+                                                child: fanSpeed['dual_fan_speed'] == 'quietfan'
                                                     ? Icon(
                                                         CupertinoIcons.checkmark_alt,
                                                         color: Color(0xffff9813),

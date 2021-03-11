@@ -69,7 +69,7 @@ void main() async {
   if (showShortcutsStr.isNotBlank) {
     showShortcuts = showShortcutsStr == "1";
   }
-  String showWallpaperStr = await Util.getStorage("show_shortcut");
+  String showWallpaperStr = await Util.getStorage("show_wallpaper");
   if (showWallpaperStr.isNotBlank) {
     showWallpaper = showWallpaperStr == "1";
   }

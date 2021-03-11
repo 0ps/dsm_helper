@@ -1,4 +1,5 @@
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,11 +12,13 @@ class ExternalDevice extends StatefulWidget {
   _ExternalDeviceState createState() => _ExternalDeviceState();
 }
 
-class _ExternalDeviceState extends State<ExternalDevice> {
+class _ExternalDeviceState extends State<ExternalDevice> with SingleTickerProviderStateMixin {
+  TabController _tabController;
   List esatas = [];
   bool loading = true;
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
     getData();
     super.initState();
   }
@@ -246,32 +249,81 @@ class _ExternalDeviceState extends State<ExternalDevice> {
         leading: AppBackButton(context),
         title: Text("外接设备"),
       ),
-      body: loading
-          ? Center(
-              child: NeuCard(
-                padding: EdgeInsets.all(50),
-                curveType: CurveType.flat,
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                bevel: 20,
-                child: CupertinoActivityIndicator(
-                  radius: 14,
-                ),
+      body: Column(
+        children: [
+          NeuCard(
+            width: double.infinity,
+            decoration: NeumorphicDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            curveType: CurveType.flat,
+            bevel: 10,
+            child: TabBar(
+              isScrollable: false,
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.label,
+              labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+              unselectedLabelColor: Colors.grey,
+              indicator: BubbleTabIndicator(
+                indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+                shadowColor: Util.getAdjustColor(Theme.of(context).scaffoldBackgroundColor, -20),
               ),
-            )
-          : ListView.separated(
-              padding: EdgeInsets.all(20),
-              itemBuilder: (context, i) {
-                return _buildESataItem(esatas[i]);
-              },
-              separatorBuilder: (context, i) {
-                return SizedBox(
-                  height: 20,
-                );
-              },
-              itemCount: esatas.length),
+              tabs: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  child: Text("外接设备"),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                  child: Text("打印机"),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                loading
+                    ? Center(
+                        child: NeuCard(
+                          padding: EdgeInsets.all(50),
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: CupertinoActivityIndicator(
+                            radius: 14,
+                          ),
+                        ),
+                      )
+                    : esatas.length > 0
+                        ? ListView.separated(
+                            padding: EdgeInsets.all(20),
+                            itemBuilder: (context, i) {
+                              return _buildESataItem(esatas[i]);
+                            },
+                            separatorBuilder: (context, i) {
+                              return SizedBox(
+                                height: 20,
+                              );
+                            },
+                            itemCount: esatas.length)
+                        : Center(
+                            child: Text("暂无外接设备"),
+                          ),
+                Center(
+                  child: Text("未开发"),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

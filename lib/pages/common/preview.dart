@@ -147,7 +147,7 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   mode: ExtendedImageMode.gesture,
                   heroBuilderForSlidingPage: (Widget result) {
                     return Hero(
-                      tag: item,
+                      tag: widget.tag ?? item,
                       child: result,
                       flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
                         final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;

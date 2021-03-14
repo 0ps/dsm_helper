@@ -10,7 +10,6 @@ import 'package:dsm_helper/pages/file/share_manager.dart';
 import 'package:dsm_helper/pages/file/upload.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
-// import 'package:dsm_helper/pages/editor/editor.dart';
 import 'package:dsm_helper/pages/file/detail.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/file_icon.dart';
@@ -21,7 +20,6 @@ import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.da
 import 'package:neumorphic/neumorphic.dart';
 import 'package:vibrate/vibrate.dart';
 import 'dart:convert';
-import 'dart:typed_data';
 
 enum ListType { list, icon }
 

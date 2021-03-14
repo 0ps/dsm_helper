@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dsm_helper/pages/common/gesture_password.dart';
-import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/pages/setting/about.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/auth_strings.dart';
 import 'package:neumorphic/neumorphic.dart';
-import 'package:provider/provider.dart';
 import 'package:vibrate/vibrate.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;

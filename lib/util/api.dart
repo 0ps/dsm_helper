@@ -1783,6 +1783,23 @@ class Api {
     return result;
   }
 
+  //poweron_tasks: [{"enabled":true,"weekdays":"0,1,2,3,4,5,6","hour":0,"min":0}]
+  // poweroff_tasks: [{"enabled":true,"weekdays":"0,1,2,3,4,5,6","hour":5,"min":0}]
+  // api: SYNO.Core.Hardware.PowerSchedule
+  // method: save
+  // version: 1
+  static Future<Map> powerScheduleSave(List powerOns, List powerOffs) async {
+    var result = await Util.post("entry.cgi", data: {
+      "poweron_tasks": json.encode(powerOns),
+      "poweroff_tasks": json.encode(powerOffs),
+      "api": 'SYNO.Core.Hardware.PowerSchedule',
+      "method": 'save',
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
   static Future<Map> powerSet(bool enableZram, Map powerRecovery, Map beepControl, Map fanSpeed) async {
     List apis = [
       {"api": "SYNO.Core.Hardware.ZRAM", "method": "set", "version": "1", "enable_zram": enableZram},

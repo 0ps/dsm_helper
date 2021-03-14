@@ -84,6 +84,20 @@ class _TimelineState extends State<Timeline> {
   }
 
   Widget _buildPhotoItem(photo) {
+    int duration = 0;
+    Map timeLong;
+    if (photo['type'] == "video") {
+      if (photo['additional']['video_convert'].length > 0) {
+        duration = photo['additional']['video_convert'][0]['metadata']['duration'] ~/ 1000;
+        timeLong = Util.timeLong(duration);
+      } else {
+        timeLong = {
+          "hours": 0,
+          "minutes": 0,
+          "seconds": 0,
+        };
+      }
+    }
     String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
     String originalUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
     return GestureDetector(
@@ -132,7 +146,7 @@ class _TimelineState extends State<Timeline> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      "${Util.timeLong(5235)['hours'].toString().padLeft(2, "0")}:${Util.timeLong(5235)['minutes'].toString().padLeft(2, "0")}:${Util.timeLong(5235)['seconds'].toString().padLeft(2, "0")}",
+                      "${timeLong['hours'].toString().padLeft(2, "0")}:${timeLong['minutes'].toString().padLeft(2, "0")}:${timeLong['seconds'].toString().padLeft(2, "0")}",
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ],

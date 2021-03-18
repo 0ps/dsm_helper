@@ -27,13 +27,12 @@ class _UpdateState extends State<Update> {
   int totalSize = 0;
   @override
   void initState() {
-    fileName = "dsm_helper-${widget.data['build']}1.apk";
+    fileName = "dsm_helper-${widget.data['build']}.apk";
     Util.fileExist(fileName).then((res) {
       setState(() {
         if (res != null) {
           exist = true;
           filePath = res;
-          print(filePath);
         }
         loading = false;
       });
@@ -172,6 +171,23 @@ class _UpdateState extends State<Update> {
               ],
             ),
           ),
+          if (exist && !downloading) ...[
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  progress = 0;
+                });
+                download();
+              },
+              child: Text(
+                "重新下载",
+                style: TextStyle(color: Colors.grey, decoration: TextDecoration.underline, fontSize: 14),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+          ],
           if (!downloading)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),

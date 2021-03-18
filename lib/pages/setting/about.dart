@@ -3,6 +3,7 @@ import 'package:dsm_helper/pages/common/browser.dart';
 import 'package:dsm_helper/pages/setting/open_source.dart';
 import 'package:dsm_helper/pages/setting/reward.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +36,7 @@ class _AboutState extends State<About> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text(
           "关于${Util.appName}",
         ),

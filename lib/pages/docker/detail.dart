@@ -1,3 +1,4 @@
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
@@ -15,6 +16,7 @@ class ContainerDetail extends StatefulWidget {
 
 class _ContainerDetailState extends State<ContainerDetail> with SingleTickerProviderStateMixin {
   TabController _tabController;
+  ScrollController _scrollController = ScrollController();
   bool loading = true;
   List ports = [];
   List networks = [];
@@ -728,8 +730,12 @@ class _ContainerDetailState extends State<ContainerDetail> with SingleTickerProv
                           ),
                           Expanded(
                             flex: 2,
-                            child: CupertinoScrollbar(
+                            child: DraggableScrollbar.semicircle(
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                              scrollbarTimeToFade: Duration(seconds: 1),
+                              controller: _scrollController,
                               child: ListView.separated(
+                                controller: _scrollController,
                                 padding: EdgeInsets.only(left: 10, right: 20, top: 20),
                                 itemBuilder: (context, i) {
                                   return _buildLogItem(logs.reversed.toList()[i]);

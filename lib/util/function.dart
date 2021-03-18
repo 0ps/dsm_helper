@@ -207,38 +207,7 @@ class Util {
       "swf",
       "f4v"
     ];
-    List<String> music = [
-      "aac",
-      "flac",
-      "m4a",
-      "m4b",
-      "aif",
-      "ogg",
-      "pcm",
-      "wav",
-      "cda",
-      "mid",
-      "mp2",
-      "mka",
-      "mpc",
-      "ape",
-      "ra",
-      "ac3",
-      "dts",
-      "wma",
-      "mp3",
-      "mp1",
-      "mp2",
-      "mpa",
-      "ram",
-      "m4p",
-      "aiff",
-      "dsf",
-      "dff",
-      "m3u",
-      "wpl",
-      "aiff"
-    ];
+    List<String> music = ["aac", "flac", "m4a", "m4b", "aif", "ogg", "pcm", "wav", "cda", "mid", "mp2", "mka", "mpc", "ape", "ra", "ac3", "dts", "wma", "mp3", "mp1", "mp2", "mpa", "ram", "m4p", "aiff", "dsf", "dff", "m3u", "wpl", "aiff"];
     List<String> ps = ["psd"];
     List<String> html = ["html", "htm", "shtml", "url"];
     List<String> word = ["doc", "docx"];
@@ -284,8 +253,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> get(String url,
-      {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20}) async {
+  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
 
@@ -368,8 +336,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> post(String url,
-      {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers, bool checkSsl, String cookie, int timeout = 20}) async {
+  static Future<dynamic> post(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Map<String, dynamic> headers, bool checkSsl, String cookie, int timeout = 20}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
     headers["Accept-Language"] = "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5";
@@ -411,8 +378,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> upload(String url,
-      {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
+  static Future<dynamic> upload(String url, {Map<String, dynamic> data, bool login: true, String host, CancelToken cancelToken, Function(int, int) onSendProgress, Map<String, dynamic> headers}) async {
     headers = headers ?? {};
     headers['Cookie'] = Util.cookie;
     headers['Accept-Encoding'] = "gzip, deflate";
@@ -633,87 +599,6 @@ class Util {
             return Update(res['data']);
           },
           settings: RouteSettings(name: "update")));
-      // showCupertinoModalPopup(
-      //   context: context,
-      //   builder: (context) {
-      //     return Material(
-      //       color: Colors.transparent,
-      //       child: NeuCard(
-      //         width: double.infinity,
-      //         padding: EdgeInsets.all(22),
-      //         bevel: 5,
-      //         curveType: CurveType.emboss,
-      //         decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-      //         child: Column(
-      //           mainAxisSize: MainAxisSize.min,
-      //           children: <Widget>[
-      //             Text(
-      //               "版本更新",
-      //               style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500),
-      //             ),
-      //             SizedBox(
-      //               height: 12,
-      //             ),
-      //             Text(
-      //               "确认要删除文件？",
-      //               style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
-      //             ),
-      //             SizedBox(
-      //               height: 22,
-      //             ),
-      //             Row(
-      //               children: [
-      //                 Expanded(
-      //                   child: NeuButton(
-      //                     onPressed: () async {
-      //                       Navigator.of(context).pop();
-      //                       Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-      //                         return Update(res['data']);
-      //                       }));
-      //                     },
-      //                     decoration: NeumorphicDecoration(
-      //                       color: Theme.of(context).scaffoldBackgroundColor,
-      //                       borderRadius: BorderRadius.circular(25),
-      //                     ),
-      //                     bevel: 5,
-      //                     padding: EdgeInsets.symmetric(vertical: 10),
-      //                     child: Text(
-      //                       "立即更新",
-      //                       style: TextStyle(fontSize: 18, color: Colors.redAccent),
-      //                     ),
-      //                   ),
-      //                 ),
-      //                 SizedBox(
-      //                   width: 16,
-      //                 ),
-      //                 Expanded(
-      //                   child: NeuButton(
-      //                     onPressed: () async {
-      //                       Navigator.of(context).pop();
-      //                     },
-      //                     decoration: NeumorphicDecoration(
-      //                       color: Theme.of(context).scaffoldBackgroundColor,
-      //                       borderRadius: BorderRadius.circular(25),
-      //                     ),
-      //                     bevel: 5,
-      //                     padding: EdgeInsets.symmetric(vertical: 10),
-      //                     child: Text(
-      //                       "取消",
-      //                       style: TextStyle(fontSize: 18),
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //             SizedBox(
-      //               height: 8,
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // );
     } else {
       if (showMsg) {
         toast(res['msg']);

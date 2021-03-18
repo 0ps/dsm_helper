@@ -63,7 +63,7 @@ class _TimelineState extends State<Timeline> {
   getLineInfo(line) async {
     if (line['items'] == null) {
       line['items'] = [];
-      MomentsApi.photos(year: line['year'], month: line['month'], day: line['day'], type: widget.type).then((res) {
+      MomentsApi.photos(year: line['year'], month: line['month'], day: line['day'], type: widget.type, category: widget.category == "Timeline" ? "Item" : widget.category).then((res) {
         if (res['success'] && mounted) {
           setState(() {
             line['items'] = res['data']['list'];

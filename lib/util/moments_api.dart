@@ -31,6 +31,7 @@ class MomentsApi {
     if (type != null) {
       data['type'] = '"$type"';
     }
+    print(data);
     if (year != null && month != null && day != null) {
       int start = DateTime(year, month, day, 8).secondsSinceEpoch;
       int end = start + 60 * 60 * 24;

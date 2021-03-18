@@ -40,8 +40,11 @@ class _PhotosState extends State<Photos> {
         Navigator.of(context).push(TransparentMaterialPageRoute(
           builder: (context) {
             return PreviewPage(
-              [originalUrl],
-              0,
+              photos
+                  .map((photo) =>
+                      '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}')
+                  .toList(),
+              photos.indexOf(photo),
               tag: "photo-ablum-${photo['additional']['thumbnail']['unit_id']}",
             );
           },
@@ -103,7 +106,10 @@ class _PhotosState extends State<Photos> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              leading: AppBackButton(context),
+              leading: AppBackButton(
+                context,
+                bevel: 0,
+              ),
               pinned: true,
               elevation: 0,
               flexibleSpace: FlexibleSpaceBar(

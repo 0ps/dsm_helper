@@ -143,7 +143,7 @@ class _MomentsState extends State<Moments> {
     }
   }
 
-  Widget _buildPhotoItem(photo) {
+  Widget _buildPhotoItem(photo, List photos) {
     int duration = 0;
     Map timeLong;
     if (photo['type'] == "video") {
@@ -165,8 +165,11 @@ class _MomentsState extends State<Moments> {
         Navigator.of(context).push(TransparentMaterialPageRoute(
           builder: (context) {
             return PreviewPage(
-              [originalUrl],
-              0,
+              photos
+                  .map((photo) =>
+                      '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="xl"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}')
+                  .toList(),
+              photos.indexOf(photo),
               tag: "photo-${photo['additional']['thumbnail']['unit_id']}",
             );
           },
@@ -250,7 +253,7 @@ class _MomentsState extends State<Moments> {
                   );
                 })
               : items.map((item) {
-                  return _buildPhotoItem(item);
+                  return _buildPhotoItem(item, items);
                 }).toList(),
         ),
       ],

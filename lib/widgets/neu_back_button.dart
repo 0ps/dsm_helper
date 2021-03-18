@@ -5,7 +5,8 @@ class AppBackButton extends StatefulWidget {
   final BuildContext context;
   final Color color;
   final Color iconColor;
-  AppBackButton(this.context, {this.color, this.iconColor});
+  final double bevel;
+  AppBackButton(this.context, {this.color, this.iconColor, this.bevel: 5.0});
   @override
   _AppBackButtonState createState() => _AppBackButtonState();
 }
@@ -33,7 +34,7 @@ class _AppBackButtonState extends State<AppBackButton> {
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: EdgeInsets.all(10),
-              bevel: 5,
+              bevel: widget.bevel,
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -34,23 +34,15 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
   double initScale({Size imageSize, Size size, double initialScale}) {
     var n1 = imageSize.height / imageSize.width;
     var n2 = size.height / size.width;
-    print("n1:$n1");
-    print("n2:$n2");
-    print(n1 / n2);
     if (n1 > n2) {
-      print("x");
       final FittedSizes fittedSizes = applyBoxFit(BoxFit.contain, imageSize, size);
       //final Size sourceSize = fittedSizes.source;
       Size destinationSize = fittedSizes.destination;
-      print(size.width / destinationSize.width);
       return size.width / destinationSize.width;
     } else if (n1 / n2 < 1 / 10) {
       final FittedSizes fittedSizes = applyBoxFit(BoxFit.contain, imageSize, size);
-      print(fittedSizes.destination);
       //final Size sourceSize = fittedSizes.source;
       Size destinationSize = fittedSizes.destination;
-      print("s");
-      print(size.height / destinationSize.height);
       return size.height / destinationSize.height;
     }
 
@@ -287,6 +279,7 @@ class MySwiperPlugin extends StatelessWidget {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  bevel: 0,
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   onPressed: () {
                     print(index);
@@ -317,7 +310,7 @@ class MySwiperPlugin extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   curveType: CurveType.flat,
-                  bevel: 10,
+                  bevel: 0,
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(
                     "${data.data + 1} / ${pics.length}",

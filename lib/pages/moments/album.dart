@@ -94,7 +94,9 @@ class _AlbumState extends State<Album> {
     }
     return Scaffold(
       appBar: AppBar(
-        leading: AppBackButton(context),
+        leading: AppBackButton(
+          context,
+        ),
         title: Text(widget.title),
       ),
       body: loadingAlbum

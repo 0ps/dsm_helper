@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:connectivity/connectivity.dart';
+import 'package:dsm_helper/pages/download/download_setting.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -341,6 +344,35 @@ class DownloadState extends State<Download> {
         title: Text(
           "下载",
         ),
+        actions: [
+          if (Platform.isAndroid)
+            Padding(
+              padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+              child: NeuButton(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(10),
+                bevel: 5,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) {
+                        return DownloadSetting();
+                      },
+                      settings: RouteSettings(name: "download_setting"),
+                    ),
+                  );
+                },
+                child: Image.asset(
+                  "assets/icons/setting.png",
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+            ),
+        ],
       ),
       body: loading
           ? Center(

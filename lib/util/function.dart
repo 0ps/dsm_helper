@@ -65,6 +65,9 @@ class Util {
   static bool isAuthPage = false;
   static GlobalKey<DownloadState> downloadKey = GlobalKey<DownloadState>();
   static String appName = "";
+
+  static String downloadSavePath = "";
+  static bool downloadWifiOnly = true;
   static toast(String text) {
     showToast(text ?? "");
   }
@@ -444,9 +447,9 @@ class Util {
     }
   }
 
-  static Future<String> getLocalPath() async {
+  static Future<String> getDownloadPath() async {
     // final directory = Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationDocumentsDirectory();
-    final directory = Platform.isAndroid ? Directory("/storage/emulated/0/dsm_helper") : await getApplicationDocumentsDirectory();
+    final directory = Platform.isAndroid ? Directory(downloadSavePath) : await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
@@ -476,10 +479,10 @@ class Util {
     bool permission = false;
     permission = await Permission.storage.request().isGranted;
     if (!permission) {
-      Util.toast("请先授权APP访问存储");
+      Util.toast("请先授权APP访问存储权限");
       return "";
     }
-    String savePath = await getLocalPath() + "/Download";
+    String savePath = await getDownloadPath();
     if (!Directory(savePath).existsSync()) {
       await Directory(savePath).create(recursive: true);
     }

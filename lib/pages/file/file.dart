@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:dsm_helper/pages/file/favorite.dart';
 import 'package:dsm_helper/pages/file/search.dart';
@@ -1113,6 +1114,7 @@ class FilesState extends State<Files> {
                                   child: NeuButton(
                                     onPressed: () async {
                                       Navigator.of(context).pop();
+                                      ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
                                       String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
                                       String filename = "";
                                       if (file['isdir']) {
@@ -1120,9 +1122,94 @@ class FilesState extends State<Files> {
                                       } else {
                                         filename = file['name'];
                                       }
-                                      await Util.download(filename, url);
-                                      Util.toast("已添加下载任务，请至下载页面查看");
-                                      Util.downloadKey.currentState.getData();
+                                      if (connectivityResult == ConnectivityResult.mobile) {
+                                        Util.vibrate(FeedbackType.warning);
+                                        showCupertinoModalPopup(
+                                          context: context,
+                                          builder: (context) {
+                                            return Material(
+                                              color: Colors.transparent,
+                                              child: NeuCard(
+                                                width: double.infinity,
+                                                padding: EdgeInsets.all(22),
+                                                bevel: 5,
+                                                curveType: CurveType.emboss,
+                                                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "下载确认",
+                                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 12,
+                                                    ),
+                                                    Text(
+                                                      "您当前正在使用数据网络，下载文件可能会产生流量费用，是否继续下载？",
+                                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 22,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: NeuButton(
+                                                            onPressed: () async {
+                                                              Navigator.of(context).pop();
+                                                              await Util.download(filename, url);
+                                                              Util.toast("已添加下载任务，请至下载页面查看");
+                                                              Util.downloadKey.currentState.getData();
+                                                            },
+                                                            decoration: NeumorphicDecoration(
+                                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                                              borderRadius: BorderRadius.circular(25),
+                                                            ),
+                                                            bevel: 5,
+                                                            padding: EdgeInsets.symmetric(vertical: 10),
+                                                            child: Text(
+                                                              "下载",
+                                                              style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 20,
+                                                        ),
+                                                        Expanded(
+                                                          child: NeuButton(
+                                                            onPressed: () async {
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                            decoration: NeumorphicDecoration(
+                                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                                              borderRadius: BorderRadius.circular(25),
+                                                            ),
+                                                            bevel: 5,
+                                                            padding: EdgeInsets.symmetric(vertical: 10),
+                                                            child: Text(
+                                                              "取消",
+                                                              style: TextStyle(fontSize: 18),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 8,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        await Util.download(filename, url);
+                                        Util.toast("已添加下载任务，请至下载页面查看");
+                                        Util.downloadKey.currentState.getData();
+                                      }
                                     },
                                     decoration: NeumorphicDecoration(
                                       color: Theme.of(context).scaffoldBackgroundColor,

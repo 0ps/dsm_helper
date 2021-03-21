@@ -23,7 +23,14 @@ void main() async {
     androidKey: '5ffe477d6a2a470e8f76809c',
     iosKey: '5ffe47cb6a2a470e8f7680a2',
   );
-
+  Util.downloadSavePath = await Util.getStorage("download_save_path") ?? "/storage/emulated/0/dsm_helper/Download";
+  Util.getStorage("download_wifi_only").then((value) {
+    if (value != null) {
+      Util.downloadWifiOnly = value == "1";
+    } else {
+      Util.downloadWifiOnly = true;
+    }
+  });
   //判断是否需要启动密码
   bool launchAuth = false;
   bool password = false;

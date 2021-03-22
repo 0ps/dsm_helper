@@ -1,3 +1,4 @@
+import 'package:dsm_helper/pages/control_panel/power/add_power_task.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
@@ -199,7 +200,31 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                     height: 10,
                   ),
                   NeuButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context)
+                          .push(CupertinoPageRoute(
+                              builder: (context) {
+                                return AddPowerTask(
+                                  "编辑计划管理",
+                                  task: task,
+                                );
+                              },
+                              settings: RouteSettings(name: "edit_power_task")))
+                          .then((value) {
+                        if (value != null) {
+                          for (var item in powerTasks) {
+                            if (item != task && item['hour'] == value['hour'] && item['min'] == value['min']) {
+                              Util.toast("无效或重复规则");
+                              Util.vibrate(FeedbackType.warning);
+                              return;
+                            }
+                          }
+                          setState(() {
+                            task = value;
+                          });
+                        }
+                      });
+                    },
                     decoration: NeumorphicDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(10),
@@ -918,33 +943,79 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                           ),
                           Padding(
                             padding: EdgeInsets.all(20),
-                            child: NeuButton(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              onPressed: () async {
-                                List powerOns = powerTasks.where((task) => task['type'] == "power_on").map((e) {
-                                  e.remove("type");
-                                  return e;
-                                }).toList();
-                                List powerOffs = powerTasks.where((task) => task['type'] == "power_off").map((e) {
-                                  e.remove("type");
-                                  return e;
-                                }).toList();
-                                var res = await Api.powerScheduleSave(powerOns, powerOffs);
-                                if (res['success']) {
-                                  Util.toast("保存成功");
-                                  getData();
-                                } else {
-                                  Util.toast("保存失败,代码${res['error']['code']}");
-                                }
-                              },
-                              child: Text(
-                                ' 保存 ',
-                                style: TextStyle(fontSize: 18),
-                              ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: NeuButton(
+                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    onPressed: () async {
+                                      Navigator.of(context)
+                                          .push(CupertinoPageRoute(
+                                              builder: (context) {
+                                                return AddPowerTask(
+                                                  "新增计划管理",
+                                                );
+                                              },
+                                              settings: RouteSettings(name: "edit_power_task")))
+                                          .then((value) {
+                                        if (value != null) {
+                                          for (var item in powerTasks) {
+                                            if (item['hour'] == value['hour'] && item['min'] == value['min']) {
+                                              Util.toast("无效或重复规则");
+                                              Util.vibrate(FeedbackType.warning);
+                                              return;
+                                            }
+                                          }
+                                          setState(() {
+                                            powerTasks.add(value);
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                      ' 新增 ',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: NeuButton(
+                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    onPressed: () async {
+                                      List powerOns = powerTasks.where((task) => task['type'] == "power_on").map((e) {
+                                        e.remove("type");
+                                        return e;
+                                      }).toList();
+                                      List powerOffs = powerTasks.where((task) => task['type'] == "power_off").map((e) {
+                                        e.remove("type");
+                                        return e;
+                                      }).toList();
+                                      var res = await Api.powerScheduleSave(powerOns, powerOffs);
+                                      if (res['success']) {
+                                        Util.toast("保存成功");
+                                        getData();
+                                      } else {
+                                        Util.toast("保存失败,代码${res['error']['code']}");
+                                      }
+                                    },
+                                    child: Text(
+                                      ' 保存 ',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ],

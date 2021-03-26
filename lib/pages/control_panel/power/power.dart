@@ -38,7 +38,6 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
         });
         List result = res['data']['result'];
         result.forEach((item) {
-          print(item['data']);
           if (item['success'] == true) {
             switch (item['api']) {
               case "SYNO.Core.Hardware.ZRAM":
@@ -79,7 +78,6 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                         return e;
                       }).toList();
                   powerTasks.sort((a, b) {
-                    print(a);
                     if (a['hour'] > b['hour']) {
                       return 1;
                     } else if (a['hour'] == b['hour']) {

@@ -1525,7 +1525,7 @@ class DashboardState extends State<Dashboard> {
             Navigator.of(context).pop();
             Navigator.of(context).push(CupertinoPageRoute(
                 builder: (context) {
-                  return ControlPanel(system, volumes, disks);
+                  return ControlPanel(system, volumes, disks, appNotify['SYNO.SDS.AdminCenter.Application']['fn']);
                 },
                 settings: RouteSettings(name: "control_panel")));
           },
@@ -2277,7 +2277,7 @@ class DashboardState extends State<Dashboard> {
         name = "控制面板";
         route = CupertinoPageRoute(
             builder: (context) {
-              return ControlPanel(system, volumes, disks);
+              return ControlPanel(system, volumes, disks, appNotify['SYNO.SDS.AdminCenter.Application']['fn']);
             },
             settings: RouteSettings(name: "control_panel"));
         if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null) {

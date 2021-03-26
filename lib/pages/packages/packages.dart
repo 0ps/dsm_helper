@@ -217,7 +217,19 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
     } else if (package['can_update']) {
       button = NeuButton(
         onPressed: () {
-          Util.toast("暂不支持更新套件，敬请期待");
+          Navigator.of(context)
+              .push(CupertinoPageRoute(
+                  builder: (context) {
+                    return PackageDetail(package, method: "update");
+                  },
+                  settings: RouteSettings(name: "package_detail")))
+              .then((_) async {
+            await getLaunchedPackages();
+            await getInstalledPackages();
+            setState(() {
+              loading = false;
+            });
+          });
         },
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: NeumorphicDecoration(
@@ -361,7 +373,19 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
     } else {
       button = NeuButton(
         onPressed: () {
-          Util.toast("请进入套件详情页安装套件");
+          Navigator.of(context)
+              .push(CupertinoPageRoute(
+                  builder: (context) {
+                    return PackageDetail(package, method: "install");
+                  },
+                  settings: RouteSettings(name: "package_detail")))
+              .then((_) async {
+            await getLaunchedPackages();
+            await getInstalledPackages();
+            setState(() {
+              loading = false;
+            });
+          });
         },
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: NeumorphicDecoration(
@@ -631,6 +655,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
                                     },
                                     itemCount: canUpdatePackages.length,
                                     shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
                                   ),
                                 Wrap(
                                   runSpacing: 20,

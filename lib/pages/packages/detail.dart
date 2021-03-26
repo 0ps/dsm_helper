@@ -15,7 +15,8 @@ import 'package:neumorphic/neumorphic.dart';
 
 class PackageDetail extends StatefulWidget {
   final Map package;
-  PackageDetail(this.package);
+  final String method;
+  PackageDetail(this.package, {this.method});
   @override
   _PackageDetailState createState() => _PackageDetailState();
 }
@@ -23,6 +24,7 @@ class PackageDetail extends StatefulWidget {
 class _PackageDetailState extends State<PackageDetail> {
   String thumbnailUrl = "";
   String installVolume = "";
+  String installPath = "";
   List volumes = [];
   double installProgress = 0;
   bool installing = false;
@@ -32,12 +34,21 @@ class _PackageDetailState extends State<PackageDetail> {
   @override
   void initState() {
     if (widget.package['installed'] && widget.package['additional'] != null) {
-      List paths = widget.package['additional']['installed_info']['path'].split("/");
       setState(() {
-        installVolume = paths[1].replaceAll("volume", "存储空间 ");
+        installPath = widget.package['additional']['installed_info']['path'].split("/@appstore")[0];
+        if (widget.package['additional']['installed_info']['path'].contains("volume")) {
+          List paths = widget.package['additional']['installed_info']['path'].split("/");
+          installVolume = paths[1];
+        } else {
+          installVolume = "系统分区";
+        }
       });
     }
-
+    if (widget.package['can_update']) {
+      setState(() {
+        installButtonText = "更新";
+      });
+    }
     thumbnailUrl = widget.package['thumbnail'].last;
     if (!thumbnailUrl.startsWith("http")) {
       thumbnailUrl = Util.baseUrl + thumbnailUrl;
@@ -52,6 +63,11 @@ class _PackageDetailState extends State<PackageDetail> {
       setState(() {
         volumes = res['data']['volumes'];
       });
+      if (widget.method == "install") {
+        selectVolume();
+      } else if (widget.method == "update") {
+        update();
+      }
     }
   }
 
@@ -66,19 +82,190 @@ class _PackageDetailState extends State<PackageDetail> {
     );
   }
 
+  selectVolume() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return Material(
+          color: Colors.transparent,
+          child: NeuCard(
+            width: double.infinity,
+            bevel: 20,
+            curveType: CurveType.emboss,
+            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "选择套件安装位置",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  ...volumes.map((volume) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: NeuButton(
+                        onPressed: () async {
+                          install(volume['volume_path']);
+                          Navigator.of(context).pop();
+                        },
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        bevel: 20,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Container(
+                          padding: EdgeInsets.only(left: 20),
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("${volume['display_name']}(可用容量：${Util.formatSize(int.parse(volume['size_free_byte']))}) - ${volume['fs_type']}"),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "${volume['description']}",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  NeuButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    bevel: 20,
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      "取消",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   getLaunchedPackages() async {
-    print("获取运行中套件");
-    var res = await Api.launchedPackages();
-    print("获取运行中套件end");
+    widget.package['launched'] = true;
+    widget.package['can_update'] = false;
+  }
+
+  update() async {
+    setState(() {
+      installButtonText = "请稍后";
+    });
+    var res = await Api.installPackageQueue(widget.package['id']);
     if (res['success']) {
-      Map packages = res['data']['packages'];
-      packages.forEach((key, value) {
-        if (key == widget.package['id']) {
+      if (res['data']['paused_pkgs'].length > 0) {
+        showCupertinoModalPopup(
+          context: context,
+          builder: (context) {
+            return Material(
+              color: Colors.transparent,
+              child: NeuCard(
+                width: double.infinity,
+                bevel: 5,
+                curveType: CurveType.emboss,
+                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "确认更新",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        '更新${res['data']['cause_pausing_pkgs'].join(",")}时，${res['data']['paused_pkgs'].join("，")}将被停用。',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        height: 22,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: NeuButton(
+                              onPressed: () async {
+                                install(installPath);
+                                Navigator.of(context).pop();
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              bevel: 5,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                "继续更新",
+                                style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              bevel: 5,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                "取消",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ).then((value) {
           setState(() {
-            widget.package['launched'] = true;
+            installButtonText = "更新";
           });
-        }
-      });
+        });
+      } else {
+        install(installPath);
+      }
     }
   }
 
@@ -89,6 +276,46 @@ class _PackageDetailState extends State<PackageDetail> {
       Navigator.of(context).pop();
     } else {
       Util.toast("套件卸载失败，错误代码：${res['error']['code']}");
+    }
+  }
+
+  install(path) async {
+    var res = await Api.installPackageTask(widget.package['id'], path);
+    print(res);
+    if (res['success']) {
+      Util.toast("已开始安装");
+      setState(() {
+        installing = true;
+        installButtonText = "准备安装…";
+        installProgress = double.parse(res['data']['progress']);
+      });
+      //进度
+      timer = Timer.periodic(Duration(seconds: 5), (timer) {
+        Api.installPackageStatus(res['data']['taskid']).then((value) {
+          print(value);
+          setState(() {
+            installing = !value['data']['finished'];
+            if (value['data']['finished']) {
+              widget.package['installed'] = true;
+              getLaunchedPackages();
+              timer.cancel();
+            } else if (value['data']['progress'] != null) {
+              if (value['data']['progress'] is double) {
+                installProgress = value['data']['progress'];
+              } else {
+                installProgress = double.parse(value['data']['progress']);
+              }
+              installButtonText = "下载中:${installProgress.toStringAsFixed(2)}%";
+            } else if (value['data']['status'] == "installing") {
+              installButtonText = "安装中…";
+            } else if (value['data']['status'] == 'upgrading') {
+              installButtonText = "更新中…";
+            }
+          });
+        });
+      });
+    } else {
+      Util.toast("安装套件失败，代码${res['error']['code']}");
     }
   }
 
@@ -405,7 +632,7 @@ class _PackageDetailState extends State<PackageDetail> {
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text("$installVolume"),
+                                    Text("${installVolume.replaceAll("volume", "存储空间 ")}"),
                                   ],
                                 ),
                               ),
@@ -674,120 +901,7 @@ class _PackageDetailState extends State<PackageDetail> {
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: NeuButton(
                         onPressed: () {
-                          showCupertinoModalPopup(
-                            context: context,
-                            builder: (context) {
-                              return Material(
-                                color: Colors.transparent,
-                                child: NeuCard(
-                                  width: double.infinity,
-                                  bevel: 20,
-                                  curveType: CurveType.emboss,
-                                  decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          "选择套件安装位置",
-                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                        ),
-                                        SizedBox(
-                                          height: 12,
-                                        ),
-                                        ...volumes.map((volume) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(bottom: 20),
-                                            child: NeuButton(
-                                              onPressed: () async {
-                                                var res = await Api.installPackageTask(widget.package['id'], volume['volume_path']);
-                                                print(res);
-                                                if (res['success']) {
-                                                  Util.toast("已开始安装");
-                                                  setState(() {
-                                                    installing = true;
-                                                    installButtonText = "准备安装…";
-                                                    installProgress = double.parse(res['data']['progress']);
-                                                  });
-                                                  //进度
-                                                  timer = Timer.periodic(Duration(seconds: 5), (timer) {
-                                                    Api.installPackageStatus(res['data']['taskid']).then((value) {
-                                                      setState(() {
-                                                        installing = !value['data']['finished'];
-                                                        if (value['data']['finished']) {
-                                                          widget.package['installed'] = true;
-                                                          getLaunchedPackages();
-                                                          timer.cancel();
-                                                        } else if (value['data']['progress'] != null) {
-                                                          if (value['data']['progress'] is double) {
-                                                            installProgress = value['data']['progress'];
-                                                          } else {
-                                                            installProgress = double.parse(value['data']['progress']);
-                                                          }
-                                                          installButtonText = "下载中:${installProgress.toStringAsFixed(2)}%";
-                                                        } else if (value['data']['status'] == "installing") {
-                                                          installButtonText = "安装中……";
-                                                        }
-                                                      });
-                                                    });
-                                                  });
-                                                } else {
-                                                  Util.toast("安装套件失败，代码${res['error']['code']}");
-                                                }
-                                                Navigator.of(context).pop();
-                                              },
-                                              decoration: NeumorphicDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              bevel: 20,
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              child: Container(
-                                                padding: EdgeInsets.only(left: 20),
-                                                width: double.infinity,
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text("${volume['display_name']}(可用容量：${Util.formatSize(int.parse(volume['size_free_byte']))}) - ${volume['fs_type']}"),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    Text(
-                                                      "${volume['description']}",
-                                                      style: TextStyle(color: Colors.grey),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        NeuButton(
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
-                                          },
-                                          decoration: NeumorphicDecoration(
-                                            color: Theme.of(context).scaffoldBackgroundColor,
-                                            borderRadius: BorderRadius.circular(25),
-                                          ),
-                                          bevel: 20,
-                                          padding: EdgeInsets.symmetric(vertical: 10),
-                                          child: Text(
-                                            "取消",
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
+                          selectVolume();
                         },
                         padding: EdgeInsets.symmetric(vertical: 15),
                         decoration: NeumorphicDecoration(
@@ -803,15 +917,16 @@ class _PackageDetailState extends State<PackageDetail> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: NeuButton(
-                        onPressed: () {
-                          Util.toast("暂不支持安装套件，敬请期待");
+                        onPressed: () async {
+                          update();
+                          // install(volume['volume_path']);
                         },
                         padding: EdgeInsets.symmetric(vertical: 15),
                         decoration: NeumorphicDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        child: Text("更新"),
+                        child: Text("$installButtonText"),
                       ),
                     ),
                   ),

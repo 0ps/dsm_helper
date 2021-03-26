@@ -5,6 +5,8 @@ import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
 import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
 import 'package:dsm_helper/pages/control_panel/users/users.dart';
+import 'package:dsm_helper/util/badge.dart';
+import 'package:dsm_helper/widgets/label.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 
 import 'shared_folders/shared_folders.dart';
@@ -17,7 +19,8 @@ class ControlPanel extends StatefulWidget {
   final Map system;
   final List volumes;
   final List disks;
-  ControlPanel(this.system, this.volumes, this.disks);
+  final Map notify;
+  ControlPanel(this.system, this.volumes, this.disks, this.notify);
   @override
   _ControlPanelState createState() => _ControlPanelState();
 }
@@ -702,23 +705,37 @@ class _ControlPanelState extends State<ControlPanel> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Stack(
                           children: [
-                            Image.asset(
-                              "assets/control_panel/update_and_reset.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/control_panel/update_and_reset.png",
+                                    height: 30,
+                                    width: 30,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "更新和还原",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.clip,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "更新和还原",
-                              maxLines: 1,
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(fontSize: 12),
+                            Positioned(
+                              top: 6,
+                              right: 6,
+                              child: Badge(
+                                widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
+                                size: 20,
+                              ),
                             ),
                           ],
                         ),

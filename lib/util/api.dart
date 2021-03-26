@@ -907,6 +907,21 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
+  //pkgs: [{"pkg":"SynoFinder","beta":false}]
+  // api: SYNO.Core.Package.Installation
+  // method: get_queue
+  // version: 1
+  static Future<Map> installPackageQueue(String pkg) async {
+    var data = {
+      "pkgs": '[{"pkg":"$pkg","beta":false}]',
+      "api": "SYNO.Core.Package.Installation",
+      "version": 1,
+      "method": "get_queue",
+      "_sid": Util.sid,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
   static Future<Map> uninstallPackageInfo(String id) async {
     var data = {
       "id": id,
@@ -1829,11 +1844,54 @@ class Api {
     });
     return result;
   }
-  //stop_when_error: false
-// mode: "sequential"
-// compound: ,{"api":"SYNO.Core.Hardware.ZRAM","method":"get","version":1},{"api":"SYNO.Core.Hardware.PowerRecovery","method":"get","version":1},{"api":"SYNO.Core.Hardware.BeepControl","method":"get","version":1},{"api":"SYNO.Core.Hardware.FanSpeed","method":"get","version":1},{"api":"SYNO.Core.Hardware.Hibernation","method":"get","version":1},{"api":"SYNO.Core.ExternalDevice.UPS","method":"get","version":1},{"api":"SYNO.Core.Hardware.PowerSchedule","method":"load","version":1}]
-// api: SYNO.Entry.Request
-// method: request
-// version: 1
 
+  static Future<Map> userDetail(String name) async {
+    print(name);
+    List apis = [
+      {
+        "api": "SYNO.Core.User",
+        "method": "get",
+        "version": 1,
+        "name": name,
+        "additional": ["description", "email", "expired", "cannot_chg_passwd", "passwd_never_expire"]
+      },
+      {"api": "SYNO.Core.User.PasswordExpiry", "method": "get", "version": 1},
+      {
+        "api": "SYNO.Core.Share.Permission",
+        "method": "list_by_user",
+        "version": 1,
+        "name": name,
+        "user_group_type": "local_user",
+        "share_type": ["dec", "local", "usb", "sata", "cluster", "cold_storage"],
+        "additional": ["hidden", "encryption", "is_aclmode"]
+      },
+      {"api": "SYNO.Core.Storage.Volume", "method": "list", "version": 1, "offset": 0, "limit": -1, "location": "internal"},
+      {"api": "SYNO.Core.BandwidthControl", "method": "get", "version": 2, "name": name, "owner_type": "local_user"},
+      {"api": "SYNO.Core.OTP.Admin", "method": "get", "version": 1, "name": name},
+      {"api": "SYNO.Core.FileServ.SMB", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Quota", "method": "get", "version": 1, "name": name, "support_share_quota": true}
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"sequential"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> userGroup(String name) async {
+    var result = await Util.post("entry.cgi", data: {
+      "name_only": false,
+      "user": '"$name"',
+      "type": '"local"',
+      "api": 'SYNO.Core.Group',
+      "method": 'list',
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
 }

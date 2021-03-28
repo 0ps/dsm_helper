@@ -1,5 +1,6 @@
 import 'package:dsm_helper/pages/control_panel/power/add_power_task.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:dsm_helper/util/neu_picker.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/label.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
@@ -23,6 +24,49 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
   Map hibernation;
   Map ups;
   List powerTasks = [];
+
+  List dataList = [
+    {
+      "value": 0,
+      "title": "无",
+    },
+    {
+      "value": 10,
+      "title": "10分钟",
+    },
+    {
+      "value": 15,
+      "title": "15分钟",
+    },
+    {
+      "value": 20,
+      "title": "20分钟",
+    },
+    {
+      "value": 30,
+      "title": "30分钟",
+    },
+    {
+      "value": 60,
+      "title": "1小时",
+    },
+    {
+      "value": 120,
+      "title": "2小时",
+    },
+    {
+      "value": 180,
+      "title": "3小时",
+    },
+    {
+      "value": 240,
+      "title": "4小时",
+    },
+    {
+      "value": 300,
+      "title": "5小时",
+    },
+  ];
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -93,6 +137,12 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                     }
                   });
                 });
+                break;
+              case "SYNO.Core.Hardware.Hibernation":
+                setState(() {
+                  hibernation = item['data'];
+                });
+                break;
             }
           }
         });
@@ -170,7 +220,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                     ),
                     Text(
                       "$weekdays",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                   ],
                 ),
@@ -1018,8 +1068,344 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                           ),
                         ],
                       ),
-                      Center(
-                        child: Text("待开发"),
+                      Column(
+                        children: [
+                          Expanded(
+                            child: ListView(
+                              children: [
+                                NeuCard(
+                                  decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                  bevel: 10,
+                                  curveType: CurveType.flat,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "内部硬盘和外接 SATA 硬盘在闲置超过指定的时间后将进入休眠。",
+                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showCupertinoModalPopup(
+                                                context: context,
+                                                builder: (context) {
+                                                  return NeuPicker(
+                                                    dataList.map((e) => e['title']).toList(),
+                                                    value: dataList.indexWhere((element) => element['value'] == hibernation['internal_hd_idletime']),
+                                                    onConfirm: (v) {
+                                                      setState(() {
+                                                        hibernation['internal_hd_idletime'] = dataList[v]['value'];
+                                                      });
+                                                    },
+                                                  );
+                                                });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: CurveType.flat,
+                                            child: Row(
+                                              children: [
+                                                Text("时间"),
+                                                Spacer(),
+                                                Text("${dataList.where((element) => element['value'] == hibernation['internal_hd_idletime']).first['title']}"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            if (hibernation['internal_hd_idletime'] > 0)
+                                              setState(() {
+                                                hibernation['sata_deep_sleep'] = hibernation['sata_deep_sleep'] == 1 ? 0 : 1;
+                                              });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: hibernation['internal_hd_idletime'] > 0 ? (hibernation['sata_deep_sleep'] == 1 ? CurveType.emboss : CurveType.flat) : CurveType.concave,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text("启动进阶硬盘休眠以将设备的耗电量降至最低"),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                SizedBox(
+                                                  width: 22,
+                                                  child: hibernation['sata_deep_sleep'] == 1
+                                                      ? Icon(
+                                                          CupertinoIcons.checkmark_alt,
+                                                          color: Color(0xffff9813),
+                                                          size: 22,
+                                                        )
+                                                      : null,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                NeuCard(
+                                  decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                  bevel: 10,
+                                  curveType: CurveType.flat,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "USB 硬盘在超过设置的闲置时间后将开始休眠（仅适用于支持休眠的 USB 设备）。",
+                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showCupertinoModalPopup(
+                                                context: context,
+                                                builder: (context) {
+                                                  return NeuPicker(
+                                                    dataList.map((e) => e['title']).toList(),
+                                                    value: dataList.indexWhere((element) => element['value'] == hibernation['usb_idletime']),
+                                                    onConfirm: (v) {
+                                                      setState(() {
+                                                        hibernation['usb_idletime'] = dataList[v]['value'];
+                                                      });
+                                                    },
+                                                  );
+                                                });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: CurveType.flat,
+                                            child: Row(
+                                              children: [
+                                                Text("时间"),
+                                                Spacer(),
+                                                Text("${dataList.where((element) => element['value'] == hibernation['usb_idletime']).first['title']}"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            if (hibernation['internal_hd_idletime'] > 0 || hibernation['usb_idletime'] > 0)
+                                              setState(() {
+                                                hibernation['enable_log'] = !hibernation['enable_log'];
+                                              });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: hibernation['internal_hd_idletime'] > 0 || hibernation['usb_idletime'] > 0 ? (hibernation['enable_log'] ? CurveType.emboss : CurveType.flat) : CurveType.convex,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text("启用硬盘休眠日志"),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                SizedBox(
+                                                  width: 22,
+                                                  child: hibernation['enable_log']
+                                                      ? Icon(
+                                                          CupertinoIcons.checkmark_alt,
+                                                          color: Color(0xffff9813),
+                                                          size: 22,
+                                                        )
+                                                      : null,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                NeuCard(
+                                  decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                  bevel: 10,
+                                  curveType: CurveType.flat,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "在内部硬盘休眠所配置时间段后，DS 经由局域网唤醒进入待机状态（欧盟 Lot 26 规范）。",
+                                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () async {
+                                            if (powerRecovery['wol1'] && hibernation['internal_hd_idletime'] > 0)
+                                              setState(() {
+                                                hibernation['auto_poweroff_enable'] = !hibernation['auto_poweroff_enable'];
+                                                hibernation['auto_poweroff_time'] = 10;
+                                              });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: powerRecovery['wol1'] && hibernation['internal_hd_idletime'] > 0 ? (hibernation['auto_poweroff_enable'] ? CurveType.emboss : CurveType.flat) : CurveType.convex,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text("启用自动关机"),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                SizedBox(
+                                                  width: 22,
+                                                  child: hibernation['auto_poweroff_enable']
+                                                      ? Icon(
+                                                          CupertinoIcons.checkmark_alt,
+                                                          color: Color(0xffff9813),
+                                                          size: 22,
+                                                        )
+                                                      : null,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (hibernation['auto_poweroff_enable'])
+                                              showCupertinoModalPopup(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return NeuPicker(
+                                                      dataList.getRange(1, dataList.length).map((e) => e['title']).toList(),
+                                                      value: dataList.indexWhere((element) => element['value'] == hibernation['auto_poweroff_time']) - 1,
+                                                      onConfirm: (v) {
+                                                        setState(() {
+                                                          hibernation['auto_poweroff_time'] = dataList[v]['value'];
+                                                        });
+                                                      },
+                                                    );
+                                                  });
+                                          },
+                                          child: NeuCard(
+                                            decoration: NeumorphicDecoration(
+                                              color: Theme.of(context).scaffoldBackgroundColor,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            padding: EdgeInsets.all(10),
+                                            bevel: 10,
+                                            curveType: hibernation['auto_poweroff_enable'] ? CurveType.flat : CurveType.convex,
+                                            child: Row(
+                                              children: [
+                                                Text("时间"),
+                                                Spacer(),
+                                                Text("${hibernation['auto_poweroff_enable'] ? dataList.where((element) => element['value'] == hibernation['auto_poweroff_time']).first['title'] : ""}"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(20),
+                            child: NeuButton(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              onPressed: () async {
+                                var res = await Api.powerHibernationSave(
+                                  internal_hd_idletime: hibernation['internal_hd_idletime'],
+                                  sata_deep_sleep: hibernation['sata_deep_sleep'] == 1,
+                                  usb_idletime: hibernation['usb_idletime'],
+                                  enable_log: hibernation['enable_log'],
+                                  auto_poweroff_enable: hibernation['auto_poweroff_enable'],
+                                  auto_poweroff_time: hibernation['auto_poweroff_time'],
+                                );
+                                if (res['success']) {
+                                  Util.toast("保存成功");
+                                  getData();
+                                } else {
+                                  Util.toast("保存失败,代码${res['error']['code']}");
+                                }
+                              },
+                              child: Text(
+                                ' 保存 ',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       Center(
                         child: Text("待开发"),

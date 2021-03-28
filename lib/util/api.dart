@@ -1845,6 +1845,23 @@ class Api {
     return result;
   }
 
+  static Future<Map> powerHibernationSave({int internal_hd_idletime, bool sata_deep_sleep, int usb_idletime, bool enable_log, bool auto_poweroff_enable, int auto_poweroff_time}) async {
+    var result = await Util.post("entry.cgi", data: {
+      "internal_hd_idletime": internal_hd_idletime,
+      "sata_deep_sleep": sata_deep_sleep,
+      "ignore_netbios_broadcast": false,
+      "usb_idletime": usb_idletime,
+      "enable_log": enable_log,
+      "auto_poweroff_enable": auto_poweroff_enable,
+      "auto_poweroff_time": auto_poweroff_time,
+      "api": 'SYNO.Core.Hardware.Hibernation',
+      "method": 'set',
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
   static Future<Map> userDetail(String name) async {
     print(name);
     List apis = [

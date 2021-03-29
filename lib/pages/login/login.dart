@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dsm_helper/pages/login/accounts.dart';
+import 'package:dsm_helper/pages/update/update.dart';
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:package_info/package_info.dart';
 import 'package:vibrate/vibrate.dart';
 
 class Login extends StatefulWidget {
@@ -18,6 +21,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  Map updateInfo;
   String host = "";
   String baseUrl = '';
   String account = "";
@@ -43,6 +47,8 @@ class _LoginState extends State<Login> {
   CancelToken cancelToken = CancelToken();
   @override
   initState() {
+    checkUpdate();
+
     Util.getStorage("servers").then((serverString) {
       if (serverString.isNotBlank) {
         servers = jsonDecode(serverString);
@@ -66,7 +72,6 @@ class _LoginState extends State<Login> {
           if (account.isNotBlank) {
             _accountController.value = TextEditingValue(text: account);
           }
-          print(password);
           if (password.isNotBlank) {
             _passwordController.value = TextEditingValue(text: password);
           }
@@ -84,6 +89,19 @@ class _LoginState extends State<Login> {
     });
 
     super.initState();
+  }
+
+  checkUpdate() async {
+    if (Platform.isAndroid) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      var res = await Api.update(packageInfo.buildNumber); //packageInfo.buildNumber
+      print(res);
+      if (res['code'] == 1) {
+        setState(() {
+          updateInfo = res['data'];
+        });
+      }
+    }
   }
 
   getInfo() async {
@@ -185,10 +203,6 @@ class _LoginState extends State<Login> {
     }
     if (account == "") {
       Util.toast("请输入账号");
-      return;
-    }
-    if (password == "") {
-      Util.toast("请输入密码");
       return;
     }
     setState(() {
@@ -338,89 +352,34 @@ class _LoginState extends State<Login> {
     }
   }
 
-  Widget _buildServerItem(server) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 20),
-      child: NeuButton(
-        onPressed: () async {
-          Navigator.of(context).pop();
-          // return;
-          setState(() {
-            https = server['https'];
-            host = server['host'];
-            _hostController.value = TextEditingValue(text: host);
-            port = server['port'];
-            _portController.value = TextEditingValue(text: port);
-            account = server['account'];
-            _accountController.value = TextEditingValue(text: account);
-            password = server['password'];
-            _passwordController.value = TextEditingValue(text: password);
-            autoLogin = server['auto_login'];
-            rememberPassword = server['remember_password'];
-            checkSsl = server['check_ssl'] ?? true;
-            Util.cookie = server['cookie'];
-          });
-        },
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: EdgeInsets.zero,
-        bevel: 20,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "${server['account']}",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "${server['https'] ? "https" : "http"}://${server['host']}:${server['port']}",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-              NeuButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  setState(() {
-                    servers.remove(server);
-                  });
-
-                  Util.setStorage("servers", jsonEncode(servers));
-                  Util.toast("删除成功");
-                },
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                bevel: 20,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: Image.asset(
-                  "assets/icons/delete.png",
-                  width: 20,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: updateInfo != null
+            ? Padding(
+                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+                child: NeuButton(
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  bevel: 5,
+                  onPressed: () {
+                    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                      return Update(updateInfo);
+                    }));
+                  },
+                  child: Image.asset(
+                    "assets/icons/update.png",
+                    width: 20,
+                    height: 20,
+                    color: Colors.redAccent,
+                  ),
+                ),
+              )
+            : null,
         title: Text(
           widget.type == "login" ? "账号登录" : "添加账号",
         ),
@@ -439,64 +398,6 @@ class _LoginState extends State<Login> {
                       Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                         return Accounts();
                       }));
-                      return;
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) {
-                          return Material(
-                            color: Colors.transparent,
-                            child: NeuCard(
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              bevel: 5,
-                              curveType: CurveType.emboss,
-                              decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                      "选择账号",
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Expanded(
-                                      child: ListView.builder(
-                                        padding: EdgeInsets.all(20),
-                                        itemBuilder: (context, i) {
-                                          return _buildServerItem(servers[i]);
-                                        },
-                                        itemCount: servers.length,
-                                      ),
-                                    ),
-                                    NeuButton(
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                      },
-                                      decoration: NeumorphicDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        borderRadius: BorderRadius.circular(25),
-                                      ),
-                                      bevel: 20,
-                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                      child: Text(
-                                        "取消",
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
                     },
                     child: Image.asset(
                       "assets/icons/history.png",

@@ -772,176 +772,177 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                                NeuCard(
-                                  decoration: NeumorphicDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                                  bevel: 10,
-                                  curveType: CurveType.flat,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "风扇模式",
-                                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () async {
-                                                setState(() {
-                                                  fanSpeed['dual_fan_speed'] = "fullfan";
-                                                });
-                                              },
-                                              child: NeuCard(
-                                                decoration: NeumorphicDecoration(
-                                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                padding: EdgeInsets.all(10),
-                                                bevel: 10,
-                                                curveType: fanSpeed['dual_fan_speed'] == "fullfan" ? CurveType.emboss : CurveType.flat,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text("全速模式"),
-                                                          Text(
-                                                            "风扇以全速工作可保持系统冷却，但会产生较大的噪音。",
-                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                          ),
-                                                        ],
+                                if (fanSpeed != null)
+                                  NeuCard(
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                    bevel: 10,
+                                    curveType: CurveType.flat,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "风扇模式",
+                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    fanSpeed['dual_fan_speed'] = "fullfan";
+                                                  });
+                                                },
+                                                child: NeuCard(
+                                                  decoration: NeumorphicDecoration(
+                                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  padding: EdgeInsets.all(10),
+                                                  bevel: 10,
+                                                  curveType: fanSpeed['dual_fan_speed'] == "fullfan" ? CurveType.emboss : CurveType.flat,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text("全速模式"),
+                                                            Text(
+                                                              "风扇以全速工作可保持系统冷却，但会产生较大的噪音。",
+                                                              style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 22,
-                                                      child: fanSpeed['dual_fan_speed'] == "fullfan"
-                                                          ? Icon(
-                                                              CupertinoIcons.checkmark_alt,
-                                                              color: Color(0xffff9813),
-                                                              size: 22,
-                                                            )
-                                                          : null,
-                                                    ),
-                                                  ],
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 22,
+                                                        child: fanSpeed['dual_fan_speed'] == "fullfan"
+                                                            ? Icon(
+                                                                CupertinoIcons.checkmark_alt,
+                                                                color: Color(0xffff9813),
+                                                                size: 22,
+                                                              )
+                                                            : null,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () async {
-                                                setState(() {
-                                                  fanSpeed['dual_fan_speed'] = "coolfan";
-                                                });
-                                              },
-                                              child: NeuCard(
-                                                decoration: NeumorphicDecoration(
-                                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                padding: EdgeInsets.all(10),
-                                                bevel: 10,
-                                                curveType: fanSpeed['dual_fan_speed'] == "coolfan" ? CurveType.emboss : CurveType.flat,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text("低温模式"),
-                                                          Text(
-                                                            "风扇以较高的速度工作可保持系统冷却，但会产生较大的噪音。",
-                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                          ),
-                                                        ],
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    fanSpeed['dual_fan_speed'] = "coolfan";
+                                                  });
+                                                },
+                                                child: NeuCard(
+                                                  decoration: NeumorphicDecoration(
+                                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  padding: EdgeInsets.all(10),
+                                                  bevel: 10,
+                                                  curveType: fanSpeed['dual_fan_speed'] == "coolfan" ? CurveType.emboss : CurveType.flat,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text("低温模式"),
+                                                            Text(
+                                                              "风扇以较高的速度工作可保持系统冷却，但会产生较大的噪音。",
+                                                              style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 22,
-                                                      child: fanSpeed['dual_fan_speed'] == "coolfan"
-                                                          ? Icon(
-                                                              CupertinoIcons.checkmark_alt,
-                                                              color: Color(0xffff9813),
-                                                              size: 22,
-                                                            )
-                                                          : null,
-                                                    ),
-                                                  ],
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 22,
+                                                        child: fanSpeed['dual_fan_speed'] == "coolfan"
+                                                            ? Icon(
+                                                                CupertinoIcons.checkmark_alt,
+                                                                color: Color(0xffff9813),
+                                                                size: 22,
+                                                              )
+                                                            : null,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () async {
-                                                setState(() {
-                                                  fanSpeed['dual_fan_speed'] = 'quietfan';
-                                                });
-                                              },
-                                              child: NeuCard(
-                                                decoration: NeumorphicDecoration(
-                                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                padding: EdgeInsets.all(10),
-                                                bevel: 10,
-                                                curveType: fanSpeed['dual_fan_speed'] == 'quietfan' ? CurveType.emboss : CurveType.flat,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text("静音模式"),
-                                                          Text(
-                                                            "风扇以较低的速度工作所产生的噪音较低，但过程中系统可能会变热。",
-                                                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                                                          ),
-                                                        ],
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    fanSpeed['dual_fan_speed'] = 'quietfan';
+                                                  });
+                                                },
+                                                child: NeuCard(
+                                                  decoration: NeumorphicDecoration(
+                                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  padding: EdgeInsets.all(10),
+                                                  bevel: 10,
+                                                  curveType: fanSpeed['dual_fan_speed'] == 'quietfan' ? CurveType.emboss : CurveType.flat,
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text("静音模式"),
+                                                            Text(
+                                                              "风扇以较低的速度工作所产生的噪音较低，但过程中系统可能会变热。",
+                                                              style: TextStyle(fontSize: 12, color: Colors.grey),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 22,
-                                                      child: fanSpeed['dual_fan_speed'] == 'quietfan'
-                                                          ? Icon(
-                                                              CupertinoIcons.checkmark_alt,
-                                                              color: Color(0xffff9813),
-                                                              size: 22,
-                                                            )
-                                                          : null,
-                                                    ),
-                                                  ],
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 22,
+                                                        child: fanSpeed['dual_fan_speed'] == 'quietfan'
+                                                            ? Icon(
+                                                                CupertinoIcons.checkmark_alt,
+                                                                color: Color(0xffff9813),
+                                                                size: 22,
+                                                              )
+                                                            : null,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                                 SizedBox(
                                   height: 20,
                                 ),
@@ -982,12 +983,16 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                       Column(
                         children: [
                           Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (context, i) {
-                                return _buildPowerTaskItem(powerTasks[i]);
-                              },
-                              itemCount: powerTasks.length,
-                            ),
+                            child: powerTasks.length > 0
+                                ? ListView.builder(
+                                    itemBuilder: (context, i) {
+                                      return _buildPowerTaskItem(powerTasks[i]);
+                                    },
+                                    itemCount: powerTasks.length,
+                                  )
+                                : Center(
+                                    child: Text("暂无开关机计划，请点击下方新增按钮添加"),
+                                  ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(20),
@@ -1170,9 +1175,6 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 20,
-                                ),
                                 NeuCard(
                                   decoration: NeumorphicDecoration(
                                     color: Theme.of(context).scaffoldBackgroundColor,
@@ -1270,108 +1272,106 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                NeuCard(
-                                  decoration: NeumorphicDecoration(
-                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                                  bevel: 10,
-                                  curveType: CurveType.flat,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "在内部硬盘休眠所配置时间段后，DS 经由局域网唤醒进入待机状态（欧盟 Lot 26 规范）。",
-                                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            if (powerRecovery['wol1'] && hibernation['internal_hd_idletime'] > 0)
-                                              setState(() {
-                                                hibernation['auto_poweroff_enable'] = !hibernation['auto_poweroff_enable'];
-                                                hibernation['auto_poweroff_time'] = 10;
-                                              });
-                                          },
-                                          child: NeuCard(
-                                            decoration: NeumorphicDecoration(
-                                              color: Theme.of(context).scaffoldBackgroundColor,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            padding: EdgeInsets.all(10),
-                                            bevel: 10,
-                                            curveType: powerRecovery['wol1'] && hibernation['internal_hd_idletime'] > 0 ? (hibernation['auto_poweroff_enable'] ? CurveType.emboss : CurveType.flat) : CurveType.convex,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text("启用自动关机"),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                SizedBox(
-                                                  width: 22,
-                                                  child: hibernation['auto_poweroff_enable']
-                                                      ? Icon(
-                                                          CupertinoIcons.checkmark_alt,
-                                                          color: Color(0xffff9813),
-                                                          size: 22,
-                                                        )
-                                                      : null,
-                                                ),
-                                              ],
+                                if (powerRecovery['wol1'] != null)
+                                  NeuCard(
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                    bevel: 10,
+                                    curveType: CurveType.flat,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "在内部硬盘休眠所配置时间段后，DS 经由局域网唤醒进入待机状态（欧盟 Lot 26 规范）。",
+                                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              if (powerRecovery['wol1'] && hibernation['internal_hd_idletime'] > 0)
+                                                setState(() {
+                                                  hibernation['auto_poweroff_enable'] = !hibernation['auto_poweroff_enable'];
+                                                  hibernation['auto_poweroff_time'] = 10;
+                                                });
+                                            },
+                                            child: NeuCard(
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.all(10),
+                                              bevel: 10,
+                                              curveType: powerRecovery['wol1'] && hibernation['internal_hd_idletime'] > 0 ? (hibernation['auto_poweroff_enable'] ? CurveType.emboss : CurveType.flat) : CurveType.convex,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text("启用自动关机"),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 22,
+                                                    child: hibernation['auto_poweroff_enable']
+                                                        ? Icon(
+                                                            CupertinoIcons.checkmark_alt,
+                                                            color: Color(0xffff9813),
+                                                            size: 22,
+                                                          )
+                                                        : null,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            if (hibernation['auto_poweroff_enable'])
-                                              showCupertinoModalPopup(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return NeuPicker(
-                                                      dataList.getRange(1, dataList.length).map((e) => e['title']).toList(),
-                                                      value: dataList.indexWhere((element) => element['value'] == hibernation['auto_poweroff_time']) - 1,
-                                                      onConfirm: (v) {
-                                                        setState(() {
-                                                          hibernation['auto_poweroff_time'] = dataList[v]['value'];
-                                                        });
-                                                      },
-                                                    );
-                                                  });
-                                          },
-                                          child: NeuCard(
-                                            decoration: NeumorphicDecoration(
-                                              color: Theme.of(context).scaffoldBackgroundColor,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            padding: EdgeInsets.all(10),
-                                            bevel: 10,
-                                            curveType: hibernation['auto_poweroff_enable'] ? CurveType.flat : CurveType.convex,
-                                            child: Row(
-                                              children: [
-                                                Text("时间"),
-                                                Spacer(),
-                                                Text("${hibernation['auto_poweroff_enable'] ? dataList.where((element) => element['value'] == hibernation['auto_poweroff_time']).first['title'] : ""}"),
-                                              ],
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              if (hibernation['auto_poweroff_enable'])
+                                                showCupertinoModalPopup(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return NeuPicker(
+                                                        dataList.getRange(1, dataList.length).map((e) => e['title']).toList(),
+                                                        value: dataList.indexWhere((element) => element['value'] == hibernation['auto_poweroff_time']) - 1,
+                                                        onConfirm: (v) {
+                                                          setState(() {
+                                                            hibernation['auto_poweroff_time'] = dataList[v]['value'];
+                                                          });
+                                                        },
+                                                      );
+                                                    });
+                                            },
+                                            child: NeuCard(
+                                              decoration: NeumorphicDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.all(10),
+                                              bevel: 10,
+                                              curveType: hibernation['auto_poweroff_enable'] ? CurveType.flat : CurveType.convex,
+                                              child: Row(
+                                                children: [
+                                                  Text("时间"),
+                                                  Spacer(),
+                                                  Text("${hibernation['auto_poweroff_enable'] ? dataList.where((element) => element['value'] == hibernation['auto_poweroff_time']).first['title'] : ""}"),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                               ],
                             ),
                           ),

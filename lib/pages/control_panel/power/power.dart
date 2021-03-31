@@ -23,6 +23,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
   Map fanSpeed;
   Map hibernation;
   Map ups;
+  Map led;
   List powerTasks = [];
 
   List dataList = [
@@ -102,6 +103,11 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
               case "SYNO.Core.Hardware.FanSpeed":
                 setState(() {
                   fanSpeed = item['data'];
+                });
+                break;
+              case "SYNO.Core.Hardware.Led.Brightness":
+                setState(() {
+                  led = item['data'];
                 });
                 break;
               case "SYNO.Core.ExternalDevice.UPS":
@@ -473,39 +479,41 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 ),
                                               ),
                                             ),
-                                            if (powerRecovery['wol1'] != null) ...[
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              GestureDetector(
-                                                onTap: () async {
-                                                  setState(() {
-                                                    powerRecovery['wol1'] = !powerRecovery['wol1'];
-                                                  });
-                                                },
-                                                child: NeuCard(
-                                                  decoration: NeumorphicDecoration(
-                                                    color: Theme.of(context).scaffoldBackgroundColor,
-                                                    borderRadius: BorderRadius.circular(10),
+                                            if (powerRecovery['internal_lan_num'] != null)
+                                              for (int i = 1; i <= powerRecovery['internal_lan_num']; i++)
+                                                if (powerRecovery['wol$i'] != null) ...[
+                                                  SizedBox(
+                                                    height: 20,
                                                   ),
-                                                  padding: EdgeInsets.all(10),
-                                                  bevel: 10,
-                                                  curveType: powerRecovery['wol1'] ? CurveType.emboss : CurveType.flat,
-                                                  child: Row(
-                                                    children: [
-                                                      Text("启用局域网 ${powerRecovery['internal_lan_num']} 的局域网唤醒"),
-                                                      Spacer(),
-                                                      if (powerRecovery['wol1'])
-                                                        Icon(
-                                                          CupertinoIcons.checkmark_alt,
-                                                          color: Color(0xffff9813),
-                                                          size: 22,
-                                                        ),
-                                                    ],
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      setState(() {
+                                                        powerRecovery['wol$i'] = !powerRecovery['wol$i'];
+                                                      });
+                                                    },
+                                                    child: NeuCard(
+                                                      decoration: NeumorphicDecoration(
+                                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      padding: EdgeInsets.all(10),
+                                                      bevel: 10,
+                                                      curveType: powerRecovery['wol$i'] ? CurveType.emboss : CurveType.flat,
+                                                      child: Row(
+                                                        children: [
+                                                          Text("启用局域网 $i 的局域网唤醒"),
+                                                          Spacer(),
+                                                          if (powerRecovery['wol$i'])
+                                                            Icon(
+                                                              CupertinoIcons.checkmark_alt,
+                                                              color: Color(0xffff9813),
+                                                              size: 22,
+                                                            ),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            ],
+                                                ],
                                           ],
                                         ),
                                       ],
@@ -535,7 +543,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            if (beepControl['support_fan_fail']) ...[
+                                            if (beepControl['support_fan_fail'] != null && beepControl['support_fan_fail']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -568,7 +576,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 height: 20,
                                               ),
                                             ],
-                                            if (beepControl['support_volume_crash']) ...[
+                                            if (beepControl['support_volume_crash'] != null && beepControl['support_volume_crash']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -601,7 +609,40 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 height: 20,
                                               ),
                                             ],
-                                            if (beepControl['support_ssd_cache_crash']) ...[
+                                            if (beepControl['support_volume_or_cache_crash'] != null && beepControl['support_volume_or_cache_crash']) ...[
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    beepControl['support_volume_or_cache_crash'] = !beepControl['support_volume_or_cache_crash'];
+                                                  });
+                                                },
+                                                child: NeuCard(
+                                                  decoration: NeumorphicDecoration(
+                                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  padding: EdgeInsets.all(10),
+                                                  bevel: 10,
+                                                  curveType: beepControl['support_volume_or_cache_crash'] ? CurveType.emboss : CurveType.flat,
+                                                  child: Row(
+                                                    children: [
+                                                      Text("存储空间或 SSD 缓存异常"),
+                                                      Spacer(),
+                                                      if (beepControl['support_volume_or_cache_crash'])
+                                                        Icon(
+                                                          CupertinoIcons.checkmark_alt,
+                                                          color: Color(0xffff9813),
+                                                          size: 22,
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                            ],
+                                            if (beepControl['support_ssd_cache_crash'] != null && beepControl['support_ssd_cache_crash']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -634,7 +675,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 height: 20,
                                               ),
                                             ],
-                                            if (beepControl['support_poweron_beep']) ...[
+                                            if (beepControl['support_poweron_beep'] != null && beepControl['support_poweron_beep']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -667,7 +708,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 height: 20,
                                               ),
                                             ],
-                                            if (beepControl['support_poweroff_beep']) ...[
+                                            if (beepControl['support_poweroff_beep'] != null && beepControl['support_poweroff_beep']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -700,7 +741,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 height: 20,
                                               ),
                                             ],
-                                            if (beepControl['support_redundant_power_fail']) ...[
+                                            if (beepControl['support_redundant_power_fail'] != null && beepControl['support_redundant_power_fail']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -733,7 +774,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                                 height: 20,
                                               ),
                                             ],
-                                            if (beepControl['support_reset_beep']) ...[
+                                            if (beepControl['support_reset_beep'] != null && beepControl['support_reset_beep']) ...[
                                               GestureDetector(
                                                 onTap: () async {
                                                   setState(() {
@@ -946,6 +987,44 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                 SizedBox(
                                   height: 20,
                                 ),
+                                if (led != null)
+                                  NeuCard(
+                                    decoration: NeumorphicDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+                                    bevel: 10,
+                                    curveType: CurveType.flat,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "LED 亮度控制",
+                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Slider(
+                                            value: led['led_brightness'].toDouble(),
+                                            onChanged: (v) {
+                                              setState(() {
+                                                led['led_brightness'] = v.toInt();
+                                              });
+                                            },
+                                            min: 0,
+                                            max: 3,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                SizedBox(
+                                  height: 20,
+                                ),
                               ],
                             ),
                           ),
@@ -958,7 +1037,7 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               onPressed: () async {
-                                var res = await Api.powerSet(enableZram, powerRecovery, beepControl, fanSpeed);
+                                var res = await Api.powerSet(enableZram, powerRecovery, beepControl, fanSpeed, led);
                                 if (res['success']) {
                                   if (res['data']['has_fail'] == false) {
                                     Util.vibrate(FeedbackType.light);

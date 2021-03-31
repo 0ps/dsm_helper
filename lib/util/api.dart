@@ -1782,6 +1782,7 @@ class Api {
       {"api": "SYNO.Core.Hardware.PowerRecovery", "method": "get", "version": 1},
       {"api": "SYNO.Core.Hardware.BeepControl", "method": "get", "version": 1},
       {"api": "SYNO.Core.Hardware.FanSpeed", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Hardware.Led.Brightness", "method": "get", "version": 1},
       {"api": "SYNO.Core.Hardware.Hibernation", "method": "get", "version": 1},
       {"api": "SYNO.Core.ExternalDevice.UPS", "method": "get", "version": 1},
       {"api": "SYNO.Core.Hardware.PowerSchedule", "method": "load", "version": 1}
@@ -1815,11 +1816,18 @@ class Api {
     return result;
   }
 
-  static Future<Map> powerSet(bool enableZram, Map powerRecovery, Map beepControl, Map fanSpeed) async {
+  static Future<Map> powerSet(bool enableZram, Map powerRecovery, Map beepControl, Map fanSpeed, Map led) async {
     List apis = [
       {"api": "SYNO.Core.Hardware.ZRAM", "method": "set", "version": "1", "enable_zram": enableZram},
-      {"api": "SYNO.Core.Hardware.PowerRecovery", "method": "set", "version": "1", "rc_power_config": powerRecovery['rc_power_config'], "wol1": powerRecovery['wol1'] ?? false, "wol2": powerRecovery['wol2'] ?? false},
-      {
+
+      // {"api": "SYNO.Core.Hardware.Hibernation", "method": "set", "version": "1", "internal_hd_idletime": 20, "sata_deep_sleep": true, "ignore_netbios_broadcast": false, "usb_idletime": 0, "enable_log": false},
+      // {"api": "SYNO.Core.ExternalDevice.UPS", "method": "set", "version": "1", "enable": false, "delay_time": "-1", "snmp_auth_key_dirty": false, "snmp_privacy_key_dirty": false}
+    ];
+    if (powerRecovery != null) {
+      apis.add({"api": "SYNO.Core.Hardware.PowerRecovery", "method": "set", "version": "1", "rc_power_config": powerRecovery['rc_power_config'], "wol1": powerRecovery['wol1'] ?? false, "wol2": powerRecovery['wol2'] ?? false});
+    }
+    if (beepControl != null) {
+      apis.add({
         "api": "SYNO.Core.Hardware.BeepControl",
         "method": "set",
         "version": "1",
@@ -1828,11 +1836,14 @@ class Api {
         "ssd_cache_crash": beepControl["ssd_cache_crash"] ?? false,
         "poweron_beep": beepControl['poweron_beep'] ?? false,
         "poweroff_beep": beepControl['poweroff_beep'] ?? false
-      },
-      {"api": "SYNO.Core.Hardware.FanSpeed", "method": "set", "version": "1", "dual_fan_speed": fanSpeed['dual_fan_speed']},
-      // {"api": "SYNO.Core.Hardware.Hibernation", "method": "set", "version": "1", "internal_hd_idletime": 20, "sata_deep_sleep": true, "ignore_netbios_broadcast": false, "usb_idletime": 0, "enable_log": false},
-      // {"api": "SYNO.Core.ExternalDevice.UPS", "method": "set", "version": "1", "enable": false, "delay_time": "-1", "snmp_auth_key_dirty": false, "snmp_privacy_key_dirty": false}
-    ];
+      });
+    }
+    if (fanSpeed != null) {
+      apis.add({"api": "SYNO.Core.Hardware.FanSpeed", "method": "set", "version": "1", "dual_fan_speed": fanSpeed['dual_fan_speed']});
+    }
+    if (led != null) {
+      apis.add({"api": "SYNO.Core.Hardware.Led.Brightness", "method": "set", "version": "1", "led_brightness": led['led_brightness'], "schedule": led['schedule']});
+    }
     var result = await Util.post("entry.cgi", data: {
       "stop_when_error": false,
       "api": 'SYNO.Entry.Request',

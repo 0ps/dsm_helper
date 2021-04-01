@@ -776,14 +776,15 @@ class _ControlPanelState extends State<ControlPanel> {
                                 ],
                               ),
                             ),
-                            Positioned(
-                              top: 6,
-                              right: 6,
-                              child: Badge(
-                                widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
-                                size: 20,
+                            if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'])
+                              Positioned(
+                                top: 6,
+                                right: 6,
+                                child: Badge(
+                                  widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
+                                  size: 20,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),

@@ -787,7 +787,7 @@ class FilesState extends State<Files> {
                               width: double.infinity,
                               margin: EdgeInsets.symmetric(horizontal: 50),
                               curveType: CurveType.emboss,
-                              bevel: 20,
+                              bevel: 5,
                               decoration: NeumorphicDecoration(
                                 color: Theme.of(context).scaffoldBackgroundColor,
                                 borderRadius: BorderRadius.circular(25),
@@ -1373,7 +1373,7 @@ class FilesState extends State<Files> {
                                                   width: double.infinity,
                                                   margin: EdgeInsets.symmetric(horizontal: 50),
                                                   curveType: CurveType.emboss,
-                                                  bevel: 20,
+                                                  bevel: 5,
                                                   decoration: NeumorphicDecoration(
                                                     color: Theme.of(context).scaffoldBackgroundColor,
                                                     borderRadius: BorderRadius.circular(25),
@@ -2184,7 +2184,7 @@ class FilesState extends State<Files> {
                                                           width: double.infinity,
                                                           margin: EdgeInsets.symmetric(horizontal: 50),
                                                           curveType: CurveType.emboss,
-                                                          bevel: 20,
+                                                          bevel: 5,
                                                           decoration: NeumorphicDecoration(
                                                             color: Theme.of(context).scaffoldBackgroundColor,
                                                             borderRadius: BorderRadius.circular(25),
@@ -2562,13 +2562,16 @@ class FilesState extends State<Files> {
                                 itemCount: files.length,
                               ),
                             )
-                          : SingleChildScrollView(
-                              controller: _fileScrollController,
-                              padding: EdgeInsets.all(20),
-                              child: Wrap(
-                                runSpacing: 20,
-                                spacing: 20,
-                                children: files.map(_buildFileItem).toList(),
+                          : Container(
+                              width: double.infinity,
+                              child: SingleChildScrollView(
+                                controller: _fileScrollController,
+                                padding: EdgeInsets.all(20),
+                                child: Wrap(
+                                  runSpacing: 20,
+                                  spacing: 20,
+                                  children: files.map(_buildFileItem).toList(),
+                                ),
                               ),
                             ),
                       // if (selectedFiles.length > 0)

@@ -776,7 +776,7 @@ class _ControlPanelState extends State<ControlPanel> {
                                 ],
                               ),
                             ),
-                            if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'])
+                            if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null)
                               Positioned(
                                 top: 6,
                                 right: 6,

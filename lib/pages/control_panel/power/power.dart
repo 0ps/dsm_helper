@@ -1464,12 +1464,12 @@ class _PowerState extends State<Power> with SingleTickerProviderStateMixin {
                               ),
                               onPressed: () async {
                                 var res = await Api.powerHibernationSave(
-                                  internal_hd_idletime: hibernation['internal_hd_idletime'],
-                                  sata_deep_sleep: hibernation['sata_deep_sleep'] == 1,
-                                  usb_idletime: hibernation['usb_idletime'],
-                                  enable_log: hibernation['enable_log'],
-                                  auto_poweroff_enable: hibernation['auto_poweroff_enable'],
-                                  auto_poweroff_time: hibernation['auto_poweroff_time'],
+                                  internalHdIdletime: hibernation['internal_hd_idletime'],
+                                  sataDeepSleep: hibernation['sata_deep_sleep'] == 1,
+                                  usbIdletime: hibernation['usb_idletime'],
+                                  enableLog: hibernation['enable_log'],
+                                  autoPoweroffEnable: hibernation['auto_poweroff_enable'],
+                                  autoPoweroffTime: hibernation['auto_poweroff_time'],
                                 );
                                 if (res['success']) {
                                   Util.toast("保存成功");

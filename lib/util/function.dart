@@ -216,9 +216,9 @@ class Util {
     List<String> word = ["doc", "docx"];
     List<String> ppt = ["ppt", "pptx"];
     List<String> excel = ["xls", "xlsx"];
-    List<String> text = ["txt"];
+    List<String> text = ["txt", "log"];
     List<String> zip = ["zip", "gz", "tar", "tgz", "tbz", "bz2", "rar", "7z"];
-    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css", "sql", "nfo"];
+    List<String> code = ["py", "php", "c", "java", "jsp", "js", "css", "sql", "nfo", "xml", "kt", "conf", "json", "md", "sh"];
     List<String> pdf = ["pdf"];
     List<String> apk = ["apk"];
     List<String> iso = ["iso"];
@@ -256,7 +256,7 @@ class Util {
     }
   }
 
-  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20}) async {
+  static Future<dynamic> get(String url, {Map<String, dynamic> data, bool login: true, String host, Map<String, dynamic> headers, CancelToken cancelToken, bool checkSsl, String cookie, int timeout = 20, bool decode: true}) async {
     headers = headers ?? {};
     headers['Cookie'] = cookie ?? Util.cookie;
 
@@ -315,7 +315,7 @@ class Util {
         }
       }
 
-      if (response.data is String) {
+      if (response.data is String && decode) {
         return json.decode(response.data);
       } else if (response.data is Map) {
         return response.data;

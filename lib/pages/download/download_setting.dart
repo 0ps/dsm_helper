@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:vibrate/vibrate.dart';
 
 class DownloadSetting extends StatefulWidget {
   @override

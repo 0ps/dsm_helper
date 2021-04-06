@@ -13,7 +13,6 @@ class SelectAlbum extends StatefulWidget {
 }
 
 class _SelectAlbumState extends State<SelectAlbum> {
-  ScrollController _scrollController = ScrollController();
   List<AssetPathEntity> albums = [];
   List<AssetPathEntity> selectedAlbums = [];
   bool success = true;

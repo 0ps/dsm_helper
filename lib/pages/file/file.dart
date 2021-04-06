@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:android_intent/android_intent.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:dsm_helper/pages/common/pdf_viewer.dart';
+import 'package:dsm_helper/pages/common/text_editor.dart';
 import 'package:dsm_helper/pages/file/favorite.dart';
 import 'package:dsm_helper/pages/file/search.dart';
 import 'package:dsm_helper/pages/file/select_folder.dart';
@@ -207,6 +209,23 @@ class FilesState extends State<Files> {
     double offset = _pathScrollController.position.maxScrollExtent;
     _pathScrollController.animateTo(offset, duration: Duration(milliseconds: 200), curve: Curves.ease);
     _fileScrollController.jumpTo(scrollPosition[path] ?? 0);
+  }
+
+  openPlainFile(file) async {
+    setState(() {
+      loading = true;
+    });
+    var res = await Util.get(Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}", decode: false);
+    setState(() {
+      loading = false;
+    });
+    // print(res);
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+      return TextEditor(
+        fileName: file['name'],
+        content: res,
+      );
+    }));
   }
 
   Widget _buildSortMenu(BuildContext context, StateSetter setState) {
@@ -1689,11 +1708,30 @@ class FilesState extends State<Files> {
                   );
                   await intent.launch();
                   break;
-                // case FileType.code:
-                //   Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                //     return Editor();
-                //   }));
-                //   break;
+                case FileType.ppt:
+                  AndroidIntent intent = AndroidIntent(
+                    action: 'action_view',
+                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    arguments: {},
+                    type: "application/vnd.ms-powerpoint|application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                  );
+                  await intent.launch();
+                  break;
+                case FileType.code:
+                  openPlainFile(file);
+                  break;
+                case FileType.text:
+                  openPlainFile(file);
+                  break;
+                case FileType.pdf:
+                  List<int> utf8Str = utf8.encode(file['path']);
+                  String encodedPath = utf8Str.map((e) => e.toRadixString(16)).join("");
+
+                  print(Util.baseUrl + "/fbdownload/${file['name']}?dlink=%22$encodedPath%22&_sid=%22${Util.sid}%22&mode=open");
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                    return PdfViewer(Util.baseUrl + "/fbdownload/${file['name']}?dlink=%22$encodedPath%22&_sid=%22${Util.sid}%22&mode=open", file['name']);
+                  }));
+                  break;
                 default:
                   Util.toast("暂不支持打开此类型文件");
               }
@@ -1910,60 +1948,6 @@ class FilesState extends State<Files> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: children,
-    );
-  }
-
-  Widget _buildFavoriteItem(favorite) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: NeuButton(
-        onPressed: () {
-          if (favorite['status'] == "broken") {
-            Util.toast("文件或目录不存在");
-          } else {
-            goPath(favorite['path']);
-            Navigator.of(context).pop();
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Row(
-            children: [
-              FileIcon(
-                FileType.folder,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(child: Text(favorite['name'])),
-              SizedBox(
-                width: 10,
-              ),
-              NeuCard(
-                // padding: EdgeInsets.zero,
-                curveType: CurveType.flat,
-                padding: EdgeInsets.only(left: 6, right: 4, top: 5, bottom: 5),
-                decoration: NeumorphicDecoration(
-                  // color: Colors.red,
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                bevel: 10,
-                child: Icon(
-                  CupertinoIcons.right_chevron,
-                  size: 18,
-                ),
-              ),
-            ],
-          ),
-        ),
-        padding: EdgeInsets.zero,
-        decoration: NeumorphicDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        bevel: 20,
-      ),
     );
   }
 

@@ -47,7 +47,6 @@ class _SelectLocalFolderState extends State<SelectLocalFolder> {
   }
 
   goPath(String path) async {
-    print("goPath:${path}");
     path = path.replaceAll("/storage/emulated/0", "");
     setPaths(path);
     await getData();
@@ -56,7 +55,6 @@ class _SelectLocalFolderState extends State<SelectLocalFolder> {
   }
 
   setPaths(String path) {
-    print("setPath:${path}");
     if (path == "/") {
       setState(() {
         paths = ["/"];
@@ -68,7 +66,6 @@ class _SelectLocalFolderState extends State<SelectLocalFolder> {
         paths = items;
       });
     }
-    print("setPathEnd:${paths}");
   }
 
   Widget _buildPathItem(BuildContext context, int index) {

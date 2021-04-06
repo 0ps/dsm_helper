@@ -90,7 +90,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
       return;
     }
     getOthers();
-    getLaunchedPackages();
+    // getLaunchedPackages();
     getInstalledPackages();
     getVolumes();
   }
@@ -122,22 +122,22 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
     }
   }
 
-  getLaunchedPackages() async {
-    return;
-    launchedPackages = [];
-    print("获取运行中套件");
-    var res = await Api.launchedPackages();
-    print(res);
-    print("获取运行中套件end");
-    if (res['success']) {
-      Map packages = res['data']['packages'];
-      packages.forEach((key, value) {
-        launchedPackages.add(key);
-        setState(() {});
-      });
-      calcInstalledPackage();
-    }
-  }
+  // getLaunchedPackages() async {
+  //   return;
+  //   launchedPackages = [];
+  //   print("获取运行中套件");
+  //   var res = await Api.launchedPackages();
+  //   print(res);
+  //   print("获取运行中套件end");
+  //   if (res['success']) {
+  //     Map packages = res['data']['packages'];
+  //     packages.forEach((key, value) {
+  //       launchedPackages.add(key);
+  //       setState(() {});
+  //     });
+  //     calcInstalledPackage();
+  //   }
+  // }
 
   getInstalledPackages() async {
     installedPackages = [];
@@ -224,7 +224,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
                   },
                   settings: RouteSettings(name: "package_detail")))
               .then((_) async {
-            await getLaunchedPackages();
+            // await getLaunchedPackages();
             await getInstalledPackages();
             setState(() {
               loading = false;
@@ -256,7 +256,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
             var res = await Api.launchPackage(package['id'], package['dsm_apps'], "start");
             if (res['success']) {
               Util.toast("已启动");
-              await getLaunchedPackages();
+              // await getLaunchedPackages();
               await getInstalledPackages();
               setState(() {
                 loading = false;
@@ -303,7 +303,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
                                   var res = await Api.launchPackage(package['id'], package['dsm_apps'], "stop");
                                   if (res['success']) {
                                     Util.toast("已停用");
-                                    await getLaunchedPackages();
+                                    // await getLaunchedPackages();
                                     await getInstalledPackages();
                                     setState(() {
                                       loading = false;
@@ -380,7 +380,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
                   },
                   settings: RouteSettings(name: "package_detail")))
               .then((_) async {
-            await getLaunchedPackages();
+            // await getLaunchedPackages();
             await getInstalledPackages();
             setState(() {
               loading = false;
@@ -412,7 +412,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
                 },
                 settings: RouteSettings(name: "package_detail")))
             .then((_) async {
-          await getLaunchedPackages();
+          // await getLaunchedPackages();
           await getInstalledPackages();
           setState(() {
             loading = false;
@@ -495,7 +495,7 @@ class _PackagesState extends State<Packages> with TickerProviderStateMixin {
                 },
                 settings: RouteSettings(name: "package_detail")))
             .then((_) async {
-          await getLaunchedPackages();
+          // await getLaunchedPackages();
           await getInstalledPackages();
           setState(() {
             loading = false;

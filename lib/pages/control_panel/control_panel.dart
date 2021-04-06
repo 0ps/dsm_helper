@@ -7,7 +7,6 @@ import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
 import 'package:dsm_helper/pages/control_panel/users/users.dart';
 import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
-import 'package:dsm_helper/widgets/label.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 
 import 'shared_folders/shared_folders.dart';
@@ -776,12 +775,12 @@ class _ControlPanelState extends State<ControlPanel> {
                                 ],
                               ),
                             ),
-                            if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null)
+                            if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'] != null)
                               Positioned(
                                 top: 6,
                                 right: 6,
                                 child: Badge(
-                                  widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
+                                  "${widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread']}",
                                   size: 20,
                                 ),
                               ),

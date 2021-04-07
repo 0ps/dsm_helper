@@ -156,50 +156,51 @@ class _ControlPanelState extends State<ControlPanel> {
                                 height: 5,
                               ),
                               Text(
-                                "用户账户",
+                                Util.version < 7 ? "用户账户" : "用户与群组",
                                 style: TextStyle(fontSize: 12),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(CupertinoPageRoute(
-                              builder: (context) {
-                                return UserGroups();
-                              },
-                              settings: RouteSettings(name: "user_groups")));
-                        },
-                        child: NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.flat,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/${Util.version}/groups.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "用户群组",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
+                      if (Util.version < 7)
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(CupertinoPageRoute(
+                                builder: (context) {
+                                  return UserGroups();
+                                },
+                                settings: RouteSettings(name: "user_groups")));
+                          },
+                          child: NeuCard(
+                            width: (MediaQuery.of(context).size.width - 120) / 3,
+                            height: (MediaQuery.of(context).size.width - 120) / 3,
+                            curveType: CurveType.flat,
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            bevel: 20,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  "assets/control_panel/${Util.version}/groups.png",
+                                  height: 30,
+                                  width: 30,
+                                  fit: BoxFit.contain,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  "用户群组",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                       NeuCard(
                         width: (MediaQuery.of(context).size.width - 120) / 3,
                         height: (MediaQuery.of(context).size.width - 120) / 3,
@@ -564,7 +565,7 @@ class _ControlPanelState extends State<ControlPanel> {
                               height: 5,
                             ),
                             Text(
-                              "主题样式",
+                              Util.version < 7 ? "主题样式" : "登录门户",
                               style: TextStyle(fontSize: 12),
                             ),
                           ],
@@ -664,84 +665,82 @@ class _ControlPanelState extends State<ControlPanel> {
                             ),
                           ),
                         ),
-                      if (Util.version < 7)
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(CupertinoPageRoute(
-                                builder: (context) {
-                                  return Power();
-                                },
-                                settings: RouteSettings(name: "power")));
-                          },
-                          child: NeuCard(
-                            width: (MediaQuery.of(context).size.width - 120) / 3,
-                            height: (MediaQuery.of(context).size.width - 120) / 3,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/control_panel/${Util.version}/hardware_and_power.png",
-                                  height: 30,
-                                  width: 30,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  "硬件和电源",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.clip,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return Power();
+                              },
+                              settings: RouteSettings(name: "power")));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/${Util.version}/hardware_and_power.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "硬件和电源",
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
                           ),
                         ),
-                      if (Util.version < 7)
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(CupertinoPageRoute(
-                                builder: (context) {
-                                  return ExternalDevice();
-                                },
-                                settings: RouteSettings(name: "external_device")));
-                          },
-                          child: NeuCard(
-                            width: (MediaQuery.of(context).size.width - 120) / 3,
-                            height: (MediaQuery.of(context).size.width - 120) / 3,
-                            curveType: CurveType.flat,
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            bevel: 20,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/control_panel/${Util.version}/external_devices.png",
-                                  height: 30,
-                                  width: 30,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  "外接设备",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return ExternalDevice();
+                              },
+                              settings: RouteSettings(name: "external_device")));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/${Util.version}/external_devices.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "外接设备",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
                           ),
                         ),
+                      ),
                       NeuCard(
                         width: (MediaQuery.of(context).size.width - 120) / 3,
                         height: (MediaQuery.of(context).size.width - 120) / 3,
@@ -775,12 +774,14 @@ class _ControlPanelState extends State<ControlPanel> {
                                 ],
                               ),
                             ),
-                            if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'] != null)
+                            if (widget.notify != null &&
+                                widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null &&
+                                widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'] != null)
                               Positioned(
                                 top: 6,
                                 right: 6,
                                 child: Badge(
-                                  "${widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread']}",
+                                  widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
                                   size: 20,
                                 ),
                               ),
@@ -873,7 +874,7 @@ class _ControlPanelState extends State<ControlPanel> {
                               height: 5,
                             ),
                             Text(
-                              "权限",
+                              Util.version < 7 ? "权限" : "应用程序权限",
                               style: TextStyle(fontSize: 12),
                             ),
                           ],

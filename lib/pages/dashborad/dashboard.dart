@@ -434,7 +434,8 @@ class DashboardState extends State<Dashboard> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             image: DecorationImage(
-                              image: ExtendedNetworkImageProvider(Util.baseUrl + "/webapi/entry.cgi?api=SYNO.Core.PersonalSettings&method=wallpaper&version=1&path=%22%22&retina=true&_sid=${Util.sid}"),
+                              image: ExtendedNetworkImageProvider(Util.baseUrl +
+                                  "/webapi/entry.cgi?api=SYNO.Core.PersonalSettings&method=wallpaper&version=1&path=%22%22&retina=true&_sid=${Util.sid}"),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -506,7 +507,10 @@ class DashboardState extends State<Dashboard> {
                                 Text("散热状态："),
                                 Text(
                                   "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                                  style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                                  style: TextStyle(
+                                      color: system['temperature_warning'] == null
+                                          ? (system['sys_temp'] > 80 ? Colors.red : Colors.green)
+                                          : (system['temperature_warning'] ? Colors.red : Colors.green)),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
@@ -1179,7 +1183,8 @@ class DashboardState extends State<Dashboard> {
                         width: double.infinity,
                         bevel: 5,
                         curveType: CurveType.emboss,
-                        decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                        decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                         child: Padding(
                           padding: EdgeInsets.all(20),
                           child: Column(
@@ -2380,7 +2385,8 @@ class DashboardState extends State<Dashboard> {
         name = "控制面板";
         route = CupertinoPageRoute(
             builder: (context) {
-              return ControlPanel(system, volumes, disks, appNotify['SYNO.SDS.AdminCenter.Application']['fn']);
+              return ControlPanel(
+                  system, volumes, disks, appNotify['SYNO.SDS.AdminCenter.Application'] == null ? null : appNotify['SYNO.SDS.AdminCenter.Application']['fn']);
             },
             settings: RouteSettings(name: "control_panel"));
         if (appNotify != null && appNotify['SYNO.SDS.AdminCenter.Application'] != null) {
@@ -2582,7 +2588,8 @@ class DashboardState extends State<Dashboard> {
                             width: double.infinity,
                             bevel: 5,
                             curveType: CurveType.emboss,
-                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                            decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                             child: Padding(
                               padding: EdgeInsets.all(20),
                               child: Column(

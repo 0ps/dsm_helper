@@ -65,6 +65,8 @@ PODS:
     - SDWebImage/Core (~> 5.6)
   - shared_preferences (0.0.1):
     - Flutter
+  - syncfusion_flutter_pdfviewer (0.0.1):
+    - Flutter
   - umeng_analytics_plugin (0.0.1):
     - Flutter
     - UMengAnalytics-NO-IDFA
@@ -94,6 +96,7 @@ DEPENDENCIES:
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - receive_sharing_intent (from `.symlinks/plugins/receive_sharing_intent/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - syncfusion_flutter_pdfviewer (from `.symlinks/plugins/syncfusion_flutter_pdfviewer/ios`)
   - umeng_analytics_plugin (from `.symlinks/plugins/umeng_analytics_plugin/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - vibrate (from `.symlinks/plugins/vibrate/ios`)
@@ -138,6 +141,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/receive_sharing_intent/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  syncfusion_flutter_pdfviewer:
+    :path: ".symlinks/plugins/syncfusion_flutter_pdfviewer/ios"
   umeng_analytics_plugin:
     :path: ".symlinks/plugins/umeng_analytics_plugin/ios"
   url_launcher:
@@ -171,6 +176,7 @@ SPEC CHECKSUMS:
   SDWebImage: 0b2ba0d56479bf6a45ecddbfd5558bea93150d25
   SDWebImageFLPlugin: 6c2295fb1242d44467c6c87dc5db6b0a13228fd8
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  syncfusion_flutter_pdfviewer: bb9998884b864cfedf72628df3503bdf57e397c0
   umeng_analytics_plugin: 7035dfb8c5636e50429ab935125e5a3f0d23e72e
   UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef

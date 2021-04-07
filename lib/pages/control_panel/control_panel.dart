@@ -3,6 +3,7 @@ import 'package:dsm_helper/pages/control_panel/media_index/media_index.dart';
 import 'package:dsm_helper/pages/control_panel/power/power.dart';
 import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
 import 'package:dsm_helper/pages/control_panel/task_scheduler/task_scheduler.dart';
+import 'package:dsm_helper/pages/control_panel/update_reset/update_reset.dart';
 import 'package:dsm_helper/pages/control_panel/user_groups/user_group.dart';
 import 'package:dsm_helper/pages/control_panel/users/users.dart';
 import 'package:dsm_helper/util/badge.dart';
@@ -741,51 +742,56 @@ class _ControlPanelState extends State<ControlPanel> {
                           ),
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    "assets/control_panel/${Util.version}/update_and_reset.png",
-                                    height: 30,
-                                    width: 30,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "更新和还原",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (widget.notify != null &&
-                                widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null &&
-                                widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'] != null)
-                              Positioned(
-                                top: 6,
-                                right: 6,
-                                child: Badge(
-                                  widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
-                                  size: 20,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return UpdateReset();
+                          }));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/control_panel/${Util.version}/update_and_reset.png",
+                                      height: 30,
+                                      width: 30,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "更新和还原",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.clip,
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
                                 ),
                               ),
-                          ],
+                              if (widget.notify != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main'] != null && widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'] != null)
+                                Positioned(
+                                  top: 6,
+                                  right: 6,
+                                  child: Badge(
+                                    widget.notify['SYNO.SDS.AdminCenter.Update_Reset.Main']['unread'],
+                                    size: 20,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

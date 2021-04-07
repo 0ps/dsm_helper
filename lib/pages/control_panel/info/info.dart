@@ -1018,9 +1018,15 @@ class _SystemInfoState extends State<SystemInfo> with SingleTickerProviderStateM
                           ),
                         ],
                       ),
-                Container(),
-                Container(),
-                Container(),
+                Center(
+                  child: Text("待开发"),
+                ),
+                Center(
+                  child: Text("待开发"),
+                ),
+                Center(
+                  child: Text("待开发"),
+                ),
               ],
             ),
           ),

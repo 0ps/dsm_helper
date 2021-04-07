@@ -1922,4 +1922,28 @@ class Api {
     });
     return result;
   }
+
+  static Future<Map> firmwareVersion() async {
+    var result = await Util.post("entry.cgi", data: {
+      "type": '"firmware"',
+      "api": 'SYNO.Core.System',
+      "method": 'info',
+      "version": 3,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> firmwareUpgrade() async {
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Core.Upgrade.Server',
+      "method": 'check',
+      "version": 2,
+      "user_reading": true,
+      "need_auto_smallupdate": true,
+      "need_promotion": true,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
 }

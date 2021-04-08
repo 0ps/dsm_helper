@@ -177,6 +177,39 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData darkTheme = ThemeData.dark().copyWith(
+      scaffoldBackgroundColor: Colors.black,
+      textTheme: TextTheme(
+        bodyText2: Theme.of(context).textTheme.bodyText2.copyWith(
+              color: Colors.white.withOpacity(0.5),
+            ),
+      ),
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        color: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white.withOpacity(0.5)),
+        actionsIconTheme: IconThemeData(color: Colors.white.withOpacity(0.5)),
+        textTheme: TextTheme(
+          headline6: Theme.of(context).textTheme.headline6.copyWith(
+                color: Colors.white.withOpacity(0.5),
+              ),
+        ),
+        brightness: Brightness.dark,
+      ),
+    );
+    ThemeData lightTheme = ThemeData.light().copyWith(
+      appBarTheme: AppBarTheme(
+        centerTitle: true,
+        elevation: 0,
+        color: Color(0xFFF4F4F4),
+        iconTheme: IconThemeData(color: Colors.black),
+        actionsIconTheme: IconThemeData(color: Colors.black),
+        textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
+        brightness: Brightness.light,
+      ),
+      scaffoldBackgroundColor: Color(0xFFF4F4F4),
+    );
     return Consumer<DarkModeProvider>(
       builder: (context, darkModeProvider, _) {
         return OKToast(
@@ -184,30 +217,8 @@ class _MyAppState extends State<MyApp> {
               ? MaterialApp(
                   title: '${Util.appName}',
                   debugShowCheckedModeBanner: false,
-                  theme: ThemeData.light().copyWith(
-                    appBarTheme: AppBarTheme(
-                      centerTitle: true,
-                      elevation: 0,
-                      color: Color(0xFFF4F4F4),
-                      iconTheme: IconThemeData(color: Colors.black),
-                      actionsIconTheme: IconThemeData(color: Colors.black),
-                      textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
-                      brightness: Brightness.light,
-                    ),
-                    scaffoldBackgroundColor: Color(0xFFF4F4F4),
-                  ),
-                  darkTheme: ThemeData.dark().copyWith(
-                    scaffoldBackgroundColor: Colors.black,
-                    appBarTheme: AppBarTheme(
-                      centerTitle: true,
-                      elevation: 0,
-                      color: Colors.black,
-                      iconTheme: IconThemeData(color: Colors.white),
-                      actionsIconTheme: IconThemeData(color: Colors.white),
-                      textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)),
-                      brightness: Brightness.dark,
-                    ),
-                  ),
+                  theme: lightTheme,
+                  darkTheme: darkTheme,
                   localizationsDelegates: [
                     GlobalCupertinoLocalizations.delegate,
                     GlobalMaterialLocalizations.delegate,
@@ -226,31 +237,7 @@ class _MyAppState extends State<MyApp> {
               : MaterialApp(
                   title: '${Util.appName}',
                   debugShowCheckedModeBanner: false,
-                  theme: darkModeProvider.darkMode == 0
-                      ? ThemeData.light().copyWith(
-                          appBarTheme: AppBarTheme(
-                            centerTitle: true,
-                            elevation: 0,
-                            color: Color(0xFFF4F4F4),
-                            iconTheme: IconThemeData(color: Colors.black),
-                            actionsIconTheme: IconThemeData(color: Colors.black),
-                            textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.black)),
-                            brightness: Brightness.light,
-                          ),
-                          scaffoldBackgroundColor: Color(0xFFF4F4F4),
-                        )
-                      : ThemeData.dark().copyWith(
-                          scaffoldBackgroundColor: Colors.black,
-                          appBarTheme: AppBarTheme(
-                            centerTitle: true,
-                            elevation: 0,
-                            color: Colors.black,
-                            iconTheme: IconThemeData(color: Colors.white),
-                            actionsIconTheme: IconThemeData(color: Colors.white),
-                            textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)),
-                            brightness: Brightness.dark,
-                          ),
-                        ),
+                  theme: darkModeProvider.darkMode == 0 ? lightTheme : darkTheme,
                   localizationsDelegates: [
                     GlobalCupertinoLocalizations.delegate,
                     GlobalMaterialLocalizations.delegate,

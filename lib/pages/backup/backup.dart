@@ -19,18 +19,16 @@ class Backup extends StatefulWidget {
   _BackupState createState() => _BackupState();
 }
 
-enum UploadFileType { picture, video }
-
 class UploadItem {
   File file;
   int fileSize;
   int uploadSize;
   UploadStatus status;
-  UploadFileType type;
+  AssetType type;
   DateTime modifyTime;
 
   CancelToken cancelToken;
-  UploadItem(this.file, this.type, this.modifyTime, {this.fileSize = 0, this.uploadSize = 0, this.status = UploadStatus.wait}) {
+  UploadItem(this.file, this.modifyTime, this.type, {this.fileSize = 0, this.uploadSize = 0, this.status = UploadStatus.wait}) {
     cancelToken = CancelToken();
   }
 
@@ -41,12 +39,13 @@ class UploadItem {
 }
 
 class _BackupState extends State<Backup> {
-  List<UploadItem> uploads = [];
+  List<AssetEntity> uploads = [];
   List<AssetPathEntity> albums = [];
   String backupFolder = "";
   DateTime lastBackupTime = DateTime.now().add(Duration(days: -5));
   UploadItem uploading;
   bool cancel = false;
+  bool continueBackup = true;
   @override
   void initState() {
     getData();
@@ -118,10 +117,10 @@ class _BackupState extends State<Backup> {
   getAssetCount() async {
     uploads = [];
     albums.forEach((path) async {
+      path.filterOption = FilterOptionGroup().copyWith(orders: [OrderOption(type: OrderOptionType.createDate, asc: true)]);
       List<AssetEntity> assetList = await path.assetList;
-      assetList.forEach((asset) async {
-        uploads.add(UploadItem(await asset.originFile, asset.type == AssetType.video ? UploadFileType.video : UploadFileType.picture, asset.createDateTime));
-        setState(() {});
+      setState(() {
+        uploads.addAll(assetList);
       });
     });
   }
@@ -165,7 +164,7 @@ class _BackupState extends State<Backup> {
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                     child: Row(
                       children: [
-                        uploading.type == UploadFileType.picture
+                        uploading.type == AssetType.image
                             ? Image.file(
                                 uploading.file,
                                 height: 40,
@@ -191,6 +190,7 @@ class _BackupState extends State<Backup> {
                               Text(
                                 uploading.file.parent.path,
                                 overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                                 style: TextStyle(fontSize: 12, color: Colors.grey),
                               ),
                             ],
@@ -306,61 +306,89 @@ class _BackupState extends State<Backup> {
           SizedBox(
             height: 20,
           ),
-          NeuCard(
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: EdgeInsets.all(12),
-            curveType: CurveType.flat,
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "继续备份",
-                      style: TextStyle(fontSize: 18),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                continueBackup = true;
+              });
+            },
+            child: NeuCard(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: EdgeInsets.all(12),
+              curveType: continueBackup ? CurveType.emboss : CurveType.flat,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "继续备份",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(
+                          lastBackupTime != null ? lastBackupTime.format("Y-m-d H:i:s") : "从未备份过",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                        Text(
+                          "${uploads.where((AssetEntity upload) => upload.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch && upload.type == AssetType.image).length}张照片 ${uploads.where((upload) => upload.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch && upload.type == AssetType.video).length}个视频",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                      ],
                     ),
-                    Text(
-                      lastBackupTime != null ? lastBackupTime.format("Y-m-d H:i:s") : "从未备份过",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  if (continueBackup)
+                    Icon(
+                      CupertinoIcons.checkmark_alt,
+                      color: Color(0xffff9813),
                     ),
-                    Text(
-                      "${uploads.where((upload) => upload.status != UploadStatus.complete && upload.type == UploadFileType.picture).length}张照片 ${uploads.where((upload) => upload.status != UploadStatus.complete && upload.type == UploadFileType.video).length}个视频待备份",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           SizedBox(
             height: 20,
           ),
-          NeuCard(
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: EdgeInsets.all(12),
-            curveType: CurveType.flat,
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "全新备份",
-                      style: TextStyle(fontSize: 18),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                continueBackup = false;
+              });
+            },
+            child: NeuCard(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: EdgeInsets.all(12),
+              curveType: continueBackup ? CurveType.flat : CurveType.emboss,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "全新备份",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(
+                          "${uploads.where((upload) => upload.type == AssetType.image).length}张照片 ${uploads.where((upload) => upload.type == AssetType.video).length}个视频",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "${uploads.where((upload) => upload.status != UploadStatus.complete && upload.type == UploadFileType.picture).length}张照片 ${uploads.where((upload) => upload.status != UploadStatus.complete && upload.type == UploadFileType.video).length}个视频待备份",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  if (!continueBackup)
+                    Icon(
+                      CupertinoIcons.checkmark_alt,
+                      color: Color(0xffff9813),
                     ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -377,16 +405,31 @@ class _BackupState extends State<Backup> {
               ),
               curveType: CurveType.flat,
               bevel: 12,
-              height: 60,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              padding: EdgeInsets.all(12),
               child: Row(
                 children: [
-                  Text("自动备份"),
-                  Spacer(),
-                  // Icon(
-                  //   CupertinoIcons.checkmark_alt,
-                  //   color: Color(0xffff9813),
-                  // ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "自动备份",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        Text(
+                          "打开群晖助手后自动从上次备份位置继续备份",
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                    // child: Icon(
+                    //   CupertinoIcons.checkmark_alt,
+                    //   color: Color(0xffff9813),
+                    // ),
+                  ),
                 ],
               ),
             ),
@@ -412,27 +455,31 @@ class _BackupState extends State<Backup> {
                       Util.toast("请选择备份源");
                       return;
                     }
+                    List<AssetEntity> tasks;
+                    if (continueBackup) {
+                      tasks = uploads.where((element) => element.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch).toList();
+                    } else {
+                      tasks = uploads;
+                    }
                     //对待备份文件进行排序
-                    uploads.sort((a, b) {
-                      return a.modifyTime.isAtSameMomentAs(b.modifyTime)
+                    tasks.sort((a, b) {
+                      return a.modifiedDateTime.isAtSameMomentAs(b.modifiedDateTime)
                           ? 0
-                          : a.modifyTime.isBefore(b.modifyTime)
+                          : a.modifiedDateTime.isBefore(b.modifiedDateTime)
                               ? -1
                               : 1;
                     });
-                    for (int i = 0; i < uploads.length; i++) {
+                    for (int i = 0; i < tasks.length; i++) {
                       if (cancel) {
                         cancel = false;
                         setState(() {
-                          lastBackupTime = uploading.modifyTime;
+                          uploading = null;
                         });
-                        uploading = null;
                         Util.toast("备份任务已暂停");
                         break;
                       }
-                      setState(() {
-                        uploading = uploads[i];
-                      });
+                      uploading = UploadItem(await tasks[i].originFile, tasks[i].modifiedDateTime, tasks[i].type);
+
                       if (uploading.status != UploadStatus.wait) {
                         continue;
                       }
@@ -448,10 +495,9 @@ class _BackupState extends State<Backup> {
                         });
                       });
                       if (res['success']) {
-                        print(uploading.modifyTime);
-                        print(uploading.modifyTime.millisecond);
                         Util.setStorage("last_backup_time", uploading.modifyTime.millisecondsSinceEpoch.toString());
                         setState(() {
+                          lastBackupTime = uploading.modifyTime;
                           uploading.status = UploadStatus.complete;
                         });
                       } else {
@@ -459,7 +505,9 @@ class _BackupState extends State<Backup> {
                           uploading.status = UploadStatus.failed;
                         });
                       }
-                      if (i == uploads.length - 1) {
+                      if (i == tasks.length - 1) {
+                        Util.toast("备份已完成");
+                        Util.vibrate(FeedbackType.light);
                         setState(() {
                           uploading = null;
                           lastBackupTime = DateTime.now();

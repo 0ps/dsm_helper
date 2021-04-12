@@ -69,7 +69,7 @@ class Util {
   static String downloadSavePath = "";
   static bool downloadWifiOnly = true;
   static toast(String text) {
-    showToast(text ?? "");
+    showToast(text ?? "", dismissOtherToast: true);
   }
 
   static String systemVersion(String version) {

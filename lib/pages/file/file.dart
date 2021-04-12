@@ -42,7 +42,7 @@ class FilesState extends State<Files> {
   bool success = true;
   String msg = "";
   bool multiSelect = false;
-  List<String> selectedFiles = [];
+  List selectedFiles = [];
   ScrollController _pathScrollController = ScrollController();
   ScrollController _fileScrollController = ScrollController();
   Map processing = {};
@@ -117,6 +117,107 @@ class FilesState extends State<Files> {
         });
       }
     }
+  }
+
+  downloadFiles(List files) async {
+    ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.mobile) {
+      Util.vibrate(FeedbackType.warning);
+      showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return Material(
+            color: Colors.transparent,
+            child: NeuCard(
+              width: double.infinity,
+              padding: EdgeInsets.all(22),
+              bevel: 5,
+              curveType: CurveType.emboss,
+              decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "下载确认",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                    "您当前正在使用数据网络，下载文件可能会产生流量费用，是否继续下载？",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(
+                    height: 22,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: NeuButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop(true);
+                          },
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          bevel: 5,
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            "下载",
+                            style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: NeuButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop(false);
+                          },
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          bevel: 5,
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            "取消",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ).then((value) {
+        if (value == null || value == false) {
+          return;
+        }
+      });
+    }
+    for (var file in files) {
+      String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
+      String filename = "";
+      if (file['isdir']) {
+        filename = file['name'] + ".zip";
+      } else {
+        filename = file['name'];
+      }
+      await Util.download(filename, url);
+    }
+    Util.toast("已添加${files.length > 1 ? "${files.length}个" : ""}下载任务，请至下载页面查看");
+    Util.downloadKey.currentState.getData();
   }
 
   Future<bool> result(String taskId) async {
@@ -674,7 +775,7 @@ class FilesState extends State<Files> {
     );
   }
 
-  deleteFile(List<String> file) {
+  deleteFile(List files) {
     Util.vibrate(FeedbackType.warning);
     showCupertinoModalPopup(
       context: context,
@@ -710,7 +811,7 @@ class FilesState extends State<Files> {
                       child: NeuButton(
                         onPressed: () async {
                           Navigator.of(context).pop();
-                          var res = await Api.deleteTask(file);
+                          var res = await Api.deleteTask(files);
                           if (res['success']) {
                             //获取删除进度
                             timer = Timer.periodic(Duration(seconds: 1), (_) async {
@@ -1054,13 +1155,13 @@ class FilesState extends State<Files> {
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(10),
             ),
-            curveType: selectedFiles.contains(file['path']) ? CurveType.emboss : CurveType.flat,
+            curveType: selectedFiles.contains(file) ? CurveType.emboss : CurveType.flat,
             padding: EdgeInsets.all(5),
             bevel: 5,
             child: SizedBox(
               width: 20,
               height: 20,
-              child: selectedFiles.contains(file['path'])
+              child: selectedFiles.contains(file)
                   ? Icon(
                       CupertinoIcons.checkmark_alt,
                       color: Color(0xffff9813),
@@ -1133,102 +1234,7 @@ class FilesState extends State<Files> {
                                   child: NeuButton(
                                     onPressed: () async {
                                       Navigator.of(context).pop();
-                                      ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
-                                      String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
-                                      String filename = "";
-                                      if (file['isdir']) {
-                                        filename = file['name'] + ".zip";
-                                      } else {
-                                        filename = file['name'];
-                                      }
-                                      if (connectivityResult == ConnectivityResult.mobile) {
-                                        Util.vibrate(FeedbackType.warning);
-                                        showCupertinoModalPopup(
-                                          context: context,
-                                          builder: (context) {
-                                            return Material(
-                                              color: Colors.transparent,
-                                              child: NeuCard(
-                                                width: double.infinity,
-                                                padding: EdgeInsets.all(22),
-                                                bevel: 5,
-                                                curveType: CurveType.emboss,
-                                                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      "下载确认",
-                                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 12,
-                                                    ),
-                                                    Text(
-                                                      "您当前正在使用数据网络，下载文件可能会产生流量费用，是否继续下载？",
-                                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 22,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: NeuButton(
-                                                            onPressed: () async {
-                                                              Navigator.of(context).pop();
-                                                              await Util.download(filename, url);
-                                                              Util.toast("已添加下载任务，请至下载页面查看");
-                                                              Util.downloadKey.currentState.getData();
-                                                            },
-                                                            decoration: NeumorphicDecoration(
-                                                              color: Theme.of(context).scaffoldBackgroundColor,
-                                                              borderRadius: BorderRadius.circular(25),
-                                                            ),
-                                                            bevel: 5,
-                                                            padding: EdgeInsets.symmetric(vertical: 10),
-                                                            child: Text(
-                                                              "下载",
-                                                              style: TextStyle(fontSize: 18, color: Colors.redAccent),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 20,
-                                                        ),
-                                                        Expanded(
-                                                          child: NeuButton(
-                                                            onPressed: () async {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            decoration: NeumorphicDecoration(
-                                                              color: Theme.of(context).scaffoldBackgroundColor,
-                                                              borderRadius: BorderRadius.circular(25),
-                                                            ),
-                                                            bevel: 5,
-                                                            padding: EdgeInsets.symmetric(vertical: 10),
-                                                            child: Text(
-                                                              "取消",
-                                                              style: TextStyle(fontSize: 18),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      } else {
-                                        await Util.download(filename, url);
-                                        Util.toast("已添加下载任务，请至下载页面查看");
-                                        Util.downloadKey.currentState.getData();
-                                      }
+                                      downloadFiles([file]);
                                     },
                                     decoration: NeumorphicDecoration(
                                       color: Theme.of(context).scaffoldBackgroundColor,
@@ -1631,7 +1637,7 @@ class FilesState extends State<Files> {
             Util.vibrate(FeedbackType.light);
             setState(() {
               multiSelect = true;
-              selectedFiles.add(file['path']);
+              selectedFiles.add(file);
             });
           } else {
             Util.vibrate(FeedbackType.warning);
@@ -1640,10 +1646,10 @@ class FilesState extends State<Files> {
         onPressed: () async {
           if (multiSelect) {
             setState(() {
-              if (selectedFiles.contains(file['path'])) {
-                selectedFiles.remove(file['path']);
+              if (selectedFiles.contains(file)) {
+                selectedFiles.remove(file);
               } else {
-                selectedFiles.add(file['path']);
+                selectedFiles.add(file);
               }
             });
           } else {
@@ -2069,7 +2075,7 @@ class FilesState extends State<Files> {
                   } else {
                     selectedFiles = [];
                     files.forEach((file) {
-                      selectedFiles.add(file['path']);
+                      selectedFiles.add(file);
                     });
                   }
 
@@ -2587,7 +2593,7 @@ class FilesState extends State<Files> {
                                     },
                                   ).then((folder) async {
                                     if (folder != null && folder.length == 1) {
-                                      var res = await Api.copyMoveTask(selectedFiles, folder[0], true);
+                                      var res = await Api.copyMoveTask(selectedFiles.map((e) => e['path']).toList(), folder[0], true);
                                       if (res['success']) {
                                         setState(() {
                                           selectedFiles = [];
@@ -2643,7 +2649,7 @@ class FilesState extends State<Files> {
                                     },
                                   ).then((folder) async {
                                     if (folder != null && folder.length == 1) {
-                                      var res = await Api.copyMoveTask(selectedFiles, folder[0], false);
+                                      var res = await Api.copyMoveTask(selectedFiles.map((e) => e['path']).toList(), folder[0], false);
                                       if (res['success']) {
                                         setState(() {
                                           selectedFiles = [];
@@ -2690,7 +2696,7 @@ class FilesState extends State<Files> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  compressFile(selectedFiles);
+                                  compressFile(selectedFiles.map((e) => e['path']).toList());
                                 },
                                 child: Column(
                                   children: [
@@ -2707,7 +2713,24 @@ class FilesState extends State<Files> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  deleteFile(selectedFiles);
+                                  downloadFiles(selectedFiles);
+                                },
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      "assets/icons/download.png",
+                                      width: 25,
+                                    ),
+                                    Text(
+                                      "下载",
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  deleteFile(selectedFiles.map((e) => e['path']).toList());
                                 },
                                 child: Column(
                                   children: [

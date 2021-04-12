@@ -226,7 +226,7 @@ class Api {
   }
 
   ///webapi/FileStation/file_delete.cgi?api=SYNO.FileStation.Delete&version=1&method=start&path=%2Fvideo%2Fdel_folder
-  static Future<Map> deleteTask(List<String> path) async {
+  static Future<Map> deleteTask(List path) async {
     var data = {
       "api": '"SYNO.FileStation.Delete"',
       "method": '"start"',
@@ -327,7 +327,7 @@ class Api {
     });
   }
 
-  static Future<Map> copyMoveTask(List<String> path, String destFolderPath, bool remove) async {
+  static Future<Map> copyMoveTask(List path, String destFolderPath, bool remove) async {
     return await Util.post("entry.cgi", data: {
       "overwrite": "true",
       "dest_folder_path": destFolderPath,

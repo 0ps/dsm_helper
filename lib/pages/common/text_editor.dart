@@ -1,4 +1,5 @@
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
@@ -70,6 +71,7 @@ class _TextEditorState extends State<TextEditor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: AppBackButton(context),
         title: Text("查看文件"),
       ),
       body: DraggableScrollbar.semicircle(

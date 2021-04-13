@@ -1,4 +1,5 @@
 import 'package:dsm_helper/pages/control_panel/external_device/external_device.dart';
+import 'package:dsm_helper/pages/control_panel/file_service/file_service.dart';
 import 'package:dsm_helper/pages/control_panel/media_index/media_index.dart';
 import 'package:dsm_helper/pages/control_panel/power/power.dart';
 import 'package:dsm_helper/pages/control_panel/ssh/ssh.dart';
@@ -99,32 +100,41 @@ class _ControlPanelState extends State<ControlPanel> {
                           ),
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/file_services.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "文件服务",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(CupertinoPageRoute(
+                              builder: (context) {
+                                return FileService();
+                              },
+                              settings: RouteSettings(name: "file_service")));
+                        },
+                        child: NeuCard(
+                          width: (MediaQuery.of(context).size.width - 120) / 3,
+                          height: (MediaQuery.of(context).size.width - 120) / 3,
+                          curveType: CurveType.flat,
+                          decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          bevel: 20,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/control_panel/${Util.version}/file_services.png",
+                                height: 30,
+                                width: 30,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "文件服务",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       GestureDetector(

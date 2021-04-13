@@ -276,31 +276,30 @@ class _BackupState extends State<Backup> {
               borderRadius: BorderRadius.circular(20),
             ),
             padding: EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "备份源",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    albums.length > 0
-                        ? Wrap(
-                            runSpacing: 10,
-                            spacing: 10,
-                            children: albums.map(_buildAlbumLabel).toList(),
-                          )
-                        : Text(
-                            "未选择备份源",
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
-                          ),
-                  ],
-                ),
-              ],
+            child: Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "备份源",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  albums.length > 0
+                      ? Wrap(
+                          runSpacing: 10,
+                          spacing: 10,
+                          children: albums.map(_buildAlbumLabel).toList(),
+                        )
+                      : Text(
+                          "未选择备份源",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                        ),
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -334,7 +333,7 @@ class _BackupState extends State<Backup> {
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                         Text(
-                          "${uploads.where((AssetEntity upload) => upload.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch && upload.type == AssetType.image).length}张照片 ${uploads.where((upload) => upload.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch && upload.type == AssetType.video).length}个视频",
+                          "${uploads.where((AssetEntity upload) => (lastBackupTime == null || upload.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch) && upload.type == AssetType.image).length}张照片 ${uploads.where((upload) => (lastBackupTime == null || upload.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch) && upload.type == AssetType.video).length}个视频",
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       ],

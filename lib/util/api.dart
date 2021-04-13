@@ -1618,7 +1618,6 @@ class Api {
         "shareType": ["dec", "local", "usb", "sata", "cluster"]
       },
       {"api": "SYNO.Core.Service", "method": "get", "version": 1, "service_id": "pgsql"},
-      {"api": "SYNO.Core.FileServ.ServiceDiscovery", "method": "get", "version": 1},
       {"api": "SYNO.Core.SyslogClient.FileTransfer", "method": "get", "version": 1},
       {"api": "SYNO.Core.Network", "method": "get", "version": 1},
       {"api": "SYNO.Core.FileServ.ReflinkCopy", "method": "get", "version": 1},
@@ -1627,6 +1626,25 @@ class Api {
       {"api": "SYNO.Core.FileServ.ServiceDiscovery", "method": "get", "version": 1},
       {"api": "SYNO.Core.FileServ.ServiceDiscovery.WSTransfer", "method": "get", "version": 1}
     ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"sequential"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
+
+  static Future<Map> fileServiceSave(Map smb, Map syslogClient, Map afp, Map nfs) async {
+    List apis = [
+      {"api": "SYNO.Core.FileServ.SMB", "method": "set", "version": 3, "enable_samba": smb['enable_samba'], "workgroup": smb['workgroup'], "disable_shadow_copy": smb['disable_shadow_copy'], "smb_transfer_log_enable": syslogClient['cifs']},
+      {"api": "SYNO.Core.FileServ.AFP", "method": "set", "version": 1, "enable_afp": afp['enable_afp'], "afp_transfer_log_enable": syslogClient['afp']},
+      {"api": "SYNO.Core.FileServ.NFS", "method": "set", "version": 2, "enable_nfs": nfs['enable_nfs'], "enable_nfs_v4": nfs['enable_nfs_v4'], "enable_nfs_v4_1": nfs['enable_nfs_v4'], "nfs_v4_domain": nfs['nfs_v4_domain']},
+      {"api": "SYNO.Core.SyslogClient.FileTransfer", "method": "set", "version": 1, "cifs": syslogClient['cifs'], "afp": syslogClient['afp']},
+    ];
+    print(apis);
     var result = await Util.post("entry.cgi", data: {
       "api": 'SYNO.Entry.Request',
       "method": 'request',

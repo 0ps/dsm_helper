@@ -1637,6 +1637,27 @@ class Api {
     return result;
   }
 
+  static Future<Map> fileServiceLog(String protocol) async {
+    var data = {
+      "protocol": '"$protocol"',
+      "api": "SYNO.Core.SyslogClient.FileTransfer",
+      "method": "get_level",
+      "version": 1,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> fileServiceLogSave(String protocol, Map logLevel) async {
+    var data = {
+      "protocol": '"$protocol"',
+      "loglevel": json.encode(logLevel),
+      "api": "SYNO.Core.SyslogClient.FileTransfer",
+      "method": "set_level",
+      "version": 1,
+    };
+    return await Util.post("entry.cgi", data: data);
+  }
+
   static Future<Map> fileServiceSave(Map smb, Map syslogClient, Map afp, Map nfs) async {
     List apis = [
       {"api": "SYNO.Core.FileServ.SMB", "method": "set", "version": 3, "enable_samba": smb['enable_samba'], "workgroup": smb['workgroup'], "disable_shadow_copy": smb['disable_shadow_copy'], "smb_transfer_log_enable": syslogClient['cifs']},

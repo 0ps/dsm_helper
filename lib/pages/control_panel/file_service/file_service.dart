@@ -1,3 +1,5 @@
+import 'package:dsm_helper/pages/control_panel/file_service/log_setting.dart';
+import 'package:dsm_helper/pages/log_center/log_center.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
@@ -297,6 +299,11 @@ class _FileServiceState extends State<FileService> with SingleTickerProviderStat
                                               setState(() {
                                                 syslogClient['cifs'] = !syslogClient['cifs'];
                                               });
+                                              if (syslogClient['cifs']) {
+                                                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                                  return LogSetting("cifs");
+                                                }));
+                                              }
                                             },
                                             child: NeuCard(
                                               decoration: NeumorphicDecoration(
@@ -322,6 +329,52 @@ class _FileServiceState extends State<FileService> with SingleTickerProviderStat
                                               ),
                                             ),
                                           ),
+                                          if (syslogClient['cifs']) ...[
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: NeuButton(
+                                                    onPressed: () {
+                                                      if (syslogClient['cifs']) {
+                                                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                                          return LogSetting("cifs");
+                                                        }));
+                                                      }
+                                                    },
+                                                    decoration: NeumorphicDecoration(
+                                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                                    child: Text("日志设置"),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Expanded(
+                                                  child: NeuButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                                        return LogCenter();
+                                                      }));
+                                                    },
+                                                    decoration: NeumorphicDecoration(
+                                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                                    child: Text(
+                                                      "查看日志",
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
                                         ],
                                       ],
                                     ),

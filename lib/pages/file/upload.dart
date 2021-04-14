@@ -366,7 +366,7 @@ class _UploadState extends State<Upload> {
                                   NeuButton(
                                     onPressed: () async {
                                       Navigator.of(context).pop();
-                                      final List<AssetEntity> assets = await AssetPicker.pickAssets(context);
+                                      final List<AssetEntity> assets = await AssetPicker.pickAssets(context, maxAssets: 1000);
                                       if (assets != null && assets.length > 0) {
                                         assets.forEach((asset) {
                                           asset.file.then((file) {

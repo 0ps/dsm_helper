@@ -1800,30 +1800,34 @@ class FilesState extends State<Files> {
               )
             : Stack(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      children: [
-                        Hero(
-                          tag: Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
-                          child: FileIcon(
-                            file['isdir'] ? FileType.folder : fileType,
-                            thumb: file['path'],
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        children: [
+                          Hero(
+                            tag: Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+                            child: FileIcon(
+                              file['isdir'] ? FileType.folder : fileType,
+                              thumb: file['path'],
+                              width: (MediaQuery.of(context).size.width - 140) / 3,
+                              height: 60,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          file['name'],
-                          maxLines: 1,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ],
+                          Text(
+                            file['name'],
+                            maxLines: 1,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // if (multiSelect)

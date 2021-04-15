@@ -455,7 +455,7 @@ class _BackupState extends State<Backup> {
                       return;
                     }
                     List<AssetEntity> tasks;
-                    if (continueBackup) {
+                    if (lastBackupTime != null && continueBackup) {
                       tasks = uploads.where((element) => element.modifiedDateTime.millisecondsSinceEpoch > lastBackupTime.millisecondsSinceEpoch).toList();
                     } else {
                       tasks = uploads;

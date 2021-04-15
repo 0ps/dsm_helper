@@ -42,7 +42,8 @@ class Api {
     return res;
   }
 
-  static Future<Map> login({String host, String account, String password, String otpCode: "", CancelToken cancelToken, bool rememberDevice: false, String cookie}) async {
+  static Future<Map> login(
+      {String host, String account, String password, String otpCode: "", CancelToken cancelToken, bool rememberDevice: false, String cookie}) async {
     var data = {
       "account": account,
       "passwd": password,
@@ -56,7 +57,8 @@ class Api {
     return await Util.get("auth.cgi", host: host, data: data, cancelToken: cancelToken, cookie: cookie);
   }
 
-  static Future<Map> shareList({List<String> additional = const ["perm", "time", "size"], CancelToken cancelToken, String sid, bool checkSsl, String cookie, String host}) async {
+  static Future<Map> shareList(
+      {List<String> additional = const ["perm", "time", "size"], CancelToken cancelToken, String sid, bool checkSsl, String cookie, String host}) async {
     print(host);
     return await Util.post(
       "entry.cgi",
@@ -1035,7 +1037,8 @@ class Api {
     String dataStr = jsonEncode(jsonEncode(save));
     var data = {
       "api": "SYNO.Core.UserSettings",
-      "data": dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
+      "data":
+          dataStr, //r'"{\"SYNO.SDS._Widget.Instance\":{\"modulelist\":[\"SYNO.SDS.SystemInfoApp.SystemHealthWidget\",\"SYNO.SDS.SystemInfoApp.ConnectionLogWidget\",\"SYNO.SDS.ResourceMonitor.Widget\"]}}"',
       "method": "apply",
       "version": 1,
       "_sid": Util.sid,
@@ -1314,7 +1317,8 @@ class Api {
       "version": 2,
     };
     if (type == "file") {
-      MultipartFile torrent = MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("application/octet-stream"));
+      MultipartFile torrent =
+          MultipartFile.fromFileSync(filePath, filename: filePath.split("/").last, contentType: MediaType.parse("application/octet-stream"));
       data['file'] = json.encode(["-1891550746"]);
       data["type"] = '"$type"';
       data["create_list"] = true;
@@ -1660,9 +1664,25 @@ class Api {
 
   static Future<Map> fileServiceSave(Map smb, Map syslogClient, Map afp, Map nfs) async {
     List apis = [
-      {"api": "SYNO.Core.FileServ.SMB", "method": "set", "version": 3, "enable_samba": smb['enable_samba'], "workgroup": smb['workgroup'], "disable_shadow_copy": smb['disable_shadow_copy'], "smb_transfer_log_enable": syslogClient['cifs']},
+      {
+        "api": "SYNO.Core.FileServ.SMB",
+        "method": "set",
+        "version": 3,
+        "enable_samba": smb['enable_samba'],
+        "workgroup": smb['workgroup'],
+        "disable_shadow_copy": smb['disable_shadow_copy'],
+        "smb_transfer_log_enable": syslogClient['cifs']
+      },
       {"api": "SYNO.Core.FileServ.AFP", "method": "set", "version": 1, "enable_afp": afp['enable_afp'], "afp_transfer_log_enable": syslogClient['afp']},
-      {"api": "SYNO.Core.FileServ.NFS", "method": "set", "version": 2, "enable_nfs": nfs['enable_nfs'], "enable_nfs_v4": nfs['enable_nfs_v4'], "enable_nfs_v4_1": nfs['enable_nfs_v4'], "nfs_v4_domain": nfs['nfs_v4_domain']},
+      {
+        "api": "SYNO.Core.FileServ.NFS",
+        "method": "set",
+        "version": 2,
+        "enable_nfs": nfs['enable_nfs'],
+        "enable_nfs_v4": nfs['enable_nfs_v4'],
+        "enable_nfs_v4_1": nfs['enable_nfs_v4'],
+        "nfs_v4_domain": nfs['nfs_v4_domain']
+      },
       {"api": "SYNO.Core.SyslogClient.FileTransfer", "method": "set", "version": 1, "cifs": syslogClient['cifs'], "afp": syslogClient['afp']},
     ];
     print(apis);
@@ -1744,10 +1764,11 @@ class Api {
     return result;
   }
 
-  static Future<Map> quickConnect(String connectConnectID) async {
+  static Future<Map> quickConnect(String connectConnectID, {String baseUrl: "global.quickconnect.cn"}) async {
+    print("connect:" + baseUrl);
     Dio dio = new Dio(
       new BaseOptions(
-        baseUrl: "https://global.quickconnect.cn/",
+        baseUrl: "https://$baseUrl/",
         contentType: "text/plain",
       ),
     );
@@ -1778,14 +1799,15 @@ class Api {
     }
   }
 
-  static Future<Map> quickConnectCn(String connectConnectID) async {
+  static Future<Map> quickConnectCn(String connectConnectID, {String baseUrl: "cnc.quickconnect.cn"}) async {
+    print("connectCN:" + baseUrl);
     Dio dio = new Dio(
       new BaseOptions(
-        baseUrl: "https://cnc.quickconnect.cn/",
+        baseUrl: "https://$baseUrl/",
         contentType: "text/plain",
       ),
     );
-    String data = '''{"version":1,"command":"request_tunnel","serverID":"zxazxa1998","id":"dsm","location":"cn","platform":"Android 11"}''';
+    String data = '''{"version":1,"command":"request_tunnel","serverID":"$connectConnectID","id":"dsm","location":"cn","platform":"Android 11"}''';
     Response response;
     try {
       response = await dio.post("Serv.php", data: data);
@@ -1863,7 +1885,14 @@ class Api {
       // {"api": "SYNO.Core.ExternalDevice.UPS", "method": "set", "version": "1", "enable": false, "delay_time": "-1", "snmp_auth_key_dirty": false, "snmp_privacy_key_dirty": false}
     ];
     if (powerRecovery != null) {
-      apis.add({"api": "SYNO.Core.Hardware.PowerRecovery", "method": "set", "version": "1", "rc_power_config": powerRecovery['rc_power_config'], "wol1": powerRecovery['wol1'] ?? false, "wol2": powerRecovery['wol2'] ?? false});
+      apis.add({
+        "api": "SYNO.Core.Hardware.PowerRecovery",
+        "method": "set",
+        "version": "1",
+        "rc_power_config": powerRecovery['rc_power_config'],
+        "wol1": powerRecovery['wol1'] ?? false,
+        "wol2": powerRecovery['wol2'] ?? false
+      });
     }
     if (beepControl != null) {
       apis.add({
@@ -1881,7 +1910,8 @@ class Api {
       apis.add({"api": "SYNO.Core.Hardware.FanSpeed", "method": "set", "version": "1", "dual_fan_speed": fanSpeed['dual_fan_speed']});
     }
     if (led != null) {
-      apis.add({"api": "SYNO.Core.Hardware.Led.Brightness", "method": "set", "version": "1", "led_brightness": led['led_brightness'], "schedule": led['schedule']});
+      apis.add(
+          {"api": "SYNO.Core.Hardware.Led.Brightness", "method": "set", "version": "1", "led_brightness": led['led_brightness'], "schedule": led['schedule']});
     }
     var result = await Util.post("entry.cgi", data: {
       "stop_when_error": false,
@@ -1895,7 +1925,8 @@ class Api {
     return result;
   }
 
-  static Future<Map> powerHibernationSave({int internalHdIdletime, bool sataDeepSleep, int usbIdletime, bool enableLog, bool autoPoweroffEnable, int autoPoweroffTime}) async {
+  static Future<Map> powerHibernationSave(
+      {int internalHdIdletime, bool sataDeepSleep, int usbIdletime, bool enableLog, bool autoPoweroffEnable, int autoPoweroffTime}) async {
     var result = await Util.post("entry.cgi", data: {
       "internal_hd_idletime": internalHdIdletime,
       "sata_deep_sleep": sataDeepSleep,

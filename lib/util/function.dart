@@ -266,7 +266,7 @@ class Util {
     print(headers);
     Dio dio = new Dio(
       BaseOptions(
-        baseUrl: (host ?? baseUrl) + "/webapi/",
+        baseUrl: url.startsWith("http") ? "" : ((host ?? baseUrl) + "/webapi/"),
         headers: headers,
         // connectTimeout: timeout,
       ),

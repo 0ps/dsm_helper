@@ -219,7 +219,11 @@ class _LoginState extends State<Login> {
   qcLogin({String qcHost: "global.quickconnect.cn"}) async {
     print("QuickConnectID:$host");
     var res = await Api.quickConnect(host, baseUrl: qcHost);
+    print(res);
     if (res['errno'] == 0) {
+      if (res['server']['fqdn'] != "NULL") {
+        qcAddresses.add("http://${res['server']['fqdn']}/");
+      }
       if (res['server']['external']["ip"] != null) {
         qcAddresses.add("http://${res['server']['external']["ip"]}:${res['service']['ext_port']}/");
       }

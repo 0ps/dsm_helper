@@ -212,50 +212,66 @@ class _LoginState extends State<Login> {
       String baseUri = "${https ? "https" : "http"}://${host.trim()}:${port.trim()}";
       doLogin(baseUri);
     } else {
-      print("QuickConnectID:$host");
-      var res = await Api.quickConnect(host);
-      if (res['errno'] == 0) {
-        var cnRes = await Api.quickConnectCn(host);
+      qcLogin();
+    }
+  }
+
+  qcLogin({String qcHost: "global.quickconnect.cn"}) async {
+    print("QuickConnectID:$host");
+    var res = await Api.quickConnect(host, baseUrl: qcHost);
+    if (res['errno'] == 0) {
+      if (res['server']['external']["ip"] != null) {
+        qcAddresses.add("http://${res['server']['external']["ip"]}:${res['service']['ext_port']}/");
+      }
+      if (res['service']['relay_ip'] != null) {
+        qcAddresses.add("http://${res['service']['relay_ip']}:${res['service']['relay_port']}/");
+      }
+      if (res['server']['ddns'] != "NULL") {
+        qcAddresses.add("http://${res['server']['ddns']}:${res['service']['ext_port']}/");
+      }
+      if (res['server']['interface'].length > 0) {
+        for (var interface in res['server']['interface']) {
+          qcAddresses.add("http://${interface['ip']}:${res['service']['port']}/");
+          if (interface['ipv6'].length > 0) {
+            for (var v6 in interface['ipv6']) {
+              qcAddresses.add("http://[${v6['address']}]:${res['service']['port']}/");
+            }
+          }
+        }
+      }
+      if (res['service']['relay_ip'] == null) {
+        var cnRes = await Api.quickConnectCn(host, baseUrl: res['env']['control_host']);
         if (cnRes['errno'] == 0) {
-          if (res['server']['external']["ip"] != null) {
-            qcAddresses.add("http://${res['server']['external']["ip"]}:${res['service']['ext_port']}/");
-          }
-          if (res['service']['relay_ip'] != null) {
-            qcAddresses.add("http://${res['service']['relay_ip']}:${res['service']['relay_port']}/");
-          }
-          if (res['server']['ddns'] != "NULL") {
-            qcAddresses.add("http://${res['server']['ddns']}:${res['service']['ext_port']}/");
-          }
-          if (res['server']['interface'].length > 0) {
-            for (var interface in res['server']['interface']) {
-              qcAddresses.add("http://${interface['ip']}:${res['service']['port']}/");
-              if (interface['ipv6'].length > 0) {
-                for (var v6 in interface['ipv6']) {
-                  qcAddresses.add("http://[${v6['address']}]:${res['service']['port']}/");
-                }
-              }
-            }
+          if (cnRes['service']['relay_ip'] != null) {
+            qcAddresses.add("http://${cnRes['service']['relay_ip']}:${cnRes['service']['relay_port']}/");
           }
         }
-        bool finded = false;
-        for (var address in qcAddresses) {
-          Api.pingpong(address, (res) {
-            if (res != null) {
-              if (!finded) {
-                setState(() {
-                  finded = true;
-                });
-                doLogin(res);
-              }
+      }
+
+      print(qcAddresses);
+      bool finded = false;
+      for (var address in qcAddresses) {
+        print(qcAddresses);
+        Api.pingpong(address, (res) {
+          if (res != null) {
+            if (!finded) {
+              setState(() {
+                finded = true;
+              });
+              doLogin(res);
             }
-          });
-        }
-      } else {
-        Util.toast("无法连接到服务器，请检查QuickConnect ID是否正确");
-        setState(() {
-          login = false;
+          }
         });
       }
+    } else if (res['errno'] == 4 && res['errinfo'] == "get_server_info.go:105[]" && res['sites'].length > 0) {
+      print(res);
+      print("使用新地址进行解析");
+      qcLogin(qcHost: res['sites'][0]);
+    } else {
+      Util.toast("无法连接到服务器，请检查QuickConnect ID是否正确");
+      setState(() {
+        login = false;
+      });
     }
   }
 

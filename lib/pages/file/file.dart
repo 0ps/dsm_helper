@@ -207,7 +207,8 @@ class FilesState extends State<Files> {
       });
     }
     for (var file in files) {
-      String url = Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
+      String url = Util.baseUrl +
+          "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=2&method=download&path=${Uri.encodeComponent(file['path'])}&mode=download&_sid=${Util.sid}";
       String filename = "";
       if (file['isdir']) {
         filename = file['name'] + ".zip";
@@ -316,7 +317,10 @@ class FilesState extends State<Files> {
     setState(() {
       loading = true;
     });
-    var res = await Util.get(Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}", decode: false);
+    var res = await Util.get(
+        Util.baseUrl +
+            "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+        decode: false);
     setState(() {
       loading = false;
     });
@@ -1181,7 +1185,8 @@ class FilesState extends State<Files> {
                       width: double.infinity,
                       bevel: 5,
                       curveType: CurveType.emboss,
-                      decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                      decoration:
+                          NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                       child: Padding(
                         padding: EdgeInsets.all(20),
                         child: Column(
@@ -1450,7 +1455,9 @@ class FilesState extends State<Files> {
                                                                     Util.toast("重命名成功");
                                                                     refresh();
                                                                   } else {
-                                                                    if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
+                                                                    if (res['error']['errors'] != null &&
+                                                                        res['error']['errors'].length > 0 &&
+                                                                        res['error']['errors'][0]['code'] == 414) {
                                                                       Util.toast("重命名失败：指定的名称已存在");
                                                                     } else {
                                                                       Util.toast("重命名失败");
@@ -1521,38 +1528,39 @@ class FilesState extends State<Files> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: (MediaQuery.of(context).size.width - 100) / 4,
-                                  child: NeuButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                      var res = await Api.favoriteAdd("${file['name']} - ${paths[1]}", file['path']);
-                                      if (res['success']) {
-                                        Util.toast("收藏成功");
-                                      } else {
-                                        Util.toast("收藏失败，代码${res['error']['code']}");
-                                      }
-                                    },
-                                    decoration: NeumorphicDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    bevel: 20,
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Column(
-                                      children: [
-                                        Image.asset(
-                                          "assets/icons/collect.png",
-                                          width: 30,
-                                        ),
-                                        Text(
-                                          "添加收藏",
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ],
+                                if (file['isdir'])
+                                  SizedBox(
+                                    width: (MediaQuery.of(context).size.width - 100) / 4,
+                                    child: NeuButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        var res = await Api.favoriteAdd("${file['name']} - ${paths[1]}", file['path']);
+                                        if (res['success']) {
+                                          Util.toast("收藏成功");
+                                        } else {
+                                          Util.toast("收藏失败，代码${res['error']['code']}");
+                                        }
+                                      },
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      bevel: 20,
+                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                            "assets/icons/collect.png",
+                                            width: 30,
+                                          ),
+                                          Text(
+                                            "添加收藏",
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
                                 if (paths.length > 1)
                                   SizedBox(
                                     width: (MediaQuery.of(context).size.width - 100) / 4,
@@ -1663,7 +1671,8 @@ class FilesState extends State<Files> {
                   int index = 0;
                   for (int i = 0; i < files.length; i++) {
                     if (Util.fileType(files[i]['name']) == FileType.image) {
-                      images.add(Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
+                      images.add(Util.baseUrl +
+                          "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
                       if (files[i]['name'] == file['name']) {
                         index = images.length - 1;
                       }
@@ -1690,7 +1699,8 @@ class FilesState extends State<Files> {
                 case FileType.music:
                   AndroidIntent intent = AndroidIntent(
                     action: 'action_view',
-                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    data: Util.baseUrl +
+                        "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
                     arguments: {},
                     type: "audio/*",
                   );
@@ -1699,7 +1709,8 @@ class FilesState extends State<Files> {
                 case FileType.word:
                   AndroidIntent intent = AndroidIntent(
                     action: 'action_view',
-                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    data: Util.baseUrl +
+                        "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
                     arguments: {},
                     type: "application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                   );
@@ -1708,7 +1719,8 @@ class FilesState extends State<Files> {
                 case FileType.excel:
                   AndroidIntent intent = AndroidIntent(
                     action: 'action_view',
-                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    data: Util.baseUrl +
+                        "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
                     arguments: {},
                     type: "application/vnd.ms-excel|application/x-excel|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                   );
@@ -1717,7 +1729,8 @@ class FilesState extends State<Files> {
                 case FileType.ppt:
                   AndroidIntent intent = AndroidIntent(
                     action: 'action_view',
-                    data: Util.baseUrl + "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
+                    data: Util.baseUrl +
+                        "/webapi/entry.cgi?api=SYNO.FileStation.Download&version=1&method=download&path=${Uri.encodeComponent(file['path'])}&mode=open&_sid=${Util.sid}",
                     arguments: {},
                     type: "application/vnd.ms-powerpoint|application/vnd.openxmlformats-officedocument.presentationml.presentation",
                   );
@@ -1759,7 +1772,8 @@ class FilesState extends State<Files> {
                       width: 20,
                     ),
                     Hero(
-                      tag: Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+                      tag: Util.baseUrl +
+                          "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
                       child: FileIcon(
                         file['isdir'] ? FileType.folder : fileType,
                         thumb: file['path'],
@@ -1782,7 +1796,8 @@ class FilesState extends State<Files> {
                             height: 5,
                           ),
                           Text(
-                            (file['isdir'] ? "" : "${Util.formatSize(file['additional']['size'])}" + " | ") + DateTime.fromMillisecondsSinceEpoch(file['additional']['time']['crtime'] * 1000).format("Y/m/d H:i:s"),
+                            (file['isdir'] ? "" : "${Util.formatSize(file['additional']['size'])}" + " | ") +
+                                DateTime.fromMillisecondsSinceEpoch(file['additional']['time']['crtime'] * 1000).format("Y/m/d H:i:s"),
                             style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.headline5.color),
                           ),
                         ],
@@ -1807,7 +1822,8 @@ class FilesState extends State<Files> {
                       child: Column(
                         children: [
                           Hero(
-                            tag: Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+                            tag: Util.baseUrl +
+                                "/webapi/entry.cgi?path=${Uri.encodeComponent(path)}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
                             child: FileIcon(
                               file['isdir'] ? FileType.folder : fileType,
                               thumb: file['path'],
@@ -2140,7 +2156,8 @@ class FilesState extends State<Files> {
                         width: double.infinity,
                         bevel: 20,
                         curveType: CurveType.emboss,
-                        decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                        decoration: NeumorphicDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                         child: Padding(
                           padding: EdgeInsets.all(20),
                           child: Column(
@@ -2230,7 +2247,9 @@ class FilesState extends State<Files> {
                                                                             Util.toast("文件夹创建成功");
                                                                             refresh();
                                                                           } else {
-                                                                            if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
+                                                                            if (res['error']['errors'] != null &&
+                                                                                res['error']['errors'].length > 0 &&
+                                                                                res['error']['errors'][0]['code'] == 414) {
                                                                               Util.toast("文件夹创建失败：指定的名称已存在");
                                                                             } else {
                                                                               Util.toast("文件夹创建失败");
@@ -2808,52 +2827,6 @@ class FilesState extends State<Files> {
         ],
       ),
       drawer: Favorite(goPath),
-      // drawer: Container(
-      //   width: MediaQuery.of(context).size.width * 0.8,
-      //   color: Theme.of(context).scaffoldBackgroundColor,
-      //   child: SafeArea(
-      //     child: favoriteLoading
-      //         ? Container(
-      //             width: MediaQuery.of(context).size.width,
-      //             height: MediaQuery.of(context).size.height,
-      //             color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
-      //             child: Center(
-      //               child: NeuCard(
-      //                 padding: EdgeInsets.all(50),
-      //                 curveType: CurveType.flat,
-      //                 decoration: NeumorphicDecoration(
-      //                   color: Theme.of(context).scaffoldBackgroundColor,
-      //                   borderRadius: BorderRadius.circular(20),
-      //                 ),
-      //                 bevel: 20,
-      //                 child: CupertinoActivityIndicator(
-      //                   radius: 14,
-      //                 ),
-      //               ),
-      //             ),
-      //           )
-      //         : Column(
-      //             children: [
-      //               SizedBox(
-      //                 height: 16,
-      //               ),
-      //               Text(
-      //                 "收藏夹",
-      //                 style: TextStyle(fontSize: 18),
-      //               ),
-      //               Expanded(
-      //                 child: ListView.builder(
-      //                   padding: EdgeInsets.symmetric(horizontal: 20),
-      //                   itemBuilder: (context, i) {
-      //                     return _buildFavoriteItem(favorites[i]);
-      //                   },
-      //                   itemCount: favorites.length,
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //   ),
-      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }

@@ -216,7 +216,7 @@ class _SharedFoldersState extends State<SharedFolders> {
                       height: 5,
                     ),
                     Text(
-                      "${folder['volume_name']}(${folder['volume_desc']})",
+                      "${folder['volume_name']}${folder['volume_desc'] != "" ? "(${folder['volume_desc']})" : ""}",
                       style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.headline5.color),
                     ),
                     if (folder['unite_permission'] != null) ...[
@@ -293,7 +293,8 @@ class _SharedFoldersState extends State<SharedFolders> {
                                 padding: EdgeInsets.all(22),
                                 bevel: 5,
                                 curveType: CurveType.emboss,
-                                decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[

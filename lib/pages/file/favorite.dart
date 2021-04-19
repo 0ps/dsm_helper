@@ -74,7 +74,8 @@ class _FavoriteState extends State<Favorite> {
                           width: double.infinity,
                           bevel: 5,
                           curveType: CurveType.emboss,
-                          decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                          decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                           child: Padding(
                             padding: EdgeInsets.all(20),
                             child: Column(
@@ -163,7 +164,9 @@ class _FavoriteState extends State<Favorite> {
                                                                         Util.toast("重命名成功");
                                                                         getData();
                                                                       } else {
-                                                                        if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
+                                                                        if (res['error']['errors'] != null &&
+                                                                            res['error']['errors'].length > 0 &&
+                                                                            res['error']['errors'][0]['code'] == 414) {
                                                                           Util.toast("重命名失败：指定的名称已存在");
                                                                         } else {
                                                                           Util.toast("重命名失败");
@@ -250,7 +253,9 @@ class _FavoriteState extends State<Favorite> {
                                                   padding: EdgeInsets.all(22),
                                                   bevel: 5,
                                                   curveType: CurveType.emboss,
-                                                  decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                                  decoration: NeumorphicDecoration(
+                                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                                      borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                                                   child: Column(
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[

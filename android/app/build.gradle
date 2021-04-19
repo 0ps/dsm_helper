@@ -65,16 +65,11 @@ android {
         release {
             signingConfig signingConfigs.release
             ndk {
-                abiFilters 'armeabi-v7a'//'armeabi', ,'arm64-v8a'
-                // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+                abiFilters 'armeabi-v7a'
             }
         }
         debug{
             signingConfig signingConfigs.debug
-//            ndk {
-//                abiFilters 'armeabi', 'armeabi-v7a','arm64-v8a'
-//                // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
-//            }
         }
     }
 }

@@ -2342,10 +2342,9 @@ class DashboardState extends State<Dashboard> {
                   child: SizedBox(
                     width: 20,
                     height: 20,
-                    child: Icon(
-                      CupertinoIcons.eject,
-                      color: Color(0xffff9813),
-                      size: 16,
+                    child: Image.asset(
+                      "assets/icons/eject.png",
+                      width: 20,
                     ),
                   ),
                 ),

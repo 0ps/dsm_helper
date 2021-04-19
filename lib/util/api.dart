@@ -164,7 +164,7 @@ class Api {
     return await Util.post("entry.cgi", data: data);
   }
 
-  // static Future<Map> deleteSharedFolderResult(String taskId) async {
+  // static Future<Map> fileStationInfo(String taskId) async {
   //   return await Util.post("entry.cgi", data: {
   //     "taskid": taskId,
   //     "api": '"SYNO.FileStation.Delete"',
@@ -186,7 +186,33 @@ class Api {
       "limit": 1000,
       "sort_by": '"$sortBy"',
       "sort_direction": '"$sortDirection"',
-      "additional": '["perm", "time", "size","real_path"]',
+      "additional": '["perm", "time", "size","mount_point_type","real_path"]',
+    });
+  }
+
+  static Future<Map> virtualFolder() async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.VirtualFolder"',
+      "method": '"list"',
+      "version": 2,
+      "_sid": Util.sid,
+      "node": "fm_rf_root",
+      "type": '["cifs","nfs"]',
+      // "status_filter": '"all"',
+      "additional": '["real_path","owner","time","perm","mount_point_type","volume_status"]',
+    });
+  }
+
+  static Future<Map> unmountFolder(String path) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.Mount"',
+      "method": '"unmount"',
+      "version": 1,
+      "_sid": Util.sid,
+      "mount_point": '"$path"',
+      "is_mount_point": true,
+      // "status_filter": '"all"',
+      "mount_type": '"remote"',
     });
   }
 

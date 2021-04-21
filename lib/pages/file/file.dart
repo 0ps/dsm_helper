@@ -6,6 +6,7 @@ import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:dsm_helper/pages/common/pdf_viewer.dart';
 import 'package:dsm_helper/pages/common/text_editor.dart';
 import 'package:dsm_helper/pages/file/favorite.dart';
+import 'package:dsm_helper/pages/file/remote_folder.dart';
 import 'package:dsm_helper/pages/file/search.dart';
 import 'package:dsm_helper/pages/file/select_folder.dart';
 import 'package:dsm_helper/pages/file/share.dart';
@@ -224,6 +225,7 @@ class FilesState extends State<Files> {
 
   Future<bool> result(String taskId) async {
     var res = await Api.searchResult(taskId);
+    print(res);
     if (res['success']) {
       if (res['data']['finished']) {
         timer?.cancel();
@@ -308,12 +310,13 @@ class FilesState extends State<Files> {
   }
 
   goPath(String path) async {
+    print("path:${path}");
     Util.vibrate(FeedbackType.light);
     setState(() {
       success = true;
     });
     setPaths(path);
-    if (path == "/") {
+    if (path == "/" || path == "") {
       await getShareList();
     } else {
       await getFileList(path);
@@ -1571,7 +1574,7 @@ class FilesState extends State<Files> {
                                     child: NeuButton(
                                       onPressed: () async {
                                         Navigator.of(context).pop();
-                                        var res = await Api.unmountFolder(file['path']);
+                                        var res = await Api.unMountFolder(file['path']);
                                         if (res['success']) {
                                           Util.toast("卸载成功");
                                           refresh();
@@ -2505,6 +2508,42 @@ class FilesState extends State<Files> {
                                               ),
                                               Text(
                                                 "共享链接管理",
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: (MediaQuery.of(context).size.width - 100) / 4,
+                                        child: NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context)
+                                                .push(CupertinoPageRoute(
+                                                    builder: (content) {
+                                                      return RemoteFolder();
+                                                    },
+                                                    settings: RouteSettings(name: "remote_folder")))
+                                                .then((res) {
+                                              refresh();
+                                              getVirtualFolder();
+                                            });
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          bevel: 20,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Column(
+                                            children: [
+                                              Image.asset(
+                                                "assets/icons/remote.png",
+                                                width: 30,
+                                              ),
+                                              Text(
+                                                "装载远程",
                                                 style: TextStyle(fontSize: 12),
                                               ),
                                             ],

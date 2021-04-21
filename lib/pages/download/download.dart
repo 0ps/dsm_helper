@@ -35,11 +35,7 @@ class DownloadState extends State<Download> {
       loading = false;
     });
     //如果存在下载中任务，每秒刷新一次
-    if (tasks
-            .where((task) =>
-                task.status == DownloadTaskStatus.running || task.status == DownloadTaskStatus.enqueued || task.status == DownloadTaskStatus.undefined)
-            .length >
-        0) {
+    if (tasks.where((task) => task.status == DownloadTaskStatus.running || task.status == DownloadTaskStatus.enqueued || task.status == DownloadTaskStatus.undefined).length > 0) {
       if (timer == null) {
         timer = Timer.periodic(Duration(seconds: 1), (timer) {
           getData();
@@ -288,8 +284,7 @@ class DownloadState extends State<Download> {
                               padding: EdgeInsets.all(22),
                               bevel: 5,
                               curveType: CurveType.emboss,
-                              decoration: NeumorphicDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                              decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
@@ -481,8 +476,7 @@ class DownloadState extends State<Download> {
                                         padding: EdgeInsets.all(22),
                                         bevel: 5,
                                         curveType: CurveType.emboss,
-                                        decoration: NeumorphicDecoration(
-                                            color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                                        decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
@@ -579,7 +573,19 @@ class DownloadState extends State<Download> {
                   ],
                 )
               : Center(
-                  child: Text("暂无下载任务"),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("暂无下载任务"),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "可在[文件]中点击文件右侧 > 将文件下载到手机",
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
     );
   }

@@ -203,7 +203,26 @@ class Api {
     });
   }
 
-  static Future<Map> unmountFolder(String path) async {
+  static Future<Map> mountFolder(String serverIp, String account, String passwd, String mountPoint, bool autoMount) async {
+    Map<String, dynamic> data = {
+      "mount_type": '"CIFS"',
+      "server_ip": '${json.encode(serverIp)}',
+      "mount_point": '"$mountPoint"',
+      "user_set": false,
+      "auto_mount": autoMount,
+      "adv_opt": '""',
+      "account": '"$account"',
+      "passwd": '"$passwd"',
+      "api": "SYNO.FileStation.Mount",
+      "method": "mount_remote",
+      "version": 1,
+      "_sid": Util.sid,
+    };
+    print(data);
+    return await Util.post("entry.cgi", data: data);
+  }
+
+  static Future<Map> unMountFolder(String path) async {
     return await Util.post("entry.cgi", data: {
       "api": '"SYNO.FileStation.Mount"',
       "method": '"unmount"',
@@ -304,7 +323,7 @@ class Api {
       "folder_path": json.encode(paths),
       "api": "SYNO.FileStation.Search",
       "method": '"start"',
-      "pattern": pattern,
+      "pattern": '"$pattern"',
       "recursive": recursive,
       "search_content": searchContent,
       "search_type": '"$searchType"',

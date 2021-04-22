@@ -449,8 +449,12 @@ class Util {
 
   static Future<String> getDownloadPath() async {
     // final directory = Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationDocumentsDirectory();
-    final directory = Platform.isAndroid ? Directory(downloadSavePath) : await getApplicationDocumentsDirectory();
-    return directory.path;
+    if (Platform.isAndroid) {
+      return downloadSavePath;
+    } else {
+      final directory = await getApplicationDocumentsDirectory();
+      return directory.path + Platform.pathSeparator + "Download";
+    }
   }
 
   static Future<dynamic> downloadPkg(String saveName, String url, onReceiveProgress, CancelToken cancelToken) async {
@@ -483,6 +487,7 @@ class Util {
       return "";
     }
     String savePath = await getDownloadPath();
+    print(savePath);
     if (!Directory(savePath).existsSync()) {
       await Directory(savePath).create(recursive: true);
     }

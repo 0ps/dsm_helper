@@ -190,7 +190,7 @@ class Api {
     });
   }
 
-  static Future<Map> virtualFolder() async {
+  static Future<Map> smbFolder() async {
     return await Util.post("entry.cgi", data: {
       "api": '"SYNO.FileStation.VirtualFolder"',
       "method": '"list"',
@@ -198,8 +198,29 @@ class Api {
       "_sid": Util.sid,
       "node": "fm_rf_root",
       "type": '["cifs","nfs"]',
-      // "status_filter": '"all"',
       "additional": '["real_path","owner","time","perm","mount_point_type","volume_status"]',
+    });
+  }
+
+  static Future<Map> remoteLink(String type) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.VirtualFolder"',
+      "method": '"list"',
+      "version": 2,
+      "_sid": Util.sid,
+      "node": '"$type"',
+      "type": '"$type"',
+      "additional": '["real_path","owner","time","perm","mount_point_type","volume_status"]',
+    });
+  }
+
+  static Future<Map> remoteUnConnect(String id) async {
+    return await Util.post("entry.cgi", data: {
+      "api": '"SYNO.FileStation.VFS.Connection"',
+      "method": '"delete"',
+      "version": 1,
+      "_sid": Util.sid,
+      "id": '"$id"',
     });
   }
 

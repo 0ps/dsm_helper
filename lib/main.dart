@@ -185,6 +185,7 @@ class _MyAppState extends State<MyApp> {
           color: Colors.white.withOpacity(0.5),
         ),
       ),
+      iconTheme: IconThemeData(color: Colors.white.withOpacity(0.5)),
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,

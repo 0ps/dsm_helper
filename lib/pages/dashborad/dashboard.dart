@@ -2356,6 +2356,17 @@ class DashboardState extends State<Dashboard> {
     );
   }
 
+  List supportedShortcuts = [
+    "SYNO.SDS.PkgManApp.Instance",
+    "SYNO.SDS.AdminCenter.Application",
+    "SYNO.SDS.StorageManager.Instance",
+    "SYNO.SDS.Docker.Application",
+    "SYNO.SDS.Docker.ContainerDetail.Instance",
+    "SYNO.SDS.LogCenter.Instance",
+    "SYNO.SDS.ResourceMonitor.Instance",
+    "SYNO.SDS.Virtualization.Application",
+    "SYNO.SDS.DownloadStation.Application",
+  ];
   Widget _buildShortcutItem(shortcut) {
     String icon = "";
     String name = "";
@@ -2778,31 +2789,32 @@ class DashboardState extends State<Dashboard> {
                   ? ListView(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       children: [
-                        Consumer<ShortcutProvider>(
-                          builder: (context, shortcutProvider, _) {
-                            return shortcutProvider.showShortcut
-                                ? NeuCard(
-                                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                    bevel: 20,
-                                    curveType: CurveType.flat,
-                                    decoration: NeumorphicDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Container(
-                                      height: 140,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, i) {
-                                          return _buildShortcutItem(shortcutItems[i]);
-                                        },
-                                        itemCount: shortcutItems.length,
+                        if (shortcutItems.where((element) => supportedShortcuts.contains(element['className'])).length > 0)
+                          Consumer<ShortcutProvider>(
+                            builder: (context, shortcutProvider, _) {
+                              return shortcutProvider.showShortcut
+                                  ? NeuCard(
+                                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                      bevel: 20,
+                                      curveType: CurveType.flat,
+                                      decoration: NeumorphicDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        borderRadius: BorderRadius.circular(20),
                                       ),
-                                    ),
-                                  )
-                                : Container();
-                          },
-                        ),
+                                      child: Container(
+                                        height: 140,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, i) {
+                                            return _buildShortcutItem(shortcutItems[i]);
+                                          },
+                                          itemCount: shortcutItems.length,
+                                        ),
+                                      ),
+                                    )
+                                  : Container();
+                            },
+                          ),
                         ...widgets.map((widget) {
                           return _buildWidgetItem(widget);
                           // return Text(widget);

@@ -203,15 +203,17 @@ class Api {
   }
 
   static Future<Map> remoteLink(String type) async {
-    return await Util.post("entry.cgi", data: {
-      "api": '"SYNO.FileStation.VirtualFolder"',
-      "method": '"list"',
+    var data = {
+      "api": 'SYNO.FileStation.VirtualFolder',
+      "method": 'list',
       "version": 2,
       "_sid": Util.sid,
       "node": '"$type"',
       "type": '"$type"',
+      "sort_by": '"name"',
       "additional": '["real_path","owner","time","perm","mount_point_type","volume_status"]',
-    });
+    };
+    return await Util.post("entry.cgi", data: data);
   }
 
   static Future<Map> remoteUnConnect(String id) async {

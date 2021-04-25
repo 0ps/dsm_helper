@@ -286,7 +286,7 @@ class FilesState extends State<Files> {
     var res = await Api.remoteLink("sftp");
     if (res['success']) {
       setState(() {
-        ftpFolders = res['data']['folders'];
+        sftpFolders = res['data']['folders'];
       });
     }
   }
@@ -1302,6 +1302,7 @@ class FilesState extends State<Files> {
 
   fileAction(file, {bool remote: false}) async {
     Util.vibrate(FeedbackType.light);
+    print(remote);
     showCupertinoModalPopup(
       context: context,
       builder: (context) {
@@ -1317,473 +1318,529 @@ class FilesState extends State<Files> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(
-                    "选择操作",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  Stack(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "选择操作",
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                      if (!remote)
+                        Row(
+                          children: [
+                            NeuButton(
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: EdgeInsets.all(5),
+                              bevel: 5,
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  selectedFiles.add(file);
+                                  multiSelect = true;
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/select_all.png",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("多选"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  Wrap(
-                    runSpacing: 20,
-                    spacing: 20,
-                    children: [
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width - 100) / 4,
-                        child: NeuButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(CupertinoPageRoute(
+                  Container(
+                    width: double.infinity,
+                    child: Wrap(
+                      runSpacing: 20,
+                      spacing: 20,
+                      children: [
+                        Container(
+                          constraints: BoxConstraints(maxWidth: 112),
+                          width: (MediaQuery.of(context).size.width - 100) / 4,
+                          child: NeuButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (context) {
+                                    return FileDetail(file);
+                                  },
+                                  settings: RouteSettings(name: "file_detail")));
+                            },
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            bevel: 20,
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  "assets/icons/info_liner.png",
+                                  width: 30,
+                                ),
+                                Text(
+                                  "详情",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          constraints: BoxConstraints(maxWidth: 112),
+                          width: (MediaQuery.of(context).size.width - 100) / 4,
+                          child: NeuButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              downloadFiles([file]);
+                            },
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            bevel: 20,
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  "assets/icons/download.png",
+                                  width: 30,
+                                ),
+                                Text(
+                                  "下载",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (Util.fileType(file['name']) == FileType.zip && !remote && file['path'].startsWith("/"))
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                extractFile(file);
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/unzip.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "解压",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        if (paths.length > 1 && !remote && !remote && file['path'].startsWith("/"))
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                compressFile([file['path']]);
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/archive.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "压缩",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        if (!remote && !remote && file['path'].startsWith("/"))
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (context) {
+                                      return Share(paths: [file['path']]);
+                                    },
+                                    settings: RouteSettings(name: "share")));
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/share.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "共享",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        if (file['isdir'] && !remote && !remote && file['path'].startsWith("/")) ...[
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(CupertinoPageRoute(
+                                    builder: (context) {
+                                      return Share(
+                                        paths: [file['path']],
+                                        fileRequest: true,
+                                      );
+                                    },
+                                    settings: RouteSettings(name: "share")));
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/upload.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "文件请求",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        Container(
+                          constraints: BoxConstraints(maxWidth: 112),
+                          width: (MediaQuery.of(context).size.width - 100) / 4,
+                          child: NeuButton(
+                            onPressed: () async {
+                              TextEditingController nameController = TextEditingController.fromValue(TextEditingValue(text: file['name']));
+                              Navigator.of(context).pop();
+                              String name = "";
+                              showCupertinoDialog(
+                                context: context,
                                 builder: (context) {
-                                  return FileDetail(file);
-                                },
-                                settings: RouteSettings(name: "file_detail")));
-                          },
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          bevel: 20,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                "assets/icons/info_liner.png",
-                                width: 30,
-                              ),
-                              Text(
-                                "详情",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width - 100) / 4,
-                        child: NeuButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            downloadFiles([file]);
-                          },
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          bevel: 20,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                "assets/icons/download.png",
-                                width: 30,
-                              ),
-                              Text(
-                                "下载",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      if (Util.fileType(file['name']) == FileType.zip && !remote && file['path'].startWith("/"))
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              extractFile(file);
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/unzip.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "解压",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      if (paths.length > 1 && !remote && !remote && file['path'].startsWith("/"))
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              compressFile([file['path']]);
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/archive.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "压缩",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      if (!remote && !remote && file['path'].startsWith("/"))
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) {
-                                    return Share(paths: [file['path']]);
-                                  },
-                                  settings: RouteSettings(name: "share")));
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/share.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "共享",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      if (file['isdir'] && !remote && !remote && file['path'].startsWith("/")) ...[
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) {
-                                    return Share(
-                                      paths: [file['path']],
-                                      fileRequest: true,
-                                    );
-                                  },
-                                  settings: RouteSettings(name: "share")));
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/upload.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "文件请求",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                      SizedBox(
-                        width: (MediaQuery.of(context).size.width - 100) / 4,
-                        child: NeuButton(
-                          onPressed: () async {
-                            TextEditingController nameController = TextEditingController.fromValue(TextEditingValue(text: file['name']));
-                            Navigator.of(context).pop();
-                            String name = "";
-                            showCupertinoDialog(
-                              context: context,
-                              builder: (context) {
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      NeuCard(
-                                        width: double.infinity,
-                                        margin: EdgeInsets.symmetric(horizontal: 50),
-                                        curveType: CurveType.emboss,
-                                        bevel: 5,
-                                        decoration: NeumorphicDecoration(
-                                          color: Theme.of(context).scaffoldBackgroundColor,
-                                          borderRadius: BorderRadius.circular(25),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.all(20),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "重命名",
-                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                              ),
-                                              SizedBox(
-                                                height: 16,
-                                              ),
-                                              NeuCard(
-                                                decoration: NeumorphicDecoration(
-                                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                                  borderRadius: BorderRadius.circular(20),
+                                  return Material(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        NeuCard(
+                                          width: double.infinity,
+                                          margin: EdgeInsets.symmetric(horizontal: 50),
+                                          curveType: CurveType.emboss,
+                                          bevel: 5,
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(20),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "重命名",
+                                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                                 ),
-                                                bevel: 20,
-                                                curveType: CurveType.flat,
-                                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                                                child: NeuTextField(
-                                                  onChanged: (v) => name = v,
-                                                  controller: nameController,
-                                                  decoration: InputDecoration(
-                                                    border: InputBorder.none,
-                                                    hintText: "请输入新的名称",
-                                                    labelText: "文件名",
+                                                SizedBox(
+                                                  height: 16,
+                                                ),
+                                                NeuCard(
+                                                  decoration: NeumorphicDecoration(
+                                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                                    borderRadius: BorderRadius.circular(20),
+                                                  ),
+                                                  bevel: 20,
+                                                  curveType: CurveType.flat,
+                                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                                  child: NeuTextField(
+                                                    onChanged: (v) => name = v,
+                                                    controller: nameController,
+                                                    decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      hintText: "请输入新的名称",
+                                                      labelText: "文件名",
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: 16,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: NeuButton(
-                                                      onPressed: () async {
-                                                        if (name.trim() == "") {
-                                                          Util.toast("请输入新文件名");
-                                                          return;
-                                                        }
-                                                        Navigator.of(context).pop();
-                                                        var res = await Api.rename(file['path'], name);
-                                                        if (res['success']) {
-                                                          Util.toast("重命名成功");
-                                                          refresh();
-                                                        } else {
-                                                          if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
-                                                            Util.toast("重命名失败：指定的名称已存在");
-                                                          } else {
-                                                            Util.toast("重命名失败");
+                                                SizedBox(
+                                                  height: 16,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: NeuButton(
+                                                        onPressed: () async {
+                                                          if (name.trim() == "") {
+                                                            Util.toast("请输入新文件名");
+                                                            return;
                                                           }
-                                                        }
-                                                      },
-                                                      decoration: NeumorphicDecoration(
-                                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                                        borderRadius: BorderRadius.circular(25),
-                                                      ),
-                                                      bevel: 20,
-                                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                                      child: Text(
-                                                        "确定",
-                                                        style: TextStyle(fontSize: 18),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 16,
-                                                  ),
-                                                  Expanded(
-                                                    child: NeuButton(
-                                                      onPressed: () async {
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                      decoration: NeumorphicDecoration(
-                                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                                        borderRadius: BorderRadius.circular(25),
-                                                      ),
-                                                      bevel: 20,
-                                                      padding: EdgeInsets.symmetric(vertical: 10),
-                                                      child: Text(
-                                                        "取消",
-                                                        style: TextStyle(fontSize: 18),
+                                                          Navigator.of(context).pop();
+                                                          var res = await Api.rename(file['path'], name);
+                                                          if (res['success']) {
+                                                            Util.toast("重命名成功");
+                                                            refresh();
+                                                          } else {
+                                                            if (res['error']['errors'] != null && res['error']['errors'].length > 0 && res['error']['errors'][0]['code'] == 414) {
+                                                              Util.toast("重命名失败：指定的名称已存在");
+                                                            } else {
+                                                              Util.toast("重命名失败");
+                                                            }
+                                                          }
+                                                        },
+                                                        decoration: NeumorphicDecoration(
+                                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                                          borderRadius: BorderRadius.circular(25),
+                                                        ),
+                                                        bevel: 20,
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                                        child: Text(
+                                                          "确定",
+                                                          style: TextStyle(fontSize: 18),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
+                                                    SizedBox(
+                                                      width: 16,
+                                                    ),
+                                                    Expanded(
+                                                      child: NeuButton(
+                                                        onPressed: () async {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        decoration: NeumorphicDecoration(
+                                                          color: Theme.of(context).scaffoldBackgroundColor,
+                                                          borderRadius: BorderRadius.circular(25),
+                                                        ),
+                                                        bevel: 20,
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                                        child: Text(
+                                                          "取消",
+                                                          style: TextStyle(fontSize: 18),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            decoration: NeumorphicDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            bevel: 20,
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  "assets/icons/edit.png",
+                                  width: 30,
+                                ),
+                                Text(
+                                  "重命名",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (file['isdir'] && !remote && !remote && file['path'].startsWith("/"))
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                var res = await Api.favoriteAdd("${file['name']} - ${paths[1]}", file['path']);
+                                if (res['success']) {
+                                  Util.toast("收藏成功");
+                                } else {
+                                  Util.toast("收藏失败，代码${res['error']['code']}");
+                                }
                               },
-                            );
-                          },
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          bevel: 20,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                "assets/icons/edit.png",
-                                width: 30,
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              Text(
-                                "重命名",
-                                style: TextStyle(fontSize: 12),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/collect.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "添加收藏",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      if (file['isdir'] && !remote && !remote && file['path'].startsWith("/"))
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              var res = await Api.favoriteAdd("${file['name']} - ${paths[1]}", file['path']);
-                              if (res['success']) {
-                                Util.toast("收藏成功");
-                              } else {
-                                Util.toast("收藏失败，代码${res['error']['code']}");
-                              }
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/collect.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "添加收藏",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
                             ),
                           ),
-                        ),
-                      if (file['additional']['mount_point_type'] == "remote" && file['path'].startsWith("/"))
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              var res = await Api.unMountFolder(file['path']);
-                              if (res['success']) {
-                                Util.toast("卸载成功");
-                                refresh();
-                                getSmbFolder();
-                              } else {
-                                Util.toast("卸载失败，代码${res['error']['code']}");
-                              }
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/eject.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "卸载",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      if (remote && !file['path'].startsWith("/"))
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              var res = await Api.remoteUnConnect(file['path']);
-                              if (res['success']) {
-                                Util.toast("远程连接已断开");
-                                refresh();
-                                getSmbFolder();
-                              } else {
-                                Util.toast("断开连接失败，代码${res['error']['code']}");
-                              }
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/eject.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "断开连接",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
+                        if (file['additional']['mount_point_type'] == "remote" && file['path'].startsWith("/"))
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                var res = await Api.unMountFolder(file['path']);
+                                if (res['success']) {
+                                  Util.toast("卸载成功");
+                                  refresh();
+                                  getSmbFolder();
+                                } else {
+                                  Util.toast("卸载失败，代码${res['error']['code']}");
+                                }
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/eject.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "卸载",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      if (paths.length > 1)
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width - 100) / 4,
-                          child: NeuButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              deleteFile([file['path']]);
-                            },
-                            decoration: NeumorphicDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            bevel: 20,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  "assets/icons/delete.png",
-                                  width: 30,
-                                ),
-                                Text(
-                                  "删除",
-                                  style: TextStyle(fontSize: 12, color: Colors.redAccent),
-                                ),
-                              ],
+                        if (remote && !file['path'].startsWith("/"))
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                var res = await Api.remoteUnConnect(file['path']);
+                                if (res['success']) {
+                                  Util.toast("远程连接已断开");
+                                  refresh();
+                                  getSmbFolder();
+                                } else {
+                                  Util.toast("断开连接失败，代码${res['error']['code']}");
+                                }
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/eject.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "断开连接",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                        if (paths.length > 1)
+                          Container(
+                            constraints: BoxConstraints(maxWidth: 112),
+                            width: (MediaQuery.of(context).size.width - 100) / 4,
+                            child: NeuButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                deleteFile([file['path']]);
+                              },
+                              decoration: NeumorphicDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              bevel: 20,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/delete.png",
+                                    width: 30,
+                                  ),
+                                  Text(
+                                    "删除",
+                                    style: TextStyle(fontSize: 12, color: Colors.redAccent),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 16,
@@ -1859,19 +1916,22 @@ class FilesState extends State<Files> {
             ),
           );
     return Container(
+      constraints: listType == ListType.icon && !remote ? BoxConstraints(maxWidth: 112) : null,
       width: listType == ListType.icon && !remote ? (MediaQuery.of(context).size.width - 80) / 3 : double.infinity,
       padding: listType == ListType.icon && !remote ? EdgeInsets.zero : EdgeInsets.only(bottom: 20.0),
       child: NeuButton(
         onLongPress: () {
-          if (paths.length > 1) {
-            Util.vibrate(FeedbackType.light);
-            setState(() {
-              multiSelect = true;
-              selectedFiles.add(file);
-            });
-          } else {
-            Util.vibrate(FeedbackType.warning);
-          }
+          Util.vibrate(FeedbackType.light);
+          fileAction(file, remote: remote);
+          // if (paths.length > 1) {
+          //   Util.vibrate(FeedbackType.light);
+          //   setState(() {
+          //     multiSelect = true;
+          //     selectedFiles.add(file);
+          //   });
+          // } else {
+          //   Util.vibrate(FeedbackType.warning);
+          // }
         },
         onPressed: () {
           openFile(file, fileType: fileType, remote: remote);
@@ -1975,14 +2035,14 @@ class FilesState extends State<Files> {
                       ),
                     ),
                   ),
-                  // if (multiSelect)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: actionButton,
+                  if (multiSelect)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: actionButton,
+                      ),
                     ),
-                  ),
                 ],
               ),
       ),
@@ -2190,118 +2250,132 @@ class FilesState extends State<Files> {
                       ),
               ),
             ),
-            if ((smbFolders + ftpFolders + sftpFolders).length > 0)
-              Padding(
-                padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
-                child: NeuButton(
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.all(10),
-                  bevel: 5,
-                  onPressed: () async {
-                    showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) {
-                        return Material(
-                          color: Colors.transparent,
-                          child: NeuCard(
-                            width: double.infinity,
-                            bevel: 5,
-                            curveType: CurveType.emboss,
-                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
-                            child: Padding(
-                              padding: EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Stack(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "远程文件夹",
-                                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                                        ),
+            Padding(
+              padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
+              child: NeuButton(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(10),
+                bevel: 5,
+                onPressed: () async {
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (context) {
+                      return Material(
+                        color: Colors.transparent,
+                        child: NeuCard(
+                          width: double.infinity,
+                          bevel: 5,
+                          curveType: CurveType.emboss,
+                          decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "远程文件夹",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                                       ),
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Container(
-                                          width: 30,
-                                          height: 30,
-                                          child: NeuButton(
-                                            decoration: NeumorphicDecoration(
-                                              color: Theme.of(context).scaffoldBackgroundColor,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            padding: EdgeInsets.all(5),
-                                            bevel: 5,
-                                            onPressed: () async {
-                                              Util.toast("重新加载远程连接中");
-                                              Navigator.of(context).pop();
-                                              getFtpFolder();
-                                              getSftpFolder();
-                                              getSmbFolder();
-                                            },
-                                            child: Icon(
-                                              Icons.refresh,
-                                              size: 20,
-                                            ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        width: 30,
+                                        height: 30,
+                                        child: NeuButton(
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          padding: EdgeInsets.all(5),
+                                          bevel: 5,
+                                          onPressed: () async {
+                                            Util.toast("重新加载远程连接中");
+                                            Navigator.of(context).pop();
+                                            getFtpFolder();
+                                            getSftpFolder();
+                                            getSmbFolder();
+                                          },
+                                          child: Icon(
+                                            Icons.refresh,
+                                            size: 20,
                                           ),
                                         ),
-                                      )
-                                    ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                    minHeight: 50,
+                                    maxHeight: MediaQuery.of(context).size.height * 0.8,
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  ...smbFolders.map((folder) {
-                                    return _buildFileItem(folder, remote: true);
-                                  }).toList(),
-                                  ...ftpFolders.map((folder) {
-                                    return _buildFileItem(folder, remote: true);
-                                  }).toList(),
-                                  ...sftpFolders.map((folder) {
-                                    return _buildFileItem(folder, remote: true);
-                                  }).toList(),
-                                  SizedBox(
-                                    height: 16,
-                                  ),
-                                  NeuButton(
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                    },
-                                    decoration: NeumorphicDecoration(
-                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                      borderRadius: BorderRadius.circular(25),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        if ((smbFolders + ftpFolders + sftpFolders).length > 0) ...[
+                                          ...smbFolders.map((folder) {
+                                            return _buildFileItem(folder, remote: true);
+                                          }).toList(),
+                                          ...ftpFolders.map((folder) {
+                                            return _buildFileItem(folder, remote: true);
+                                          }).toList(),
+                                          ...sftpFolders.map((folder) {
+                                            return _buildFileItem(folder, remote: true);
+                                          }).toList(),
+                                        ] else
+                                          Center(
+                                            child: Text("未挂载远程文件夹"),
+                                          ),
+                                      ],
                                     ),
-                                    bevel: 20,
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
-                                      "取消",
-                                      style: TextStyle(fontSize: 18),
-                                    ),
                                   ),
-                                  SizedBox(
-                                    height: 8,
+                                ),
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                NeuButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  decoration: NeumorphicDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: BorderRadius.circular(25),
                                   ),
-                                ],
-                              ),
+                                  bevel: 20,
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    "取消",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: multiSelect
-                      ? Icon(Icons.close)
-                      : Image.asset(
-                          "assets/icons/remote.png",
-                          width: 20,
                         ),
+                      );
+                    },
+                  );
+                },
+                child: Image.asset(
+                  "assets/icons/remote.png",
+                  width: 20,
                 ),
               ),
+            ),
             if (paths.length != 1 && !multiSelect)
               Padding(
                 padding: EdgeInsets.only(left: 10, top: 8, bottom: 8),
@@ -2449,7 +2523,8 @@ class FilesState extends State<Files> {
                                     spacing: 20,
                                     children: [
                                       if (paths.length > 1) ...[
-                                        SizedBox(
+                                        Container(
+                                          constraints: BoxConstraints(maxWidth: 112),
                                           width: (MediaQuery.of(context).size.width - 100) / 4,
                                           child: NeuButton(
                                             onPressed: () async {
@@ -2624,7 +2699,8 @@ class FilesState extends State<Files> {
                                           ),
                                         ),
                                       ],
-                                      SizedBox(
+                                      Container(
+                                        constraints: BoxConstraints(maxWidth: 112),
                                         width: (MediaQuery.of(context).size.width - 100) / 4,
                                         child: NeuButton(
                                           onPressed: () async {
@@ -2655,7 +2731,8 @@ class FilesState extends State<Files> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
+                                      Container(
+                                        constraints: BoxConstraints(maxWidth: 112),
                                         width: (MediaQuery.of(context).size.width - 100) / 4,
                                         child: NeuButton(
                                           onPressed: () async {
@@ -2692,7 +2769,8 @@ class FilesState extends State<Files> {
                                         ),
                                       ),
                                       if (paths.length > 1)
-                                        SizedBox(
+                                        Container(
+                                          constraints: BoxConstraints(maxWidth: 112),
                                           width: (MediaQuery.of(context).size.width - 100) / 4,
                                           child: NeuButton(
                                             onPressed: () async {

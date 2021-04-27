@@ -5,6 +5,7 @@ import 'package:dsm_helper/pages/login/login.dart';
 import 'package:dsm_helper/pages/provider/shortcut.dart';
 import 'package:dsm_helper/pages/provider/wallpaper.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -17,6 +18,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'pages/provider/dark_mode.dart';
 
 void main() async {
+  HttpClient client = ExtendedNetworkImageProvider.httpClient as HttpClient;
+  client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+    return true;
+  };
+
+  // print(HttpClientHelper.httpClient.)
+  // (HttpClientHelper as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+  //   client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+  //     return true;
+  //   };
+  // };
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: false);
   await UmengAnalyticsPlugin.init(
@@ -185,6 +197,7 @@ class _MyAppState extends State<MyApp> {
           color: Colors.white.withOpacity(0.5),
         ),
       ),
+      accentColor: Color(0xff888888),
       iconTheme: IconThemeData(color: Colors.white.withOpacity(0.5)),
       appBarTheme: AppBarTheme(
         centerTitle: true,

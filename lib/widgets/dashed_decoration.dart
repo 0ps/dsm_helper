@@ -470,11 +470,6 @@ class _BoxDecorationPainter extends BoxPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-
-  @override
   String toString() {
     return 'BoxPainter for $_decoration';
   }

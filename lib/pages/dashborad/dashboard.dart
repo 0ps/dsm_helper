@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:dsm_helper/pages/common/browser.dart';
@@ -72,6 +73,8 @@ class DashboardState extends State<Dashboard> {
   Map volWarnings;
   String msg = "";
   bool showMainMenu = false;
+  ExtendedNetworkImageProvider backgroundImageProvider = ExtendedNetworkImageProvider(Util.baseUrl + "/webapi/entry.cgi?api=SYNO.Core.PersonalSettings&method=wallpaper&version=1&path=%22%22&retina=true&_sid=${Util.sid}");
+  Uint8List backgroundImage;
   @override
   void initState() {
     Util.getStorage("account").then((value) {
@@ -319,10 +322,24 @@ class DashboardState extends State<Dashboard> {
       if (!mounted) {
         return;
       }
+
       setState(() {
         loading = false;
         success = true;
       });
+      if (backgroundImage == null) {
+        try {
+          backgroundImageProvider.getNetworkImageData().then((value) {
+            if (value != null)
+              setState(() {
+                backgroundImage = value;
+              });
+          });
+        } catch (e) {
+          print("Load backgrond image faild");
+        }
+      }
+
       List result = res['data']['result'];
       result.forEach((item) {
         if (item['success'] == true) {
@@ -408,6 +425,7 @@ class DashboardState extends State<Dashboard> {
     }
   }
 
+  bool showWallpaper = true;
   Widget _buildWidgetItem(widget) {
     if (widget == "SYNO.SDS.SystemInfoApp.SystemHealthWidget") {
       return GestureDetector(
@@ -428,104 +446,112 @@ class DashboardState extends State<Dashboard> {
             children: [
               Consumer<WallpaperProvider>(
                 builder: (context, wallpaperProvider, _) {
-                  return wallpaperProvider.showWallpaper
-                      ? Container(
+                  return Stack(
+                    children: [
+                      AnimatedContainer(
+                        height: 170,
+                        duration: Duration(milliseconds: 200),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: wallpaperProvider.showWallpaper && backgroundImage != null
+                              ? DecorationImage(
+                                  image: MemoryImage(backgroundImage),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                      ),
+                      if (Theme.of(context).scaffoldBackgroundColor == Colors.black)
+                        Container(
                           height: 170,
                           decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              image: ExtendedNetworkImageProvider(Util.baseUrl + "/webapi/entry.cgi?api=SYNO.Core.PersonalSettings&method=wallpaper&version=1&path=%22%22&retina=true&_sid=${Util.sid}"),
-                              fit: BoxFit.cover,
-                            ),
                           ),
-                        )
-                      : Container();
-                },
-              ),
-              if (Theme.of(context).scaffoldBackgroundColor == Colors.black)
-                Container(
-                  height: 170,
-                  color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5),
-                ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: DefaultTextStyle(
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyText2.color,
-                      shadows: [
-                        BoxShadow(color: Colors.white, blurRadius: 10, spreadRadius: 5),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset(
-                              "assets/icons/info.png",
-                              width: 26,
-                              height: 26,
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "系统状态",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                            ),
-                          ],
                         ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        if (system != null && system['model'] != null)
-                          Padding(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Row(
-                              children: [
-                                Text("产品型号："),
-                                Text("${system['model']}"),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: DefaultTextStyle(
+                            style: TextStyle(
+                              color: Theme.of(context).textTheme.bodyText2.color,
+                              shadows: [
+                                wallpaperProvider.showWallpaper && backgroundImage != null ? BoxShadow(color: Colors.white, blurRadius: 10, spreadRadius: 5) : null,
                               ],
                             ),
-                          ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            Text("系统名称："),
-                            Text("$hostname"),
-                          ],
-                        ),
-                        if (system != null && system['sys_temp'] != null)
-                          Padding(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Row(
+                            child: Column(
                               children: [
-                                Text("散热状态："),
-                                Text(
-                                  "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
-                                  style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
-                                  overflow: TextOverflow.ellipsis,
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/icons/info.png",
+                                      width: 26,
+                                      height: 26,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "系统状态",
+                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
                                 ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                if (system != null && system['model'] != null)
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Row(
+                                      children: [
+                                        Text("产品型号："),
+                                        Text("${system['model']}"),
+                                      ],
+                                    ),
+                                  ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: [
+                                    Text("系统名称："),
+                                    Text("$hostname"),
+                                  ],
+                                ),
+                                if (system != null && system['sys_temp'] != null)
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Row(
+                                      children: [
+                                        Text("散热状态："),
+                                        Text(
+                                          "${system['sys_temp']}℃ ${system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? "警告" : "正常") : (system['temperature_warning'] ? "警告" : "正常")}",
+                                          style: TextStyle(color: system['temperature_warning'] == null ? (system['sys_temp'] > 80 ? Colors.red : Colors.green) : (system['temperature_warning'] ? Colors.red : Colors.green)),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                if (system != null && system['up_time'] != null && system['up_time'] != "")
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 5),
+                                    child: Row(
+                                      children: [
+                                        Text("运行时间："),
+                                        Text("${Util.parseOpTime(system['up_time'])}"),
+                                      ],
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
-                        if (system != null && system['up_time'] != null && system['up_time'] != "")
-                          Padding(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Row(
-                              children: [
-                                Text("运行时间："),
-                                Text("${Util.parseOpTime(system['up_time'])}"),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),

@@ -222,39 +222,38 @@ class _WidgetSettingState extends State<WidgetSetting> {
           ),
           Expanded(
             child: ReorderableListView(
-              padding: EdgeInsets.symmetric(horizontal: 20),
               children: showWidgets.map((widget) {
-                return NeuCard(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  curveType: CurveType.flat,
-                  decoration: NeumorphicDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  bevel: 20,
+                return GestureDetector(
                   key: ValueKey(widget),
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            name[widget],
-                            style: TextStyle(fontSize: 16),
+                  onTap: () {
+                    setState(() {
+                      if (selectedWidgets.contains(widget)) {
+                        selectedWidgets.remove(widget);
+                      } else {
+                        selectedWidgets.add(widget);
+                      }
+                      print(showWidgets);
+                    });
+                  },
+                  child: NeuCard(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    curveType: CurveType.flat,
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              name[widget],
+                              style: TextStyle(fontSize: 16),
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (selectedWidgets.contains(widget)) {
-                                selectedWidgets.remove(widget);
-                              } else {
-                                selectedWidgets.add(widget);
-                              }
-                              print(showWidgets);
-                            });
-                          },
-                          child: NeuCard(
+                          NeuCard(
                             decoration: NeumorphicDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
                               borderRadius: BorderRadius.circular(10),
@@ -273,8 +272,8 @@ class _WidgetSettingState extends State<WidgetSetting> {
                                   : null,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

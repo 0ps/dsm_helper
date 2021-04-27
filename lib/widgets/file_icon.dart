@@ -32,7 +32,7 @@ class FileIcon extends StatelessWidget {
         width: 40,
         height: 60,
       );
-    } else if (fileType == FileType.image || fileType == FileType.movie) {
+    } else if (fileType == FileType.image) {
       return thumb == null
           ? Image.asset(
               "assets/icons/image.png",

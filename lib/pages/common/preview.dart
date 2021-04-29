@@ -14,7 +14,8 @@ class PreviewPage extends StatefulWidget {
   final bool network;
   final Object tag;
   final PageController pageController;
-  PreviewPage(this.images, this.index, {this.network = true, this.tag}) : this.pageController = PageController(initialPage: index);
+  final String thumb;
+  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumb}) : this.pageController = PageController(initialPage: index);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
@@ -93,16 +94,51 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   fit: BoxFit.contain,
                   enableSlideOutPage: true,
                   mode: ExtendedImageMode.gesture,
-                  heroBuilderForSlidingPage: (Widget result) {
-                    return Hero(
-                      tag: widget.tag ?? item,
-                      child: result,
-                      flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
-                        final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
-                        return hero.child;
-                      },
-                    );
+                  loadStateChanged: (ExtendedImageState state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        if (widget.thumb != null) {
+                          final ImageChunkEvent loadingProgress = state.loadingProgress;
+                          final double progress = loadingProgress?.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes : null;
+                          return Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ExtendedImage.network(
+                                widget.thumb,
+                                width: double.infinity,
+                                fit: BoxFit.contain,
+                              ),
+                              CircularProgressIndicator(
+                                value: progress,
+                              ),
+                            ],
+                          );
+                        } else {
+                          return CupertinoActivityIndicator();
+                        }
+                        break;
+                      case LoadState.completed:
+                        return null;
+                      case LoadState.failed:
+                        //remove memory cached
+                        state.imageProvider.evict();
+                        return Center(
+                          child: Text("图片加载失败"),
+                        );
+                      default:
+                        return Container();
+                    }
                   },
+                  // heroBuilderForSlidingPage: (Widget result) {
+                  //   return Hero(
+                  //     tag: widget.tag ?? item,
+                  //     child: result,
+                  //     flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+                  //       final Hero hero = (flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget) as Hero;
+                  //       return hero.child;
+                  //     },
+                  //   );
+                  // },
                   initGestureConfigHandler: (state) {
                     double initialScale = 1.0;
                     if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
@@ -145,16 +181,16 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   fit: BoxFit.contain,
                   enableSlideOutPage: true,
                   mode: ExtendedImageMode.gesture,
-                  heroBuilderForSlidingPage: (Widget result) {
-                    return Hero(
-                      tag: widget.tag ?? item,
-                      child: result,
-                      flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
-                        final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
-                        return hero.child;
-                      },
-                    );
-                  },
+                  // heroBuilderForSlidingPage: (Widget result) {
+                  //   return Hero(
+                  //     tag: widget.tag ?? item,
+                  //     child: result,
+                  //     flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+                  //       final Hero hero = flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget;
+                  //       return hero.child;
+                  //     },
+                  //   );
+                  // },
                   initGestureConfigHandler: (state) {
                     double initialScale = 1.0;
                     if (state.extendedImageInfo != null && state.extendedImageInfo.image != null) {
@@ -194,7 +230,14 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
               }
 
               image = GestureDetector(
-                child: image,
+                child: Hero(
+                  tag: widget.tag ?? item,
+                  child: image,
+                  flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+                    final Hero hero = (flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget) as Hero;
+                    return hero.child;
+                  },
+                ),
                 onTap: () {
                   slidePagekey.currentState.popPage();
                   Navigator.pop(context);

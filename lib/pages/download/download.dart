@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dsm_helper/pages/download/download_setting.dart';
+import 'package:dsm_helper/widgets/transparent_router.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -185,8 +186,8 @@ class DownloadState extends State<Download> {
                   }
                 }
               }
-              Navigator.of(context).push(TransparentMaterialPageRoute(
-                  builder: (context) {
+              Navigator.of(context).push(TransparentPageRoute(
+                  pageBuilder: (context,_,__) {
                     return PreviewPage(
                       images,
                       index,

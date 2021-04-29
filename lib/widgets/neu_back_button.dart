@@ -18,7 +18,7 @@ class _AppBackButtonState extends State<AppBackButton> {
   void initState() {
     parentRoute = ModalRoute.of(widget.context);
     setState(() {
-      canPop = parentRoute?.canPop;
+      canPop = parentRoute.canPop;
     });
     super.initState();
   }

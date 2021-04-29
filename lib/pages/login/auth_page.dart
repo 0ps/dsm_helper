@@ -45,17 +45,18 @@ class _AuthPageState extends State<AuthPage> {
         await Future.delayed(Duration(milliseconds: 300));
       }
       try {
-        bool didAuthenticate = await auth.authenticateWithBiometrics(
+        bool didAuthenticate = await auth.authenticate(
+          biometricOnly: true,
           localizedReason: '请触摸指纹传感器',
           androidAuthStrings: AndroidAuthMessages(
-            fingerprintNotRecognized: "系统未设置指纹",
-            fingerprintRequiredTitle: "请触摸指纹传感器",
+            biometricNotRecognized: "系统未设置指纹",
+            biometricRequiredTitle: "请触摸指纹传感器",
             signInTitle: "验证指纹",
             cancelButton: "取消",
-            fingerprintHint: "如果验证失败5次请等待30秒后重试",
+            biometricHint: "如果验证失败5次请等待30秒后重试",
             goToSettingsButton: "设置",
             goToSettingsDescription: "点击设置按钮前往系统指纹设置页面",
-            fingerprintSuccess: "指纹验证成功",
+            biometricSuccess: "指纹验证成功",
           ),
           iOSAuthStrings: IOSAuthMessages(
             lockOut: "认证失败次数过多，请稍后再试",

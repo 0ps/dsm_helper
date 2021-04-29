@@ -12,6 +12,7 @@ import 'package:dsm_helper/pages/file/select_folder.dart';
 import 'package:dsm_helper/pages/file/share.dart';
 import 'package:dsm_helper/pages/file/share_manager.dart';
 import 'package:dsm_helper/pages/file/upload.dart';
+import 'package:dsm_helper/widgets/transparent_router.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
 import 'package:dsm_helper/pages/file/detail.dart';
@@ -1224,11 +1225,14 @@ class FilesState extends State<Files> {
                 }
               }
             }
-            Navigator.of(context).push(TransparentMaterialPageRoute(
-              builder: (context) {
-                return PreviewPage(images, index);
+            Navigator.of(context).push(TransparentPageRoute(
+              pageBuilder: (context, _, __) {
+                return PreviewPage(
+                  images,
+                  index,
+                  thumb: Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(file['path'])}&size=small&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true",
+                );
               },
-              fullscreenDialog: true,
             ));
             break;
           case FileType.movie:

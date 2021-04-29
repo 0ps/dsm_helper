@@ -427,7 +427,6 @@ class Util {
         return response.data;
       }
     } on DioError catch (error) {
-      print(error.request.contentType);
       print("请求出错:$baseUrl/$url 请求内容:$data msg:${error.message}");
       return {
         "success": false,
@@ -470,7 +469,7 @@ class Util {
     } on DioError catch (error) {
       print(error);
       print("请求出错:$url");
-      if (error.type == DioErrorType.CANCEL) {
+      if (error.type == DioErrorType.cancel) {
         return {"code": 0, "msg": "下载已取消", "data": null};
       } else {
         return {"code": 0, "msg": "网络错误", "data": null};
@@ -531,21 +530,6 @@ class Util {
     return prefs.remove(name);
   }
 
-//  static Future<bool> checkPermission(PermissionGroup permission) async {
-//    PermissionStatus permissionStatus = await PermissionHandler().checkPermissionStatus(permission);
-//    if (permissionStatus != PermissionStatus.granted) {
-//      return await requestPermission(permission);
-//    } else {
-//      return true;
-//    }
-//  }
-//
-//  static Future<bool> requestPermission(PermissionGroup permission) async {
-//    final List<PermissionGroup> permissions = <PermissionGroup>[permission];
-//    final Map<PermissionGroup, PermissionStatus> permissionRequestResult = await PermissionHandler().requestPermissions(permissions);
-//
-//    return permissionRequestResult[permission] == PermissionStatus.granted;
-//  }
   static Future<Map> saveImage(String url, {BuildContext context, bool showLoading: true}) async {
     var hide;
     try {

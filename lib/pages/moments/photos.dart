@@ -3,6 +3,7 @@ import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/util/moments_api.dart';
 import 'package:dsm_helper/widgets/cupertino_image.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
+import 'package:dsm_helper/widgets/transparent_router.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
@@ -36,8 +37,8 @@ class _PhotosState extends State<Photos> {
     String thumbUrl = '${Util.baseUrl}/webapi/entry.cgi?id=${photo['additional']['thumbnail']['unit_id']}&cache_key="${photo['additional']['thumbnail']['cache_key']}"&type="unit"&size="sm"&api="SYNO.${Util.version == 7 ? "Foto" : "Photo"}.Thumbnail"&method="get"&version=1&_sid=${Util.sid}';
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(TransparentMaterialPageRoute(
-          builder: (context) {
+        Navigator.of(context).push(TransparentPageRoute(
+          pageBuilder: (context, _, __) {
             return PreviewPage(
               photos
                   .map((photo) =>
@@ -47,7 +48,6 @@ class _PhotosState extends State<Photos> {
               tag: "photo-ablum-${photo['additional']['thumbnail']['unit_id']}",
             );
           },
-          fullscreenDialog: true,
         ));
       },
       child: Container(

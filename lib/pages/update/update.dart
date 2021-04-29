@@ -231,7 +231,7 @@ class _UpdateState extends State<Update> {
                     progressColor: Colors.blue,
                     currentValue: (progress * 100).ceil(),
                     size: 64,
-                    borderRadius: 20,
+                    borderRadius: BorderRadius.circular(20),
                     displayText: '%',
                     displayTextStyle: TextStyle(fontSize: 18, color: Colors.white),
                   ),

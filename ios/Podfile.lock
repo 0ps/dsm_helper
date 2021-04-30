@@ -40,6 +40,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
+  - fluwx (0.0.1):
+    - Flutter
+    - WechatOpenSDK (= 1.8.7.1)
   - gallery_saver (0.0.1):
     - Flutter
   - local_auth (0.0.1):
@@ -54,6 +57,7 @@ PODS:
     - Flutter
   - photo_manager (0.0.1):
     - Flutter
+    - FlutterMacOS
   - Reachability (3.2)
   - receive_sharing_intent (0.0.1):
     - Flutter
@@ -81,12 +85,14 @@ PODS:
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
+  - WechatOpenSDK (1.8.7.1)
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
+  - fluwx (from `.symlinks/plugins/fluwx/ios`)
   - gallery_saver (from `.symlinks/plugins/gallery_saver/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
@@ -113,6 +119,7 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageFLPlugin
     - UMengAnalytics-NO-IDFA
+    - WechatOpenSDK
 
 EXTERNAL SOURCES:
   connectivity:
@@ -123,6 +130,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_downloader:
     :path: ".symlinks/plugins/flutter_downloader/ios"
+  fluwx:
+    :path: ".symlinks/plugins/fluwx/ios"
   gallery_saver:
     :path: ".symlinks/plugins/gallery_saver/ios"
   local_auth:
@@ -162,15 +171,16 @@ SPEC CHECKSUMS:
   DKPhotoGallery: 0290d32343574f06eaa4c26f8f2f8a1035e916be
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
+  fluwx: 07a55ed66bf3a4961e836a2a411b02dcada32902
   gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
   local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
+  photo_manager: a8db3597a3b44e17ecb331fa099731c99b849496
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
   SDWebImage: 0b2ba0d56479bf6a45ecddbfd5558bea93150d25
@@ -182,8 +192,9 @@ SPEC CHECKSUMS:
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   vibrate: 967ba16b8bd87d2fa3646472bb10429f1927c32f
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
-  wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
+  wakelock: b0843b2479edbf6504d8d262c2959446f35373aa
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  WechatOpenSDK: 6a4d1436c15b3b5fe2a0bd383f3046010186da44
 
 PODFILE CHECKSUM: efe41917cd5b5c2d33e17bba26bc04de9de54f55
 

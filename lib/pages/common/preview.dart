@@ -265,27 +265,30 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
 
               return Column(
                 children: [
-                  SafeArea(
-                    child: Container(
-                      height: 56,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      alignment: Alignment.centerRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          // shareToWeChat(
-                          //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
-                          // );
-                          shareToWeChat(
-                            WeChatShareImageModel(WeChatImage.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
-                          );
-                        },
-                        child: Image.asset(
-                          "assets/icons/wechat.png",
-                          width: 30,
+                  if (Platform.isAndroid)
+                    SafeArea(
+                      child: Container(
+                        height: 56,
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () {
+                            // shareToWeChat(
+                            //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                            // );
+                            print("share");
+                            sendWeChatAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");
+                            // shareToWeChat(
+                            //   WeChatShareImageModel(WeChatImage.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                            // );
+                          },
+                          child: Image.asset(
+                            "assets/icons/wechat.png",
+                            width: 30,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                   Spacer(),
                   MySwiperPlugin(widget.images, currentIndex, rebuildIndex),
                 ],

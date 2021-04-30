@@ -78,6 +78,7 @@ dependencies:
   flutter_highlight: ^0.7.0
   syncfusion_flutter_pdfviewer: ^19.1.58-beta
   wechat_assets_picker: ^5.1.3
+  fluwx: ^3.4.2
   dio: ^4.0.0
   draggable_scrollbar:
     git: https://gitee.com/challengerV/draggable_scrollbar.git

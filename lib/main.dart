@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:umeng_analytics_plugin/umeng_analytics_plugin.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'pages/provider/dark_mode.dart';
+import 'package:fluwx/fluwx.dart';
 
 void main() async {
   HttpClient client = ExtendedNetworkImageProvider.httpClient as HttpClient;
@@ -30,6 +31,7 @@ void main() async {
   //   };
   // };
   WidgetsFlutterBinding.ensureInitialized();
+  registerWxApi(appId: "wxabdf23571f34b49b", universalLink: "https://dsm.flutter.fit/app/");
   await FlutterDownloader.initialize(debug: false);
   await UmengAnalyticsPlugin.init(
     androidKey: '5ffe477d6a2a470e8f76809c',

@@ -6,16 +6,18 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dsm_helper/util/function.dart';
+import 'package:fluwx/fluwx.dart';
 import 'package:neumorphic/neumorphic.dart';
 
 class PreviewPage extends StatefulWidget {
   final List<String> images;
+  final List<String> thumbs;
   final int index;
   final bool network;
   final Object tag;
   final PageController pageController;
-  final String thumb;
-  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumb}) : this.pageController = PageController(initialPage: index);
+
+  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumbs}) : this.pageController = PageController(initialPage: index);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
@@ -97,14 +99,14 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                   loadStateChanged: (ExtendedImageState state) {
                     switch (state.extendedImageLoadState) {
                       case LoadState.loading:
-                        if (widget.thumb != null) {
+                        if (widget.thumbs.length > index + 1) {
                           final ImageChunkEvent loadingProgress = state.loadingProgress;
                           final double progress = loadingProgress?.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes : null;
                           return Stack(
                             alignment: Alignment.center,
                             children: [
                               ExtendedImage.network(
-                                widget.thumb,
+                                widget.thumbs[index],
                                 width: double.infinity,
                                 fit: BoxFit.contain,
                               ),
@@ -261,11 +263,32 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
             builder: (c, d) {
               if (d.data == null || !d.data) return Container();
 
-              return Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: MySwiperPlugin(widget.images, currentIndex, rebuildIndex),
+              return Column(
+                children: [
+                  SafeArea(
+                    child: Container(
+                      height: 56,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          // shareToWeChat(
+                          //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                          // );
+                          shareToWeChat(
+                            WeChatShareImageModel(WeChatImage.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                          );
+                        },
+                        child: Image.asset(
+                          "assets/icons/wechat.png",
+                          width: 30,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Spacer(),
+                  MySwiperPlugin(widget.images, currentIndex, rebuildIndex),
+                ],
               );
             },
             initialData: true,

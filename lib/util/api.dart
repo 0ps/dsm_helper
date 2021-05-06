@@ -2069,4 +2069,22 @@ class Api {
     });
     return result;
   }
+
+  static Future<Map> publicAccessInfo() async {
+    List apis = [
+      {"api": "SYNO.Core.DDNS.Provider", "version": 1, "method": "list"},
+      {"api": "SYNO.Core.DDNS.Record", "version": 1, "method": "list"},
+      {"api": "SYNO.Core.DDNS.ExtIP", "version": 2, "method": "list", "retry": true},
+      {"api": "SYNO.Core.DDNS.Synology", "version": 1, "method": "get_myds_account"},
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"parallel"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
+    return result;
+  }
 }

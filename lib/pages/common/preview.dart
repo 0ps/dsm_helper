@@ -277,10 +277,10 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                             //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
                             // );
                             print("share");
-                            sendWeChatAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");
-                            // shareToWeChat(
-                            //   WeChatShareImageModel(WeChatImage.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
-                            // );
+                            // sendWeChatAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");print
+                            shareToWeChat(
+                              WeChatShareImageModel(WeChatImage.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                            );
                           },
                           child: Image.asset(
                             "assets/icons/wechat.png",

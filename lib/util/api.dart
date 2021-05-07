@@ -2087,4 +2087,41 @@ class Api {
     });
     return result;
   }
+
+  static Future<Map> ddnsSave(ddns) async {
+    var data = {
+      "api": 'SYNO.Core.DDNS.Record',
+      "method": 'set',
+      "version": 1,
+      "id": '"${ddns['id'].replaceAll("USER_", "*")}"',
+      "enable": ddns['enable'],
+      "provider": '"${ddns['provider']}"',
+      "hostname": '"${ddns['hostname']}"',
+      "username": '"${ddns['username']}"',
+      "net": '"${ddns['net']}"',
+      "ip": '"${ddns['ip']}"',
+      "ipv6": '"${ddns['ipv6']}"',
+      "heartbeat": ddns['heartbeat'],
+      "_sid": Util.sid,
+    };
+    if (ddns['passwd'] != null) {
+      data['passwd'] = '"${ddns['passwd']}"';
+    }
+    print(data);
+    var result = await Util.post("entry.cgi", data: data);
+    return result;
+  }
+
+  static Future<Map> ddnsUpdate({String id}) async {
+    var data = {
+      "api": 'SYNO.Core.DDNS.Record',
+      "method": 'update_ip_address',
+      "version": 1,
+    };
+    if (id != null) {
+      data['id'] = '"$id"';
+    }
+    var result = await Util.post("entry.cgi", data: data);
+    return result;
+  }
 }

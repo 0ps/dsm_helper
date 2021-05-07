@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dsm_helper/pages/control_panel/public_access/edit_ddns.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/bubble_tab_indicator.dart';
@@ -20,11 +22,27 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
   List records = [];
   String nextUpdateTime = "";
   List ips = [];
+  Timer timer;
+  Map statusStr = {
+    "service_ddns_normal": "正常",
+    "service_ddns_error_unknown": "联机失败",
+    "loading": "加载中",
+    "disabled": "已停用",
+  };
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     getData();
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      getData();
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   getData() async {
@@ -36,12 +54,21 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
           switch (item['api']) {
             case "SYNO.Core.DDNS.Provider":
               setState(() {
-                providers = item['data']['providers'];
+                providers = item['data']['providers'].where((e) => e['provider'].startsWith("USER_") || e['url'] == null).map((e) {
+                  e['provider'] = e['provider'].replaceAll("USER_", "*");
+                  return e;
+                }).toList();
+                providers.sort((a, b) {
+                  return a['provider'].compareTo(b['provider']);
+                });
               });
               break;
             case "SYNO.Core.DDNS.Record":
               setState(() {
-                records = item['data']['records'];
+                records = item['data']['records'].map((e) {
+                  e['provider'] = e['provider'].replaceAll("USER_", "*");
+                  return e;
+                }).toList();
                 nextUpdateTime = item['data']['next_update_time'];
               });
               break;
@@ -58,9 +85,17 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
   Widget _buildDdnsItem(ddns) {
     return GestureDetector(
       onTap: () {
-        // Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-        //   return EditDdns(ddns);
-        // }));
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+          return EditDdns(
+            providers,
+            ddns: ddns,
+          );
+        })).then((value) async {
+          if (value != null && value) {
+            await Api.ddnsUpdate(id: ddns['id'].replaceAll("USER_", "*"));
+            getData();
+          }
+        });
       },
       child: NeuCard(
         decoration: NeumorphicDecoration(
@@ -84,8 +119,8 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
                   width: 5,
                 ),
                 Label(
-                  ddns['enable'] ? "正常" : "已停用",
-                  ddns['enable'] ? Colors.green : Colors.red,
+                  statusStr[ddns['status']] ?? ddns['status'],
+                  ddns['status'] == "service_ddns_normal" ? Colors.green : Colors.red,
                   fill: true,
                 ),
               ],
@@ -122,6 +157,24 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
       appBar: AppBar(
         leading: AppBackButton(context),
         title: Text("外部访问"),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () async {
+                await Api.ddnsUpdate();
+                getData();
+              },
+              child: Icon(Icons.refresh),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

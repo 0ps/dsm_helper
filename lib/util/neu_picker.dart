@@ -32,8 +32,8 @@ class _NeuPickerState extends State<NeuPicker> {
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(20),
         ),
-        bevel: 10,
-        curveType: CurveType.flat,
+        bevel: 2,
+        curveType: CurveType.concave,
         child: Column(
           children: [
             Padding(

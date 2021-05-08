@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:dsm_helper/pages/download/download_setting.dart';
 import 'package:dsm_helper/widgets/transparent_router.dart';
 import 'package:extended_image/extended_image.dart';
@@ -12,6 +14,23 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:vibrate/vibrate.dart';
 
+class DownloadInfo {
+  String taskId;
+  DownloadTaskStatus status;
+  int progress;
+  String url;
+  String filename;
+  String savedDir;
+  int timeCreated;
+
+  DownloadInfo({@required this.taskId, @required this.status, @required this.progress, @required this.url, @required this.filename, @required this.savedDir, @required this.timeCreated});
+  factory DownloadInfo.formTask(DownloadTask task) {
+    return DownloadInfo(taskId: task.taskId, status: task.status, progress: task.progress, url: task.url, filename: task.filename, savedDir: task.savedDir, timeCreated: task.timeCreated);
+  }
+  @override
+  String toString() => "DownloadInfo(taskId: $taskId, status: $status, progress: $progress, url: $url, filename: $filename, savedDir: $savedDir, timeCreated: $timeCreated)";
+}
+
 class Download extends StatefulWidget {
   Download({key}) : super(key: key);
   @override
@@ -19,32 +38,79 @@ class Download extends StatefulWidget {
 }
 
 class DownloadState extends State<Download> {
-  List<DownloadTask> tasks = [];
+  List<DownloadInfo> tasks = [];
   bool loading = true;
-  List<DownloadTask> selectedTasks = [];
+  List<DownloadInfo> selectedTasks = [];
   Timer timer;
   bool multiSelect = false;
+
+  ReceivePort _port = ReceivePort();
   @override
   void initState() {
+    _bindBackgroundIsolate();
+    FlutterDownloader.registerCallback(downloadCallback);
     getData();
     super.initState();
   }
 
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    print('Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port');
+    send.send([id, status, progress]);
+  }
+
+  void _bindBackgroundIsolate() {
+    bool isSuccess = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    if (!isSuccess) {
+      _unbindBackgroundIsolate();
+      _bindBackgroundIsolate();
+      return;
+    }
+    _port.listen((dynamic data) {
+      print('UI Isolate Callback: $data');
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+
+      if (tasks != null && tasks.isNotEmpty) {
+        tasks.forEach((task) {
+          if (task.taskId == id) {
+            setState(() {
+              task.status = status;
+              task.progress = progress;
+            });
+          }
+        });
+      }
+    });
+  }
+
+  void _unbindBackgroundIsolate() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+  }
+
+  @override
+  void dispose() {
+    _unbindBackgroundIsolate();
+    super.dispose();
+  }
+
   getData() async {
-    tasks = await FlutterDownloader.loadTasks();
+    List<DownloadTask> downloadTasks = await FlutterDownloader.loadTasks();
+    tasks = downloadTasks.map((e) => DownloadInfo.formTask(e)).toList();
     setState(() {
       loading = false;
     });
     //如果存在下载中任务，每秒刷新一次
-    if (tasks.where((task) => task.status == DownloadTaskStatus.running || task.status == DownloadTaskStatus.enqueued || task.status == DownloadTaskStatus.undefined).length > 0) {
-      if (timer == null) {
-        timer = Timer.periodic(Duration(seconds: 1), (timer) {
-          getData();
-        });
-      }
-    } else {
-      timer?.cancel();
-    }
+    // if (tasks.where((task) => task.status == DownloadTaskStatus.running || task.status == DownloadTaskStatus.enqueued || task.status == DownloadTaskStatus.undefined).length > 0) {
+    //   if (timer == null) {
+    //     timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    //       getData();
+    //     });
+    //   }
+    // } else {
+    //   timer?.cancel();
+    // }
   }
 
   Future<bool> onWillPop() {
@@ -151,7 +217,7 @@ class DownloadState extends State<Download> {
     }
   }
 
-  Widget _buildTaskItem(DownloadTask task) {
+  Widget _buildTaskItem(DownloadInfo task) {
     FileType fileType = Util.fileType(task.filename);
     // String path = file['path'];
     return Padding(
@@ -165,6 +231,8 @@ class DownloadState extends State<Download> {
           });
         },
         onPressed: () async {
+          // print(task.savedDir + "/" + task.filename);
+          // return;
           if (multiSelect) {
             setState(() {
               if (selectedTasks.contains(task)) {
@@ -187,7 +255,7 @@ class DownloadState extends State<Download> {
                 }
               }
               Navigator.of(context).push(TransparentPageRoute(
-                  pageBuilder: (context,_,__) {
+                  pageBuilder: (context, _, __) {
                     return PreviewPage(
                       images,
                       index,
@@ -501,7 +569,7 @@ class DownloadState extends State<Download> {
                                                   child: NeuButton(
                                                     onPressed: () async {
                                                       Navigator.of(context).pop();
-                                                      for (DownloadTask task in selectedTasks) {
+                                                      for (DownloadInfo task in selectedTasks) {
                                                         await FlutterDownloader.remove(taskId: task.taskId, shouldDeleteContent: true);
                                                       }
                                                       getData();

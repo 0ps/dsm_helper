@@ -477,6 +477,29 @@ class Util {
     }
   }
 
+  static String getUniqueName(String path, String name) {
+    bool unique = true;
+    int num = 0;
+    String uniqueName;
+    String ext = name.split(".").last;
+    while (unique) {
+      if (num == 0) {
+        uniqueName = name;
+      } else {
+        uniqueName = name.replaceAll(".$ext", "-$num.$ext");
+      }
+      print(path + "/" + uniqueName);
+      if (File(path + "/" + uniqueName).existsSync()) {
+        print("文件存在");
+        num++;
+      } else {
+        print("文件不存在");
+        unique = false;
+      }
+    }
+    return uniqueName;
+  }
+
   static Future<String> download(String saveName, String url) async {
     //检查权限
     bool permission = false;
@@ -487,9 +510,14 @@ class Util {
     }
     String savePath = await getDownloadPath();
     print(savePath);
-    if (!Directory(savePath).existsSync()) {
-      await Directory(savePath).create(recursive: true);
+    Directory saveDir = Directory(savePath);
+    if (!saveDir.existsSync()) {
+      await saveDir.create(recursive: true);
     }
+
+    saveName = getUniqueName(savePath, saveName);
+    print(saveName);
+
     String taskId = await FlutterDownloader.enqueue(url: url, fileName: saveName, savedDir: savePath, showNotification: true, openFileFromNotification: true);
     return taskId;
   }

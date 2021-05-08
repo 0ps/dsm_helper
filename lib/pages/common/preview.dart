@@ -276,10 +276,19 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                             // shareToWeChat(
                             //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
                             // );
-                            print("share");
+                            print(widget.images[currentIndex]);
                             // sendWeChatAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");print
+                            WeChatImage wechatImage;
+                            if (widget.images[currentIndex].startsWith("http")) {
+                              wechatImage = WeChatImage.network(widget.images[currentIndex]);
+                            } else if (widget.images[currentIndex].startsWith("/")) {
+                              wechatImage = WeChatImage.file(File(widget.images[currentIndex]));
+                            } else {
+                              Util.toast("暂不支持分享此图片");
+                              return;
+                            }
                             shareToWeChat(
-                              WeChatShareImageModel(WeChatImage.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                              WeChatShareImageModel(wechatImage, scene: WeChatScene.SESSION),
                             );
                           },
                           child: Image.asset(

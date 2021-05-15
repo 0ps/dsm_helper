@@ -453,7 +453,7 @@ class _PackageDetailState extends State<PackageDetail> {
                           // ),
                           Html(
                             data: widget.package['changelog'],
-                            onLinkTap: (link) {
+                            onLinkTap: (link, _, __, ___) {
                               AndroidIntent intent = AndroidIntent(
                                 action: 'action_view',
                                 data: link,

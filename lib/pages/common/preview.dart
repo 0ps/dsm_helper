@@ -12,12 +12,13 @@ import 'package:neumorphic/neumorphic.dart';
 class PreviewPage extends StatefulWidget {
   final List<String> images;
   final List<String> thumbs;
+  final List<String> names;
   final int index;
   final bool network;
   final Object tag;
   final PageController pageController;
 
-  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumbs}) : this.pageController = PageController(initialPage: index);
+  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumbs, this.names}) : this.pageController = PageController(initialPage: index);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();
@@ -271,30 +272,37 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
                         height: 56,
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            // shareToWeChat(
-                            //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
-                            // );
-                            print(widget.images[currentIndex]);
-                            // sendWeChatAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");print
-                            WeChatImage wechatImage;
-                            if (widget.images[currentIndex].startsWith("http")) {
-                              wechatImage = WeChatImage.network(widget.images[currentIndex]);
-                            } else if (widget.images[currentIndex].startsWith("/")) {
-                              wechatImage = WeChatImage.file(File(widget.images[currentIndex]));
-                            } else {
-                              Util.toast("暂不支持分享此图片");
-                              return;
-                            }
-                            shareToWeChat(
-                              WeChatShareImageModel(wechatImage, scene: WeChatScene.SESSION),
-                            );
-                          },
-                          child: Image.asset(
-                            "assets/icons/wechat.png",
-                            width: 30,
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: widget.names != null ? FileName(widget.names, currentIndex, rebuildIndex) : Container(),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // shareToWeChat(
+                                //   WeChatShareFileModel(WeChatFile.network(widget.images[currentIndex]), scene: WeChatScene.SESSION),
+                                // );
+                                print(widget.images[currentIndex]);
+                                // sendWeChatAuth(scope: "snsapi_userinfo", state: "wechat_sdk_demo_test");print
+                                WeChatImage wechatImage;
+                                if (widget.images[currentIndex].startsWith("http")) {
+                                  wechatImage = WeChatImage.network(widget.images[currentIndex]);
+                                } else if (widget.images[currentIndex].startsWith("/")) {
+                                  wechatImage = WeChatImage.file(File(widget.images[currentIndex]));
+                                } else {
+                                  Util.toast("暂不支持分享此图片");
+                                  return;
+                                }
+                                shareToWeChat(
+                                  WeChatShareImageModel(wechatImage, scene: WeChatScene.SESSION),
+                                );
+                              },
+                              child: Image.asset(
+                                "assets/icons/wechat.png",
+                                width: 30,
+                              ),
+                            )
+                          ],
                         ),
                       ),
                     ),
@@ -334,6 +342,23 @@ class _PreviewPageState extends State<PreviewPage> with SingleTickerProviderStat
     );
 
     return result;
+  }
+}
+
+class FileName extends StatelessWidget {
+  final List names;
+  final int index;
+  final StreamController<int> reBuild;
+  FileName(this.names, this.index, this.reBuild);
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<int>(
+      builder: (BuildContext context, data) {
+        return Text(data.data < names.length ? names[data.data] : "");
+      },
+      initialData: index,
+      stream: reBuild.stream,
+    );
   }
 }
 

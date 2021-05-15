@@ -1217,11 +1217,13 @@ class FilesState extends State<Files> {
             //获取当前目录全部图片文件
             List<String> images = [];
             List<String> thumbs = [];
+            List<String> names = [];
             int index = 0;
             for (int i = 0; i < files.length; i++) {
               if (Util.fileType(files[i]['name']) == FileType.image) {
                 images.add(Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=original&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
                 thumbs.add(Util.baseUrl + "/webapi/entry.cgi?path=${Uri.encodeComponent(files[i]['path'])}&size=small&api=SYNO.FileStation.Thumb&method=get&version=2&_sid=${Util.sid}&animate=true");
+                names.add(files[i]['name']);
                 if (files[i]['name'] == file['name']) {
                   index = images.length - 1;
                 }
@@ -1233,6 +1235,7 @@ class FilesState extends State<Files> {
                   images,
                   index,
                   thumbs: thumbs,
+                  names: names,
                 );
               },
             ));

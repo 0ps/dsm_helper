@@ -2124,4 +2124,16 @@ class Api {
     var result = await Util.post("entry.cgi", data: data);
     return result;
   }
+
+  static Future<Map> ddnsDelete(String id) async {
+    var data = {
+      "id": json.encode(["$id"]),
+      "api": 'SYNO.Core.DDNS.Record',
+      "method": 'delete',
+      "version": 1,
+    };
+    print(data);
+    var result = await Util.post("entry.cgi", data: data);
+    return result;
+  }
 }

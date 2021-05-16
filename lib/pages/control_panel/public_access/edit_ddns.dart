@@ -5,6 +5,7 @@ import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
+import 'package:vibrate/vibrate.dart';
 
 class EditDdns extends StatefulWidget {
   final Map ddns;
@@ -32,12 +33,120 @@ class _EditDdnsState extends State<EditDdns> {
     super.initState();
   }
 
+  deleteDdns() async {
+    Util.vibrate(FeedbackType.warning);
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return Material(
+          color: Colors.transparent,
+          child: NeuCard(
+            width: double.infinity,
+            padding: EdgeInsets.all(22),
+            bevel: 5,
+            curveType: CurveType.emboss,
+            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  "确认删除",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  "确认要删除以下DDNS？",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+                ),
+                SizedBox(
+                  height: 22,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: NeuButton(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          var res = await Api.ddnsDelete(widget.ddns['id']);
+                          print(res);
+                          if (res['success']) {
+                            Util.toast("DDNS删除成功");
+                            Navigator.of(context).pop(true);
+                          } else {
+                            Util.toast("删除失败，代码:${res['error']['code']}");
+                          }
+                        },
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        bevel: 5,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "确认删除",
+                          style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: NeuButton(
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                        },
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        bevel: 5,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "取消",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: AppBackButton(context),
         title: Text("DDNS"),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: deleteDdns,
+              child: Image.asset(
+                "assets/icons/delete.png",
+                width: 30,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

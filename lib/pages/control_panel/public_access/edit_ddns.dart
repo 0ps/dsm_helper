@@ -1,6 +1,8 @@
+import 'package:cool_ui/cool_ui.dart';
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/util/neu_picker.dart';
+import 'package:dsm_helper/widgets/label.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +11,9 @@ import 'package:vibrate/vibrate.dart';
 
 class EditDdns extends StatefulWidget {
   final Map ddns;
+  final List extIp;
   final List providers;
-  const EditDdns(this.providers, {this.ddns, Key key}) : super(key: key);
+  const EditDdns(this.providers, {this.extIp: const [], this.ddns, Key key}) : super(key: key);
 
   @override
   _EditDdnsState createState() => _EditDdnsState();
@@ -20,6 +23,12 @@ class _EditDdnsState extends State<EditDdns> {
   TextEditingController _hostnameController = TextEditingController();
   TextEditingController _usernameController = TextEditingController();
   Map ddns = {};
+  Map statusStr = {
+    "service_ddns_normal": "正常",
+    "service_ddns_error_unknown": "联机失败",
+    "loading": "加载中",
+    "disabled": "已停用",
+  };
   @override
   void initState() {
     if (widget.ddns != null) {
@@ -28,8 +37,19 @@ class _EditDdnsState extends State<EditDdns> {
       });
       _hostnameController.value = TextEditingValue(text: ddns['hostname']);
       _usernameController.value = TextEditingValue(text: ddns['username']);
+    } else {
+      ddns = {"enable": true, "heartbeat": false, "net": "DEFAULT", "ip": "-", "ipv6": "-"};
+      if (widget.extIp.length > 0) {
+        ddns['ip'] = widget.extIp.first['ip'];
+        ddns['ipv6'] = widget.extIp.first['ipv6'];
+      }
     }
-
+    if (ddns['ip'] == "0.0.0.0") {
+      ddns["ip"] = "-";
+    }
+    if (ddns['ipv6'] == "0:0:0:0:0:0:0:0") {
+      ddns['ipv6'] = "-";
+    }
     super.initState();
   }
 
@@ -123,6 +143,24 @@ class _EditDdnsState extends State<EditDdns> {
     );
   }
 
+  bool checkForm() {
+    if (ddns['provider'] == null || ddns['provider'] == "") {
+      Util.toast("请选择服务供应商");
+      return false;
+    } else if (ddns['hostname'] == null || ddns['hostname'] == "") {
+      Util.toast("请输入主机名称");
+      return false;
+    } else if (ddns['username'] == null || ddns['username'] == "") {
+      Util.toast("请输入用户名/电子邮件");
+      return false;
+    } else if (widget.ddns == null && (ddns['passwd'] == null || ddns['passwd'] == "")) {
+      Util.toast("请输入密码/密钥");
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,22 +168,23 @@ class _EditDdnsState extends State<EditDdns> {
         leading: AppBackButton(context),
         title: Text("DDNS"),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
-            child: NeuButton(
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: EdgeInsets.all(10),
-              bevel: 5,
-              onPressed: deleteDdns,
-              child: Image.asset(
-                "assets/icons/delete.png",
-                width: 30,
+          if (widget.ddns != null)
+            Padding(
+              padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+              child: NeuButton(
+                decoration: NeumorphicDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.all(10),
+                bevel: 5,
+                onPressed: deleteDdns,
+                child: Image.asset(
+                  "assets/icons/delete.png",
+                  width: 30,
+                ),
               ),
             ),
-          ),
         ],
       ),
       body: Column(
@@ -154,39 +193,42 @@ class _EditDdnsState extends State<EditDdns> {
             child: ListView(
               padding: EdgeInsets.all(20),
               children: [
-                GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      ddns['enable'] = !ddns['enable'];
-                    });
-                  },
-                  child: NeuCard(
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.all(20),
-                    bevel: 20,
-                    curveType: ddns['enable'] ? CurveType.emboss : CurveType.flat,
-                    child: Row(
-                      children: [
-                        Text("启用支持DDNS"),
-                        Spacer(),
-                        if (ddns['enable'])
-                          Icon(
-                            CupertinoIcons.checkmark_alt,
-                            color: Color(0xffff9813),
-                            size: 22,
-                          ),
-                      ],
+                if (widget.ddns != null) ...[
+                  GestureDetector(
+                    onTap: () async {
+                      setState(() {
+                        ddns['enable'] = !ddns['enable'];
+                      });
+                    },
+                    child: NeuCard(
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: EdgeInsets.all(20),
+                      bevel: 20,
+                      curveType: ddns['enable'] ? CurveType.emboss : CurveType.flat,
+                      child: Row(
+                        children: [
+                          Text("启用支持DDNS"),
+                          Spacer(),
+                          if (ddns['enable'])
+                            Icon(
+                              CupertinoIcons.checkmark_alt,
+                              color: Color(0xffff9813),
+                              size: 22,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
                 GestureDetector(
                   onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
                     if (widget.ddns != null) {
                       return;
                     }
@@ -199,6 +241,7 @@ class _EditDdnsState extends State<EditDdns> {
                           onConfirm: (v) {
                             setState(() {
                               ddns['provider'] = widget.providers[v]['provider'];
+                              print(ddns['provider']);
                             });
                           },
                         );
@@ -217,7 +260,7 @@ class _EditDdnsState extends State<EditDdns> {
                       children: [
                         Text("服务供应商"),
                         Spacer(),
-                        Text("${widget.providers.where((element) => element['provider'] == ddns['provider']).first['provider']}"),
+                        Text("${ddns['provider'] != null && ddns['provider'] != "" ? widget.providers.where((element) => element['provider'] == ddns['provider']).first['provider'] : "请选择"}"),
                       ],
                     ),
                   ),
@@ -318,7 +361,67 @@ class _EditDdnsState extends State<EditDdns> {
                       Text("${ddns['ipv6']}"),
                     ],
                   ),
-                )
+                ),
+                //statusStr[ddns['status']] ?? ddns['status']
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: NeuCard(
+                        decoration: NeumorphicDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        padding: EdgeInsets.all(20),
+                        bevel: 20,
+                        curveType: CurveType.flat,
+                        child: Row(
+                          children: [
+                            Text("状态:"),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            if (ddns['status'] != null)
+                              Label(
+                                statusStr[ddns['status']] ?? ddns['status'],
+                                ddns['status'] == "service_ddns_normal" ? Colors.green : Colors.red,
+                                fill: true,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    NeuButton(
+                      onPressed: () async {
+                        if (checkForm()) {
+                          var hide = showWeuiLoadingToast(context: context, message: Text("测试中，请稍后"), backButtonClose: true, alignment: Alignment.center);
+                          var res = await Api.ddnsTest(ddns);
+                          hide();
+                          print(res);
+                          if (res['success']) {
+                            setState(() {
+                              ddns['status'] = res['data']['status'];
+                            });
+                          } else {
+                            Util.toast("测试失败，${res['error']['errors']},code:${res['error']['code']}");
+                          }
+                        }
+                      },
+                      decoration: NeumorphicDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: EdgeInsets.all(20),
+                      bevel: 20,
+                      child: Text("测试联机"),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -331,12 +434,14 @@ class _EditDdnsState extends State<EditDdns> {
                 borderRadius: BorderRadius.circular(20),
               ),
               onPressed: () async {
-                var res = await Api.ddnsSave(ddns);
-                if (res['success']) {
-                  Util.toast("保存成功");
-                  Navigator.of(context).pop(true);
-                } else {
-                  Util.toast("保存失败,代码${res['error']['code']}");
+                if (checkForm()) {
+                  var res = await Api.ddnsSave(ddns);
+                  if (res['success']) {
+                    Util.toast("保存成功");
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Util.toast("保存失败,代码${res['error']['code']}");
+                  }
                 }
               },
               child: Text(

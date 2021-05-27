@@ -168,6 +168,26 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
               padding: EdgeInsets.all(10),
               bevel: 5,
               onPressed: () async {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                  return EditDdns(
+                    providers,
+                    extIp: ips,
+                  );
+                }));
+              },
+              child: Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10, top: 8, bottom: 8),
+            child: NeuButton(
+              decoration: NeumorphicDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.all(10),
+              bevel: 5,
+              onPressed: () async {
                 await Api.ddnsUpdate();
                 getData();
               },

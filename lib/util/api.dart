@@ -2136,4 +2136,30 @@ class Api {
     var result = await Util.post("entry.cgi", data: data);
     return result;
   }
+
+  static Future<Map> ddnsTest(Map ddns) async {
+    var data = {
+      "api": 'SYNO.Core.DDNS.Record',
+      "method": 'test',
+      "version": 1,
+      "heartbeat": true,
+      "enable": true,
+      "provider": '"${ddns['provider'].replaceAll("*", "USER_")}"',
+      "hostname": '"${ddns['hostname']}"',
+      "username": '"${ddns['username']}"',
+      "net": '"${ddns['net']}"',
+      "ip": '"${ddns['ip']}"',
+      "ipv6": '"${ddns['ipv6']}"',
+      "heartbeat": false,
+      "_sid": Util.sid,
+    };
+    if (ddns['passwd'] != null) {
+      data['passwd'] = '"${ddns['passwd']}"';
+    }
+    print(data);
+    print("000");
+    var result = await Util.post("entry.cgi", data: data);
+    print(result);
+    return result;
+  }
 }

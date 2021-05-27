@@ -35,20 +35,20 @@ dependencies:
   cupertino_icons: ^1.0.3
 #  fluttertoast: ^7.1.6
   oktoast: ^3.0.0
-  package_info: ^2.0.0
+  package_info: ^2.0.2
   pull_to_refresh: ^2.0.0
-  shared_preferences: ^2.0.5
-  permission_handler: ^7.1.0
+  shared_preferences: ^2.0.6
+  permission_handler: ^8.0.0+2
   extended_image: ^4.1.0
   cool_ui: ^1.0.2
   gallery_saver: ^2.1.0
-  android_intent: ^2.0.0
-  path_provider: ^2.0.1
+  android_intent: ^2.0.2
+  path_provider: ^2.0.2
   flutter_downloader: ^1.6.0
   percent_indicator: ^3.0.1
   fl_chart: ^0.36.1
   flutter_animation_progress_bar: ^2.0.0
-  file_picker: ^3.0.1
+  file_picker: ^3.0.2+2
   open_file: ^3.2.1
   flutter_datetime_picker: ^1.5.1
   flutter_swiper_null_safety: ^1.0.2
@@ -59,17 +59,17 @@ dependencies:
   dartssh: ^1.0.3+3
   xterm: ^2.0.0
   umeng_analytics_plugin: ^1.0.3
-  photo_manager: ^1.1.6
+  photo_manager: ^1.2.1
   vibrate: ^0.0.4
-  url_launcher: ^6.0.3
+  url_launcher: ^6.0.4
   http: ^0.13.3
   local_auth: ^1.1.5
   gesture_password: ^0.0.6
-  connectivity: ^3.0.3
+  connectivity: ^3.0.6
   code_editor: ^1.1.1
   flutter_highlight: ^0.7.0
-  syncfusion_flutter_pdfviewer: ^19.1.63-beta
-  wechat_assets_picker: ^5.5.2
+  syncfusion_flutter_pdfviewer: ^19.1.65-beta
+  wechat_assets_picker: ^5.5.3+1
   fluwx: ^3.4.2
   dio:
     git:

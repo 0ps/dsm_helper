@@ -18,7 +18,7 @@ class PreviewPage extends StatefulWidget {
   final Object tag;
   final PageController pageController;
 
-  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumbs, this.names}) : this.pageController = PageController(initialPage: index);
+  PreviewPage(this.images, this.index, {this.network = true, this.tag, this.thumbs: const [], this.names: const []}) : this.pageController = PageController(initialPage: index);
 
   @override
   _PreviewPageState createState() => _PreviewPageState();

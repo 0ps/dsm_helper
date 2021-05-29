@@ -13,7 +13,6 @@ import 'package:dsm_helper/pages/file/share.dart';
 import 'package:dsm_helper/pages/file/share_manager.dart';
 import 'package:dsm_helper/pages/file/upload.dart';
 import 'package:dsm_helper/widgets/transparent_router.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:dsm_helper/pages/common/preview.dart';
 import 'package:dsm_helper/pages/file/detail.dart';
 import 'package:dsm_helper/util/function.dart';

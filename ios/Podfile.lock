@@ -180,7 +180,7 @@ SPEC CHECKSUMS:
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  photo_manager: a8db3597a3b44e17ecb331fa099731c99b849496
+  photo_manager: 61cdd6835af271b9ad1bb533fccf71d5db02fff3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   receive_sharing_intent: c0d87310754e74c0f9542947e7cbdf3a0335a3b1
   SDWebImage: 0b2ba0d56479bf6a45ecddbfd5558bea93150d25
@@ -193,9 +193,9 @@ SPEC CHECKSUMS:
   vibrate: 967ba16b8bd87d2fa3646472bb10429f1927c32f
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: b0843b2479edbf6504d8d262c2959446f35373aa
-  webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  webview_flutter: 9f491a9b5a66f2573946a389b2677987b0ff8c0b
   WechatOpenSDK: 6a4d1436c15b3b5fe2a0bd383f3046010186da44
 
-PODFILE CHECKSUM: efe41917cd5b5c2d33e17bba26bc04de9de54f55
+PODFILE CHECKSUM: 78db454aa4d7a2031b49810cc09fa3a31a2aeab9
 
 COCOAPODS: 1.10.1

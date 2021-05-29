@@ -5,7 +5,6 @@ import 'package:dsm_helper/util/moments_api.dart';
 import 'package:dsm_helper/widgets/cupertino_image.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:dsm_helper/widgets/transparent_router.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
@@ -256,26 +255,25 @@ class _TimelineState extends State<Timeline> {
                   labelTextBuilder: (position) {
                     var line = timeline.where((element) => element['position']['start'] <= position && element['position']['end'] >= position).toList();
                     if (line.length > 0) {
-                      return Text("${line[0]['month']}月");
-                      // return Container(
-                      //   padding: EdgeInsets.symmetric(horizontal: 20),
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.end,
-                      //     children: [
-                      //       Text(
-                      //         "${line[0]['month']}月",
-                      //         style: TextStyle(fontSize: 30),
-                      //       ),
-                      //       Column(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         children: [
-                      //           Text("${line[0]['day'].toString().padLeft(2, "0")}日"),
-                      //           Text("${line[0]['year']}"),
-                      //         ],
-                      //       )
-                      //     ],
-                      //   ),
-                      // );
+                      return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${line[0]['month']}月",
+                              style: TextStyle(fontSize: 30),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("${line[0]['day'].toString().padLeft(2, "0")}日"),
+                                Text("${line[0]['year']}"),
+                              ],
+                            )
+                          ],
+                        ),
+                      );
                     } else {
                       return null;
                     }

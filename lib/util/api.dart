@@ -2142,7 +2142,7 @@ class Api {
       "api": 'SYNO.Core.DDNS.Record',
       "method": 'test',
       "version": 1,
-      "heartbeat": true,
+      "heartbeat": ddns['heartbeat'],
       "enable": true,
       "provider": '"${ddns['provider'].replaceAll("*", "USER_")}"',
       "hostname": '"${ddns['hostname']}"',
@@ -2150,16 +2150,30 @@ class Api {
       "net": '"${ddns['net']}"',
       "ip": '"${ddns['ip']}"',
       "ipv6": '"${ddns['ipv6']}"',
-      "heartbeat": false,
       "_sid": Util.sid,
     };
     if (ddns['passwd'] != null) {
       data['passwd'] = '"${ddns['passwd']}"';
     }
-    print(data);
-    print("000");
     var result = await Util.post("entry.cgi", data: data);
-    print(result);
+    return result;
+  }
+
+  static Future<Map> networkStatus() async {
+    List apis = [
+      {"api": "SYNO.Core.Network", "method": "get", "version": 2},
+      {"api": "SYNO.Core.Network.Proxy", "method": "get", "version": 1},
+      {"api": "SYNO.Core.Network.Router.Gateway.List", "method": "get", "version": 1, "iptype": "ipv4", "type": "wan"}
+    ];
+    var result = await Util.post("entry.cgi", data: {
+      "stop_when_error": false,
+      "api": 'SYNO.Entry.Request',
+      "method": 'request',
+      "mode": '"sequential"',
+      "compound": jsonEncode(apis),
+      "version": 1,
+      "_sid": Util.sid,
+    });
     return result;
   }
 }

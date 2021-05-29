@@ -4,7 +4,6 @@ import 'package:dsm_helper/util/moments_api.dart';
 import 'package:dsm_helper/widgets/cupertino_image.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:dsm_helper/widgets/transparent_router.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 class Photos extends StatefulWidget {

@@ -252,7 +252,6 @@ class _LoginState extends State<Login> {
         }
       }
 
-      print(qcAddresses);
       bool finded = false;
       for (var address in qcAddresses) {
         print(qcAddresses);
@@ -268,8 +267,6 @@ class _LoginState extends State<Login> {
         });
       }
     } else if (res['errno'] == 4 && res['errinfo'] == "get_server_info.go:105[]" && res['sites'].length > 0) {
-      print(res);
-      print("使用新地址进行解析");
       qcLogin(qcHost: res['sites'][0]);
     } else {
       Util.toast("无法连接到服务器，请检查QuickConnect ID是否正确");
@@ -524,6 +521,7 @@ class _LoginState extends State<Login> {
               curveType: CurveType.flat,
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: NeuTextField(
+                keyboardAppearance: Brightness.light,
                 controller: _accountController,
                 onChanged: (v) => account = v,
                 decoration: InputDecoration(

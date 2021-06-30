@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dsm_helper/pages/login/accounts.dart';
+import 'package:dsm_helper/pages/setting/license.dart';
 import 'package:dsm_helper/pages/update/update.dart';
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -37,6 +38,7 @@ class _LoginState extends State<Login> {
   bool autoLogin = true;
   bool checkSsl = true;
   bool rememberDevice = false;
+  bool read = false;
   TextEditingController _hostController = TextEditingController();
   TextEditingController _accountController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -48,7 +50,13 @@ class _LoginState extends State<Login> {
   @override
   initState() {
     checkUpdate();
-
+    Util.getStorage("read").then((value) {
+      if (value.isNotBlank && value == "1") {
+        setState(() {
+          read = true;
+        });
+      }
+    });
     Util.getStorage("servers").then((serverString) {
       if (serverString.isNotBlank) {
         servers = jsonDecode(serverString);
@@ -735,6 +743,10 @@ class _LoginState extends State<Login> {
                 borderRadius: BorderRadius.circular(20),
               ),
               onPressed: () {
+                if (!read) {
+                  Util.toast("请先阅读并同意用户协议和隐私政策");
+                  return;
+                }
                 if (login) {
                   if (login == true) {
                     cancelToken?.cancel("取消登录");
@@ -766,6 +778,62 @@ class _LoginState extends State<Login> {
                       style: TextStyle(fontSize: 18),
                     ),
             ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      read = !read;
+                      Util.setStorage("read", read ? "1" : "0");
+                    });
+                  },
+                  child: NeuCard(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    height: 30,
+                    width: 30,
+                    alignment: Alignment.center,
+                    curveType: read ? CurveType.emboss : CurveType.flat,
+                    child: read
+                        ? Icon(
+                            CupertinoIcons.checkmark_alt,
+                            color: Color(0xffff9813),
+                          )
+                        : SizedBox(),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: "我已阅读并同意 "),
+                        WidgetSpan(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                                return License();
+                              }));
+                            },
+                            child: Text(
+                              "${Util.appName}用户协议和隐私政策",
+                              style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

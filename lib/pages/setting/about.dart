@@ -102,6 +102,35 @@ class _AboutState extends State<About> {
                     child: Row(
                       children: [
                         Image.asset(
+                          "assets/icons/apaipai.png",
+                          width: 20,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "青岛阿派派软件有限公司版权所有",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                NeuCard(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  curveType: CurveType.flat,
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Image.asset(
                           "assets/icons/qq.png",
                           width: 20,
                         ),

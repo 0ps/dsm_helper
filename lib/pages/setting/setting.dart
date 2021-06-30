@@ -11,6 +11,7 @@ import 'package:dsm_helper/pages/user/setting.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluwx/fluwx.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:provider/provider.dart';
 
@@ -341,9 +342,12 @@ class _SettingState extends State<Setting> {
           SizedBox(
             height: 30,
           ),
-          Row(
+          Wrap(
+            spacing: 20,
+            runSpacing: 20,
             children: [
-              Expanded(
+              SizedBox(
+                width: (MediaQuery.of(context).size.width - 80) / 3,
                 child: NeuButton(
                   onPressed: () async {
                     if (shutdowning) {
@@ -460,9 +464,7 @@ class _SettingState extends State<Setting> {
                 ),
               ),
               SizedBox(
-                width: 20,
-              ),
-              Expanded(
+                width: (MediaQuery.of(context).size.width - 80) / 3,
                 child: NeuButton(
                   onPressed: () async {
                     if (rebooting) {
@@ -579,9 +581,7 @@ class _SettingState extends State<Setting> {
                 ),
               ),
               SizedBox(
-                width: 20,
-              ),
-              Expanded(
+                width: (MediaQuery.of(context).size.width - 80) / 3,
                 child: GestureDetector(
                   onTap: () async {
                     if (ssh == null) {
@@ -637,14 +637,8 @@ class _SettingState extends State<Setting> {
                   ),
                 ),
               ),
-            ],
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              Expanded(
+              SizedBox(
+                width: (MediaQuery.of(context).size.width - 80) / 3,
                 child: NeuButton(
                   onPressed: () async {
                     showCupertinoModalPopup(
@@ -787,9 +781,7 @@ class _SettingState extends State<Setting> {
                 ),
               ),
               SizedBox(
-                width: 20,
-              ),
-              Expanded(
+                width: (MediaQuery.of(context).size.width - 80) / 3,
                 child: NeuButton(
                   onPressed: () {
                     Navigator.of(context).push(CupertinoPageRoute(
@@ -823,45 +815,69 @@ class _SettingState extends State<Setting> {
                 ),
               ),
               SizedBox(
-                width: 20,
-              ),
-              // Expanded(child: Container()),
-              Expanded(
-                  child:
-                      // Platform.isAndroid?
-                      NeuButton(
-                onPressed: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) {
-                        return Backup();
-                      },
-                      settings: RouteSettings(name: "backup")));
-                },
-                // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                padding: EdgeInsets.symmetric(vertical: 20),
-                decoration: NeumorphicDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                bevel: 20,
-                child: Column(
-                  children: [
-                    Image.asset(
-                      "assets/icons/upload.png",
-                      width: 40,
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      "相册备份",
-                      style: TextStyle(fontSize: 16),
-                    )
-                  ],
-                ),
-              )
-                  // : Container(),
+                width: (MediaQuery.of(context).size.width - 80) / 3,
+                child: NeuButton(
+                  onPressed: () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) {
+                          return Backup();
+                        },
+                        settings: RouteSettings(name: "backup")));
+                  },
+                  // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
                   ),
+                  bevel: 20,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/icons/upload.png",
+                        width: 40,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        "相册备份",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: (MediaQuery.of(context).size.width - 80) / 3,
+                child: NeuButton(
+                  onPressed: () {
+                    // launchWeChatMiniProgram(username: "")
+                  },
+                  // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  decoration: NeumorphicDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  bevel: 20,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/icons/upload.png",
+                        width: 40,
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        "问题反馈",
+                        style: TextStyle(fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ],

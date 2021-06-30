@@ -18,7 +18,7 @@ class UpdateDialog extends StatelessWidget {
         child: Container(
           width: 300,
           child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

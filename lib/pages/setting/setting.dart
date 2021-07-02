@@ -852,7 +852,80 @@ class _SettingState extends State<Setting> {
                 width: (MediaQuery.of(context).size.width - 80) / 3,
                 child: NeuButton(
                   onPressed: () {
-                    // launchWeChatMiniProgram(username: "")
+                    showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return Material(
+                          color: Colors.transparent,
+                          child: NeuCard(
+                            width: double.infinity,
+                            bevel: 5,
+                            curveType: CurveType.emboss,
+                            decoration: NeumorphicDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    "您将进入“阿派派软件”微信小程序进行问题反馈。是否确定要继续？",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            launchWeChatMiniProgram(username: "gh_6c07712ef0fb");
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 5,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Text(
+                                            "进入小程序",
+                                            style: TextStyle(fontSize: 18, color: Colors.redAccent),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      Expanded(
+                                        child: NeuButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                          },
+                                          decoration: NeumorphicDecoration(
+                                            color: Theme.of(context).scaffoldBackgroundColor,
+                                            borderRadius: BorderRadius.circular(25),
+                                          ),
+                                          bevel: 5,
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          child: Text(
+                                            "取消",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                   // margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   padding: EdgeInsets.symmetric(vertical: 20),
@@ -864,7 +937,7 @@ class _SettingState extends State<Setting> {
                   child: Column(
                     children: [
                       Image.asset(
-                        "assets/icons/upload.png",
+                        "assets/icons/edit.png",
                         width: 40,
                       ),
                       SizedBox(

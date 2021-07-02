@@ -214,34 +214,34 @@ class _ControlPanelState extends State<ControlPanel> {
                             ),
                           ),
                         ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/ldap.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "域/LDAP",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // NeuCard(
+                      //   width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   curveType: CurveType.flat,
+                      //   decoration: NeumorphicDecoration(
+                      //     color: Theme.of(context).scaffoldBackgroundColor,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   bevel: 20,
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //         "assets/control_panel/${Util.version}/ldap.png",
+                      //         height: 30,
+                      //         width: 30,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //       SizedBox(
+                      //         height: 5,
+                      //       ),
+                      //       Text(
+                      //         "域/LDAP",
+                      //         style: TextStyle(fontSize: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -275,35 +275,35 @@ class _ControlPanelState extends State<ControlPanel> {
                     spacing: 20,
                     runSpacing: 20,
                     children: [
-                      if (Util.version < 7)
-                        NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.convex,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/${Util.version}/quickconnect.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "Quick Connect",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
+                      // if (Util.version < 7)
+                      //   NeuCard(
+                      //     width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     curveType: CurveType.convex,
+                      //     decoration: NeumorphicDecoration(
+                      //       color: Theme.of(context).scaffoldBackgroundColor,
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     bevel: 20,
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/control_panel/${Util.version}/quickconnect.png",
+                      //           height: 30,
+                      //           width: 30,
+                      //           fit: BoxFit.contain,
+                      //         ),
+                      //         SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Text(
+                      //           "Quick Connect",
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(CupertinoPageRoute(
@@ -378,92 +378,92 @@ class _ControlPanelState extends State<ControlPanel> {
                           ),
                         ),
                       ),
-                      if (Util.version < 7)
-                        NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.convex,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/${Util.version}/dhcp_server.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "DHCP Server",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      if (Util.version < 7)
-                        NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.convex,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/6/wireless.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "无线",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.convex,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/security.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "安全性",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // if (Util.version < 7)
+                      //   NeuCard(
+                      //     width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     curveType: CurveType.convex,
+                      //     decoration: NeumorphicDecoration(
+                      //       color: Theme.of(context).scaffoldBackgroundColor,
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     bevel: 20,
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/control_panel/${Util.version}/dhcp_server.png",
+                      //           height: 30,
+                      //           width: 30,
+                      //           fit: BoxFit.contain,
+                      //         ),
+                      //         SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Text(
+                      //           "DHCP Server",
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // if (Util.version < 7)
+                      //   NeuCard(
+                      //     width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     curveType: CurveType.convex,
+                      //     decoration: NeumorphicDecoration(
+                      //       color: Theme.of(context).scaffoldBackgroundColor,
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     bevel: 20,
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/control_panel/6/wireless.png",
+                      //           height: 30,
+                      //           width: 30,
+                      //           fit: BoxFit.contain,
+                      //         ),
+                      //         SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Text(
+                      //           "无线",
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // NeuCard(
+                      //   width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   curveType: CurveType.convex,
+                      //   decoration: NeumorphicDecoration(
+                      //     color: Theme.of(context).scaffoldBackgroundColor,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   bevel: 20,
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //         "assets/control_panel/${Util.version}/security.png",
+                      //         height: 30,
+                      //         width: 30,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //       SizedBox(
+                      //         height: 5,
+                      //       ),
+                      //       Text(
+                      //         "安全性",
+                      //         style: TextStyle(fontSize: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                       if (Util.version >= 7)
                         GestureDetector(
                           onTap: () {
@@ -574,90 +574,90 @@ class _ControlPanelState extends State<ControlPanel> {
                           ),
                         ),
                       ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/login_style.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              Util.version < 7 ? "主题样式" : "登录门户",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/region.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "区域选项",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/notifications.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "通知设置",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // NeuCard(
+                      //   width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   curveType: CurveType.flat,
+                      //   decoration: NeumorphicDecoration(
+                      //     color: Theme.of(context).scaffoldBackgroundColor,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   bevel: 20,
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //         "assets/control_panel/${Util.version}/login_style.png",
+                      //         height: 30,
+                      //         width: 30,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //       SizedBox(
+                      //         height: 5,
+                      //       ),
+                      //       Text(
+                      //         Util.version < 7 ? "主题样式" : "登录门户",
+                      //         style: TextStyle(fontSize: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // NeuCard(
+                      //   width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   curveType: CurveType.flat,
+                      //   decoration: NeumorphicDecoration(
+                      //     color: Theme.of(context).scaffoldBackgroundColor,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   bevel: 20,
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //         "assets/control_panel/${Util.version}/region.png",
+                      //         height: 30,
+                      //         width: 30,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //       SizedBox(
+                      //         height: 5,
+                      //       ),
+                      //       Text(
+                      //         "区域选项",
+                      //         style: TextStyle(fontSize: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // NeuCard(
+                      //   width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   curveType: CurveType.flat,
+                      //   decoration: NeumorphicDecoration(
+                      //     color: Theme.of(context).scaffoldBackgroundColor,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   bevel: 20,
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //         "assets/control_panel/${Util.version}/notifications.png",
+                      //         height: 30,
+                      //         width: 30,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //       SizedBox(
+                      //         height: 5,
+                      //       ),
+                      //       Text(
+                      //         "通知设置",
+                      //         style: TextStyle(fontSize: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                       if (Util.version < 7)
                         GestureDetector(
                           onTap: () {
@@ -857,96 +857,96 @@ class _ControlPanelState extends State<ControlPanel> {
                     spacing: 20,
                     runSpacing: 20,
                     children: [
-                      if (Util.version >= 7)
-                        NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.flat,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/${Util.version}/synology_account.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "Synology 账户",
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      NeuCard(
-                        width: (MediaQuery.of(context).size.width - 120) / 3,
-                        height: (MediaQuery.of(context).size.width - 120) / 3,
-                        curveType: CurveType.flat,
-                        decoration: NeumorphicDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        bevel: 20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/control_panel/${Util.version}/privilege.png",
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.contain,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              Util.version < 7 ? "权限" : "应用程序权限",
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (Util.version < 7)
-                        NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.flat,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/${Util.version}/portal.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "应用程序门户",
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
+                      // if (Util.version >= 7)
+                      //   NeuCard(
+                      //     width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     curveType: CurveType.flat,
+                      //     decoration: NeumorphicDecoration(
+                      //       color: Theme.of(context).scaffoldBackgroundColor,
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     bevel: 20,
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/control_panel/${Util.version}/synology_account.png",
+                      //           height: 30,
+                      //           width: 30,
+                      //           fit: BoxFit.contain,
+                      //         ),
+                      //         SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Text(
+                      //           "Synology 账户",
+                      //           maxLines: 1,
+                      //           overflow: TextOverflow.clip,
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // NeuCard(
+                      //   width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //   curveType: CurveType.flat,
+                      //   decoration: NeumorphicDecoration(
+                      //     color: Theme.of(context).scaffoldBackgroundColor,
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   bevel: 20,
+                      //   child: Column(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Image.asset(
+                      //         "assets/control_panel/${Util.version}/privilege.png",
+                      //         height: 30,
+                      //         width: 30,
+                      //         fit: BoxFit.contain,
+                      //       ),
+                      //       SizedBox(
+                      //         height: 5,
+                      //       ),
+                      //       Text(
+                      //         Util.version < 7 ? "权限" : "应用程序权限",
+                      //         style: TextStyle(fontSize: 12),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // if (Util.version < 7)
+                      //   NeuCard(
+                      //     width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     curveType: CurveType.flat,
+                      //     decoration: NeumorphicDecoration(
+                      //       color: Theme.of(context).scaffoldBackgroundColor,
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     bevel: 20,
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/control_panel/${Util.version}/portal.png",
+                      //           height: 30,
+                      //           width: 30,
+                      //           fit: BoxFit.contain,
+                      //         ),
+                      //         SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Text(
+                      //           "应用程序门户",
+                      //           maxLines: 1,
+                      //           overflow: TextOverflow.clip,
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(CupertinoPageRoute(
@@ -984,37 +984,37 @@ class _ControlPanelState extends State<ControlPanel> {
                           ),
                         ),
                       ),
-                      if (Util.version < 7)
-                        NeuCard(
-                          width: (MediaQuery.of(context).size.width - 120) / 3,
-                          height: (MediaQuery.of(context).size.width - 120) / 3,
-                          curveType: CurveType.flat,
-                          decoration: NeumorphicDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          bevel: 20,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/control_panel/${Util.version}/share_folder_sync.png",
-                                height: 30,
-                                width: 30,
-                                fit: BoxFit.contain,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                "共享文件夹同步",
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
+                      // if (Util.version < 7)
+                      //   NeuCard(
+                      //     width: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     height: (MediaQuery.of(context).size.width - 120) / 3,
+                      //     curveType: CurveType.flat,
+                      //     decoration: NeumorphicDecoration(
+                      //       color: Theme.of(context).scaffoldBackgroundColor,
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     bevel: 20,
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Image.asset(
+                      //           "assets/control_panel/${Util.version}/share_folder_sync.png",
+                      //           height: 30,
+                      //           width: 30,
+                      //           fit: BoxFit.contain,
+                      //         ),
+                      //         SizedBox(
+                      //           height: 5,
+                      //         ),
+                      //         Text(
+                      //           "共享文件夹同步",
+                      //           maxLines: 1,
+                      //           overflow: TextOverflow.clip,
+                      //           style: TextStyle(fontSize: 12),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
                       if (Util.version < 7)
                         GestureDetector(
                           onTap: () {

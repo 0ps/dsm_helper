@@ -22,6 +22,7 @@ class _NetworkState extends State<Network> with SingleTickerProviderStateMixin {
   Map network;
   Map proxy;
   Map gateway;
+  Map dsm;
   bool loading = true;
   @override
   void initState() {
@@ -58,6 +59,12 @@ class _NetworkState extends State<Network> with SingleTickerProviderStateMixin {
             case "SYNO.Core.Network.Router.Gateway.List":
               setState(() {
                 gateway = item['data'];
+              });
+              break;
+            case "SYNO.Core.Web.DSM":
+              setState(() {
+                dsm = item['data'];
+                print(dsm);
               });
               break;
           }

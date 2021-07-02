@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dsm_helper/pages/common/browser.dart';
 import 'package:dsm_helper/pages/setting/open_source.dart';
-import 'package:dsm_helper/pages/setting/reward.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -201,76 +200,76 @@ class _AboutState extends State<About> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  NeuCard(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    decoration: NeumorphicDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    curveType: CurveType.flat,
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                "assets/icons/coffee.png",
-                                width: 20,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "给作者买杯咖啡",
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              Spacer(),
-                              NeuButton(
-                                decoration: NeumorphicDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                                onPressed: () {
-                                  Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) {
-                                      return Reward();
-                                    },
-                                    settings: RouteSettings(name: "reward"),
-                                  ));
-                                },
-                                child: Text("打赏名单"),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Center(
-                            child: NeuCard(
-                              decoration: NeumorphicDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              curveType: CurveType.flat,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.asset(
-                                  "assets/pay_qr.png",
-                                  width: MediaQuery.of(context).size.width / 2 - 50,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
+                  // NeuCard(
+                  //   margin: EdgeInsets.symmetric(horizontal: 20),
+                  //   decoration: NeumorphicDecoration(
+                  //     color: Theme.of(context).scaffoldBackgroundColor,
+                  //     borderRadius: BorderRadius.circular(20),
+                  //   ),
+                  //   curveType: CurveType.flat,
+                  //   child: Padding(
+                  //     padding: EdgeInsets.all(20),
+                  //     child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Row(
+                  //           children: [
+                  //             Image.asset(
+                  //               "assets/icons/coffee.png",
+                  //               width: 20,
+                  //             ),
+                  //             SizedBox(
+                  //               width: 10,
+                  //             ),
+                  //             Text(
+                  //               "给作者买杯咖啡",
+                  //               style: TextStyle(fontSize: 16),
+                  //             ),
+                  //             Spacer(),
+                  //             NeuButton(
+                  //               decoration: NeumorphicDecoration(
+                  //                 color: Theme.of(context).scaffoldBackgroundColor,
+                  //                 borderRadius: BorderRadius.circular(20),
+                  //               ),
+                  //               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  //               onPressed: () {
+                  //                 Navigator.of(context).push(CupertinoPageRoute(
+                  //                   builder: (context) {
+                  //                     return Reward();
+                  //                   },
+                  //                   settings: RouteSettings(name: "reward"),
+                  //                 ));
+                  //               },
+                  //               child: Text("打赏名单"),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         SizedBox(
+                  //           height: 20,
+                  //         ),
+                  //         Center(
+                  //           child: NeuCard(
+                  //             decoration: NeumorphicDecoration(
+                  //               color: Theme.of(context).scaffoldBackgroundColor,
+                  //               borderRadius: BorderRadius.circular(20),
+                  //             ),
+                  //             curveType: CurveType.flat,
+                  //             child: ClipRRect(
+                  //               borderRadius: BorderRadius.circular(20),
+                  //               child: Image.asset(
+                  //                 "assets/pay_qr.png",
+                  //                 width: MediaQuery.of(context).size.width / 2 - 50,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
                 SizedBox(
                   height: 20,

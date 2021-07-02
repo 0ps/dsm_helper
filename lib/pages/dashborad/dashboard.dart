@@ -23,7 +23,6 @@ import 'package:dsm_helper/pages/resource_monitor/resource_monitor.dart';
 import 'package:dsm_helper/pages/security_scan/security_scan.dart';
 import 'package:dsm_helper/pages/storage_manager/storage_manager.dart';
 import 'package:dsm_helper/pages/control_panel/info/info.dart';
-import 'package:dsm_helper/pages/universal_search/universal_search.dart';
 import 'package:dsm_helper/pages/virtual_machine/virtual_machine.dart';
 import 'package:dsm_helper/util/badge.dart';
 import 'package:dsm_helper/util/function.dart';
@@ -2047,44 +2046,44 @@ class DashboardState extends State<Dashboard> {
     //   );
     // }
 
-    if (applications.contains("SYNO.Finder.Application")) {
-      apps.add(
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).push(CupertinoPageRoute(
-                builder: (context) {
-                  return UniversalSearch();
-                },
-                settings: RouteSettings(name: "universal_search")));
-          },
-          child: NeuCard(
-            width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
-            curveType: CurveType.flat,
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            bevel: 20,
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [
-                Image.asset(
-                  "assets/applications/${Util.version}/universal_search.png",
-                  height: 45,
-                  width: 45,
-                  fit: BoxFit.contain,
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text("Universal Search"),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    // if (applications.contains("SYNO.Finder.Application")) {
+    //   apps.add(
+    //     GestureDetector(
+    //       onTap: () {
+    //         Navigator.of(context).pop();
+    //         Navigator.of(context).push(CupertinoPageRoute(
+    //             builder: (context) {
+    //               return UniversalSearch();
+    //             },
+    //             settings: RouteSettings(name: "universal_search")));
+    //       },
+    //       child: NeuCard(
+    //         width: (MediaQuery.of(context).size.width * 0.8 - 60) / 2,
+    //         curveType: CurveType.flat,
+    //         decoration: NeumorphicDecoration(
+    //           color: Theme.of(context).scaffoldBackgroundColor,
+    //           borderRadius: BorderRadius.circular(20),
+    //         ),
+    //         bevel: 20,
+    //         padding: EdgeInsets.symmetric(vertical: 20),
+    //         child: Column(
+    //           children: [
+    //             Image.asset(
+    //               "assets/applications/${Util.version}/universal_search.png",
+    //               height: 45,
+    //               width: 45,
+    //               fit: BoxFit.contain,
+    //             ),
+    //             SizedBox(
+    //               height: 5,
+    //             ),
+    //             Text("Universal Search"),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
     if (applications.contains("SYNO.SDS.Virtualization.Application")) {
       apps.add(
         GestureDetector(

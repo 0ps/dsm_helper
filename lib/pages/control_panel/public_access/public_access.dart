@@ -31,7 +31,7 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
   };
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 1, vsync: this);
     getData();
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       getData();
@@ -198,41 +198,41 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
       ),
       body: Column(
         children: [
-          NeuCard(
-            width: double.infinity,
-            decoration: NeumorphicDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            curveType: CurveType.flat,
-            bevel: 10,
-            child: TabBar(
-              isScrollable: false,
-              controller: _tabController,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-              unselectedLabelColor: Colors.grey,
-              indicator: BubbleTabIndicator(
-                indicatorColor: Theme.of(context).scaffoldBackgroundColor,
-                shadowColor: Util.getAdjustColor(Theme.of(context).scaffoldBackgroundColor, -20),
-              ),
-              tabs: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Text("DDNS"),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Text("路由器配置"),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                  child: Text("高级设置"),
-                ),
-              ],
-            ),
-          ),
+          // NeuCard(
+          //   width: double.infinity,
+          //   decoration: NeumorphicDecoration(
+          //     color: Theme.of(context).scaffoldBackgroundColor,
+          //     borderRadius: BorderRadius.circular(20),
+          //   ),
+          //   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          //   curveType: CurveType.flat,
+          //   bevel: 10,
+          //   child: TabBar(
+          //     isScrollable: false,
+          //     controller: _tabController,
+          //     indicatorSize: TabBarIndicatorSize.label,
+          //     labelColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+          //     unselectedLabelColor: Colors.grey,
+          //     indicator: BubbleTabIndicator(
+          //       indicatorColor: Theme.of(context).scaffoldBackgroundColor,
+          //       shadowColor: Util.getAdjustColor(Theme.of(context).scaffoldBackgroundColor, -20),
+          //     ),
+          //     tabs: [
+          //       Padding(
+          //         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          //         child: Text("DDNS"),
+          //       ),
+          //       // Padding(
+          //       //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          //       //   child: Text("路由器配置"),
+          //       // ),
+          //       // Padding(
+          //       //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          //       //   child: Text("高级设置"),
+          //       // ),
+          //     ],
+          //   ),
+          // ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -243,12 +243,12 @@ class _PublicAccessState extends State<PublicAccess> with SingleTickerProviderSt
                   },
                   itemCount: records.length,
                 ),
-                Center(
-                  child: Text("开发中"),
-                ),
-                Center(
-                  child: Text("开发中"),
-                ),
+                // Center(
+                //   child: Text("开发中"),
+                // ),
+                // Center(
+                //   child: Text("开发中"),
+                // ),
               ],
             ),
           ),

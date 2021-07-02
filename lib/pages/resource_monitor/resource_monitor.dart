@@ -166,100 +166,100 @@ class _ResourceMonitorState extends State<ResourceMonitor> with SingleTickerProv
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
-            child: NeuButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) {
-                      return SpeedLimit();
-                    },
-                    settings: RouteSettings(name: "speed_limit"),
-                  ),
-                );
-              },
-              padding: EdgeInsets.zero,
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 20,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Image.asset(
-                      "assets/control_panel/speed.png",
-                      width: 40,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Text(
-                        "速度限制",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
-            child: NeuButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) {
-                      return MonitorSetting();
-                    },
-                    settings: RouteSettings(name: "monitor_setting"),
-                  ),
-                );
-              },
-              padding: EdgeInsets.zero,
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 20,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Image.asset(
-                      "assets/icons/setting.png",
-                      width: 40,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Text(
-                        "设置",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+          //   child: NeuButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(
+          //         CupertinoPageRoute(
+          //           builder: (context) {
+          //             return SpeedLimit();
+          //           },
+          //           settings: RouteSettings(name: "speed_limit"),
+          //         ),
+          //       );
+          //     },
+          //     padding: EdgeInsets.zero,
+          //     decoration: NeumorphicDecoration(
+          //       color: Theme.of(context).scaffoldBackgroundColor,
+          //       borderRadius: BorderRadius.circular(20),
+          //     ),
+          //     bevel: 20,
+          //     child: Padding(
+          //       padding: EdgeInsets.symmetric(vertical: 20),
+          //       child: Row(
+          //         children: [
+          //           SizedBox(
+          //             width: 20,
+          //           ),
+          //           Image.asset(
+          //             "assets/control_panel/speed.png",
+          //             width: 40,
+          //           ),
+          //           SizedBox(
+          //             width: 10,
+          //           ),
+          //           Expanded(
+          //             child: Text(
+          //               "速度限制",
+          //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          //             ),
+          //           ),
+          //           SizedBox(
+          //             width: 20,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+          //   child: NeuButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(
+          //         CupertinoPageRoute(
+          //           builder: (context) {
+          //             return MonitorSetting();
+          //           },
+          //           settings: RouteSettings(name: "monitor_setting"),
+          //         ),
+          //       );
+          //     },
+          //     padding: EdgeInsets.zero,
+          //     decoration: NeumorphicDecoration(
+          //       color: Theme.of(context).scaffoldBackgroundColor,
+          //       borderRadius: BorderRadius.circular(20),
+          //     ),
+          //     bevel: 20,
+          //     child: Padding(
+          //       padding: EdgeInsets.symmetric(vertical: 20),
+          //       child: Row(
+          //         children: [
+          //           SizedBox(
+          //             width: 20,
+          //           ),
+          //           Image.asset(
+          //             "assets/icons/setting.png",
+          //             width: 40,
+          //           ),
+          //           SizedBox(
+          //             width: 10,
+          //           ),
+          //           Expanded(
+          //             child: Text(
+          //               "设置",
+          //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          //             ),
+          //           ),
+          //           SizedBox(
+          //             width: 20,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

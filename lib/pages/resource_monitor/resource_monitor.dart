@@ -248,7 +248,7 @@ class _ResourceMonitorState extends State<ResourceMonitor> with SingleTickerProv
           //           ),
           //           Expanded(
           //             child: Text(
-          //               "设置",
+          //               "设置",gg
           //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           //             ),
           //           ),

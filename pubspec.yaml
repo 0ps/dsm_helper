@@ -38,10 +38,10 @@ dependencies:
   package_info: ^2.0.2
   pull_to_refresh: ^2.0.0
   shared_preferences: ^2.0.6
-  permission_handler: ^8.1.1
+  permission_handler: ^8.1.2
   extended_image: ^4.1.0
   cool_ui: ^1.0.2
-  gallery_saver: ^2.1.0
+  gallery_saver: ^2.1.2
   android_intent: ^2.0.2
   path_provider: ^2.0.2
   flutter_downloader: ^1.6.1
@@ -59,18 +59,18 @@ dependencies:
   dartssh: ^1.0.3+3
   xterm: ^2.0.0
   umeng_analytics_plugin: ^1.0.3
-  photo_manager: ^1.2.3
+  photo_manager: ^1.2.5
   vibrate: ^0.0.4
-  url_launcher: ^6.0.7
+  url_launcher: ^6.0.9
   http: ^0.13.3
   local_auth: ^1.1.6
   gesture_password: ^0.0.6
   connectivity: ^3.0.6
   code_editor: ^1.2.0
   flutter_highlight: ^0.7.0
-  syncfusion_flutter_pdfviewer: ^19.1.69-beta
-  wechat_assets_picker: ^5.5.6
-  fluwx: ^3.4.3
+  syncfusion_flutter_pdfviewer: ^19.2.47-beta
+  wechat_assets_picker: ^5.5.8
+  fluwx: ^3.5.0
   dio:
     git:
       url: https://gitee.com/challengerV/dio.git

@@ -1,6 +1,4 @@
 import 'package:dsm_helper/pages/resource_monitor/performance.dart';
-import 'package:dsm_helper/pages/resource_monitor/setting.dart';
-import 'package:dsm_helper/pages/resource_monitor/speed_limit.dart';
 import 'package:dsm_helper/pages/resource_monitor/task_manager.dart';
 import 'package:dsm_helper/pages/resource_monitor/users.dart';
 import 'package:dsm_helper/widgets/neu_back_button.dart';

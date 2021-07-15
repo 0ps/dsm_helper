@@ -94,7 +94,8 @@ class _AccountsState extends State<Accounts> {
         "host": server['host'],
         "base_url": server['base_url'],
         "port": server['port'],
-        "account": server['account'],
+        "account": server['account'] ?? '',
+        "note": server['note'],
         "remember_password": server['remember_password'],
         "password": server['password'],
         "auto_login": server['auto_login'],
@@ -148,6 +149,7 @@ class _AccountsState extends State<Accounts> {
           Util.setStorage("host", server['host']);
           Util.setStorage("port", server['port']);
           Util.setStorage("account", server['account']);
+          Util.setStorage("note", server['note'] ?? '');
           Util.setStorage("remember_password", server['remember_password'] ? "1" : "0");
           if (server['remember_password']) {
             Util.setStorage("password", server['password']);
@@ -190,27 +192,39 @@ class _AccountsState extends State<Accounts> {
                             children: [
                               Row(
                                 children: [
+                                  if (server['note'] != null && server['note'] != "") ...[
+                                    Label("${server['note']}", Colors.blue),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                  ],
                                   Text(
                                     "${server['account']}",
                                     style: TextStyle(fontSize: 18),
                                   ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Label(server['https'] ? "https" : "http", server['https'] ? Colors.green : Colors.lightBlueAccent),
                                 ],
                               ),
                               SizedBox(
                                 height: 5,
                               ),
-                              Text(
-                                "${server['host']}",
-                                style: TextStyle(color: Colors.grey),
+                              Row(
+                                children: [
+                                  if (server['https'])
+                                    Icon(
+                                      Icons.lock,
+                                      color: Colors.green,
+                                      size: 12,
+                                    ),
+                                  Text(
+                                    "${server['host']}",
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
                               )
                             ],
                           ),
                         ),
-                        if (server['loading']) CupertinoActivityIndicator() else if (!server['is_login']) Label("登录失效", Colors.red),
+                        if (server['loading']) CupertinoActivityIndicator() else if (!server['is_login']) Label("失效", Colors.red),
                         SizedBox(
                           width: 10,
                         ),

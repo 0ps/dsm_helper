@@ -8,6 +8,7 @@ import 'package:dsm_helper/pages/update/update.dart';
 import 'package:dsm_helper/util/api.dart';
 import 'package:dsm_helper/util/function.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 import 'package:package_info/package_info.dart';
@@ -22,10 +23,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  TapGestureRecognizer _privacyRecognizer;
   Map updateInfo;
   String host = "";
   String baseUrl = '';
   String account = "";
+  String note = "";
   String password = "";
   String port = "5000";
   bool needOtp = false;
@@ -41,6 +44,7 @@ class _LoginState extends State<Login> {
   bool read = false;
   TextEditingController _hostController = TextEditingController();
   TextEditingController _accountController = TextEditingController();
+  TextEditingController _noteController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _portController = TextEditingController();
   TextEditingController _otpController = TextEditingController();
@@ -49,6 +53,7 @@ class _LoginState extends State<Login> {
   CancelToken cancelToken = CancelToken();
   @override
   initState() {
+    _privacyRecognizer = TapGestureRecognizer();
     checkUpdate();
     Util.getStorage("read").then((value) {
       if (value.isNotBlank && value == "1") {
@@ -67,6 +72,7 @@ class _LoginState extends State<Login> {
           host = widget.server['host'];
           port = widget.server['port'];
           account = widget.server['account'];
+          note = widget.server['note'] ?? '';
           password = widget.server['password'];
           autoLogin = widget.server['auto_login'];
           rememberPassword = widget.server['remember_password'];
@@ -79,6 +85,9 @@ class _LoginState extends State<Login> {
           }
           if (account.isNotBlank) {
             _accountController.value = TextEditingValue(text: account);
+          }
+          if (note.isNotBlank) {
+            _noteController.value = TextEditingValue(text: note);
           }
           if (password.isNotBlank) {
             _passwordController.value = TextEditingValue(text: password);
@@ -97,6 +106,12 @@ class _LoginState extends State<Login> {
     });
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _privacyRecognizer.dispose();
+    super.dispose();
   }
 
   checkUpdate() async {
@@ -120,6 +135,7 @@ class _LoginState extends State<Login> {
     baseUrl = await Util.getStorage("base_url");
     String portString = await Util.getStorage("port");
     account = await Util.getStorage("account");
+    note = await Util.getStorage("note");
     password = await Util.getStorage("password");
     String autoLoginString = await Util.getStorage("auto_login");
 
@@ -148,6 +164,9 @@ class _LoginState extends State<Login> {
     }
     if (account.isNotBlank) {
       _accountController.value = TextEditingValue(text: account);
+    }
+    if (note.isNotBlank) {
+      _noteController.value = TextEditingValue(text: note);
     }
     if (password.isNotBlank) {
       _passwordController.value = TextEditingValue(text: password);
@@ -297,6 +316,7 @@ class _LoginState extends State<Login> {
       Util.setStorage("port", port);
       Util.setStorage("base_url", baseUri);
       Util.setStorage("account", account);
+      Util.setStorage("note", note);
       Util.setStorage("remember_password", rememberPassword ? "1" : "0");
       Util.setStorage("auto_login", autoLogin ? "1" : "0");
       Util.setStorage("check_ssl", checkSsl ? "1" : "0");
@@ -324,6 +344,7 @@ class _LoginState extends State<Login> {
           }
 
           servers[i]['remember_password'] = rememberPassword;
+          servers[i]['note'] = note;
           servers[i]['auto_login'] = autoLogin;
           servers[i]['check_ssl'] = checkSsl;
           servers[i]['cookie'] = Util.cookie;
@@ -520,23 +541,52 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 20,
             ),
-            NeuCard(
-              decoration: NeumorphicDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              bevel: 20,
-              curveType: CurveType.flat,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              child: NeuTextField(
-                keyboardAppearance: Brightness.light,
-                controller: _accountController,
-                onChanged: (v) => account = v,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  labelText: '账号',
+            Row(
+              children: [
+                Expanded(
+                  child: NeuCard(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    curveType: CurveType.flat,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: NeuTextField(
+                      keyboardAppearance: Brightness.light,
+                      controller: _accountController,
+                      onChanged: (v) => account = v,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: '账号',
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: NeuCard(
+                    decoration: NeumorphicDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    bevel: 20,
+                    curveType: CurveType.flat,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: NeuTextField(
+                      keyboardAppearance: Brightness.light,
+                      controller: _noteController,
+                      onChanged: (v) => note = v,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: '备注',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 20,
@@ -781,58 +831,56 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 20,
             ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      read = !read;
-                      Util.setStorage("read", read ? "1" : "0");
-                    });
-                  },
-                  child: NeuCard(
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  read = !read;
+                  Util.setStorage("read", read ? "1" : "0");
+                });
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  NeuCard(
                     decoration: NeumorphicDecoration(
                       color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    height: 30,
-                    width: 30,
+                    height: 20,
+                    width: 20,
                     alignment: Alignment.center,
                     curveType: read ? CurveType.emboss : CurveType.flat,
                     child: read
                         ? Icon(
                             CupertinoIcons.checkmark_alt,
                             color: Color(0xffff9813),
+                            size: 14,
                           )
                         : SizedBox(),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Text.rich(
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(text: "我已阅读并同意 "),
-                        WidgetSpan(
-                          child: GestureDetector(
-                            onTap: () {
+                        TextSpan(
+                          text: "${Util.appName}用户协议和隐私政策",
+                          style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue, fontSize: 12),
+                          recognizer: _privacyRecognizer
+                            ..onTap = () {
                               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                                 return License();
                               }));
                             },
-                            child: Text(
-                              "${Util.appName}用户协议和隐私政策",
-                              style: TextStyle(decoration: TextDecoration.underline, color: Colors.blue),
-                            ),
-                          ),
                         ),
                       ],
+                      style: TextStyle(fontSize: 12),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           ],
         ),

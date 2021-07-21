@@ -32,7 +32,7 @@
 群晖助手交流反馈②群：97137990
 
 # 软件下载
-安卓：https://gitee.com/challengerV/dsm_helper/releases  
+安卓：https://github.com/0ps/dsm_helper/releases  
 iOS：暂未上架苹果商店，可通过Test Flight下载安装。具体流程进群查看群公告
 
 # 软件截图
